@@ -1147,6 +1147,71 @@ max-width:100%;
 
 }
 
+/* Keep every navigation action reachable on tablets and phones. The HTML
+   contains a nested nav-right wrapper, so target both levels explicitly. */
+@media (max-width: 1400px) {
+    .hero { padding: 24px 32px 72px; }
+    .nav-right { gap: 10px; }
+    .report-btn { padding: 11px 16px; font-size: 14px; }
+    .logo-text h2 { font-size: clamp(26px, 2.5vw, 34px); }
+}
+
+@media (max-width: 1100px) {
+    .navbar { flex-direction:column; align-items:flex-start; gap:18px; }
+    .navbar > .nav-right { width:100%; }
+    .navbar > .nav-right > .nav-right {
+        width:100%;
+        display:grid;
+        grid-template-columns:repeat(3, minmax(0, 1fr));
+        gap:10px;
+    }
+    .navbar .report-btn { justify-content:center; min-width:0; white-space:normal; text-align:center; }
+    .navbar .profile { grid-column:1 / -1; justify-content:flex-end; }
+}
+
+@media (max-width: 768px) {
+    .hero { padding: 20px 14px 56px; }
+    .navbar > .nav-right { width:100%; min-width:0; }
+    .navbar > .nav-right > .nav-right {
+        width:100%;
+        display:grid;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:8px;
+        align-items:stretch;
+    }
+    .navbar .report-btn {
+        display:flex;
+        width:100%;
+        min-width:0;
+        min-height:48px;
+        justify-content:center;
+        text-align:center;
+        white-space:normal;
+        overflow-wrap:anywhere;
+        padding:9px 8px;
+        font-size:clamp(12px, 3.2vw, 14px);
+        line-height:1.25;
+    }
+    .navbar .notification-icon-btn { grid-column:auto; }
+    .navbar .profile {
+        grid-column:1 / -1;
+        justify-content:center;
+        width:100%;
+        padding-top:4px;
+    }
+    .navbar .profile-info { display:flex; flex-direction:column; min-width:0; }
+    .navbar .profile-info span { overflow-wrap:anywhere; }
+    .logo { max-width:100%; }
+    .logo-text { min-width:0; }
+    .logo-text h2 { font-size:clamp(24px, 8vw, 32px); overflow-wrap:anywhere; }
+}
+
+@media (max-width: 420px) {
+    .navbar > .nav-right > .nav-right { grid-template-columns:1fr; }
+    .navbar .profile { grid-column:auto; }
+    .navbar .notification-icon-btn { min-height:44px; }
+}
+
 html { font-size:16px; -webkit-text-size-adjust:100%; }
 body { overflow-x:hidden; }
 button, input, select, textarea { font-size:16px; max-width:100%; }
