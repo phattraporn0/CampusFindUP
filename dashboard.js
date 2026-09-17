@@ -478,6 +478,18 @@ function escapeClaimHtml(value) {
     }[char]));
 }
 
+const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+const mobileNav = document.querySelector(".navbar > .nav-right");
+if (mobileMenuBtn && mobileNav) {
+    mobileMenuBtn.addEventListener("click", () => {
+        const opened = mobileNav.classList.toggle("mobile-open");
+        mobileMenuBtn.setAttribute("aria-expanded", String(opened));
+        mobileMenuBtn.innerHTML = opened
+            ? '<i class="fa-solid fa-xmark"></i>'
+            : '<i class="fa-solid fa-bars"></i>';
+    });
+}
+
 document.getElementById('myClaimsNavBtn')?.addEventListener('click', () => {
     window.location.href = 'my-claims.html';
 });
