@@ -1,0 +1,381 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    font-family: "Prompt", sans-serif;
+
+    background: #f8f8f8;
+
+    color: #292929;
+
+}
+
+
+/* ================= HEADER ================= */
+
+.admin-header {
+
+    height: 82px;
+
+    background: white;
+
+    border-bottom: 1px solid #ddd;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 7%;
+
+}
+
+.admin-logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+}
+
+.admin-logo i {
+
+    color: #8b1e2d;
+
+}
+
+
+/* ================= CONTAINER ================= */
+
+.detail-container {
+
+    width: 86%;
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    padding: 40px 0 80px;
+
+}
+
+
+/* ================= BACK ================= */
+
+.back-btn {
+
+    border: none;
+
+    background: none;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    color: #555;
+
+    margin-bottom: 25px;
+
+}
+
+.back-btn:hover {
+
+    color: #8b1e2d;
+
+}
+
+
+/* ================= CARD ================= */
+
+.detail-card {
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+}
+
+
+/* ================= TITLE ================= */
+
+.detail-header {
+
+    padding: 30px;
+
+    border-bottom: 1px solid #ddd;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+.detail-header h1 {
+
+    font-size: 30px;
+
+    margin-bottom: 5px;
+
+}
+
+.item-code {
+
+    color: #777;
+
+}
+
+
+/* ================= STATUS ================= */
+
+.status {
+
+    padding: 8px 16px;
+
+    border-radius: 20px;
+
+    background: #fff3d6;
+
+    color: #a56a00;
+
+    font-size: 14px;
+
+}
+
+
+/* ================= BODY ================= */
+
+.detail-body {
+
+    padding: 30px;
+
+}
+
+
+/* ================= IMAGE ================= */
+
+.item-image {
+
+    width: 100%;
+
+    max-height: 400px;
+
+    border-radius: 15px;
+
+    background: #f4f4f4;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: hidden;
+
+    margin-bottom: 30px;
+
+}
+
+.item-image img {
+
+    width: 100%;
+
+    max-height: 400px;
+
+    object-fit: contain;
+
+}
+
+.no-image {
+
+    padding: 100px;
+
+    color: #999;
+
+    text-align: center;
+
+}
+
+.no-image i {
+
+    font-size: 50px;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* ================= INFORMATION ================= */
+
+.info-section {
+
+    margin-top: 30px;
+
+}
+
+.info-section h2 {
+
+    font-size: 21px;
+
+    margin-bottom: 20px;
+
+    padding-bottom: 10px;
+
+    border-bottom: 1px solid #eee;
+
+}
+
+
+.info-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+
+}
+
+
+.info-box {
+
+    background: #fafafa;
+
+    border: 1px solid #eee;
+
+    border-radius: 12px;
+
+    padding: 18px;
+
+}
+
+
+.info-box.full {
+
+    grid-column: 1 / -1;
+
+}
+
+
+.info-label {
+
+    color: #777;
+
+    font-size: 14px;
+
+    margin-bottom: 7px;
+
+}
+
+
+.info-value {
+
+    font-size: 16px;
+
+    line-height: 1.7;
+
+}
+
+
+/* ================= SPECIAL ================= */
+
+.special-box {
+
+    background: #fff8e8;
+
+    border: 1px solid #f1d28a;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    margin-top: 15px;
+
+}
+
+
+.special-box h3 {
+
+    font-size: 17px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.special-box p {
+
+    line-height: 1.7;
+
+}
+
+
+/* ================= GUARD ================= */
+
+.guard-box {
+
+    background: #f5f5f5;
+
+    border: 1px solid #ddd;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    margin-top: 15px;
+
+}
+
+
+.guard-box p {
+
+    line-height: 1.7;
+
+    margin-bottom: 8px;
+
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 700px) {
+
+    .detail-container {
+
+        width: 92%;
+
+    }
+
+    .detail-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+    }
+
+    .info-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}

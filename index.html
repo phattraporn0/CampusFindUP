@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusFind UP | Register</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-text">
+                <span class="dark">CampusFind</span>
+                <span class="orange">UP</span>
+            </div>
+        </div>
+
+        <h1>ลงทะเบียน</h1>
+        <p class="subtitle">
+            สร้างบัญชีผู้ใช้งานใหม่ด้วยอีเมลมหาวิทยาลัย
+        </p>
+
+        <form id="registerForm">
+            <label>อีเมล</label>
+            <input
+                type="email"
+                placeholder="xxxxxx@up.ac.th"
+                required>
+            <div class="warning">
+                <i class="fa-solid fa-circle-info"></i>
+                รองรับเฉพาะอีเมลของมหาวิทยาลัยเท่านั้น
+            </div>
+
+            <label>รหัสผ่าน</label>
+            <div class="password-box">
+            <input
+                type="password"
+                id="password"
+                placeholder="อย่างน้อย 8 ตัวอักษร"
+                required>
+            <span id="togglePassword" class="toggle-password">
+                <i class="fa-solid fa-eye"></i>
+            </span>
+            </div>
+
+            <label>ยืนยันรหัสผ่าน</label>
+            <div class="password-box">
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="กรอกรหัสผ่านอีกครั้ง"
+                required>
+            <span id="toggleConfirm" class="toggle-password">
+                <i class="fa-solid fa-eye"></i>
+            </span>
+            </div>
+                    
+            <button type="submit">
+                ลงทะเบียน
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <p class="login">
+            มีบัญชีผู้ใช้อยู่แล้ว?
+            <a href="login.html">เข้าสู่ระบบ</a>
+        </p>
+    </div>
+<script type="module" src="script.js"></script>
+</body>
+</html>

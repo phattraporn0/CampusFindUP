@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>CampusFind UP | ยืนยันสำเร็จ</title>
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            font-family: "Prompt", sans-serif;
+
+            background: #F7F8FC;
+
+        }
+
+        .container {
+
+            max-width: 700px;
+
+            margin: auto;
+
+            padding: 80px 20px;
+
+            text-align: center;
+
+        }
+
+        .success-icon {
+
+            width: 100px;
+            height: 100px;
+
+            margin: auto auto 25px;
+
+            border-radius: 50%;
+
+            background: #EAFBF0;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            color: #16A34A;
+
+            font-size: 48px;
+
+        }
+
+        h1 {
+
+            font-size: 40px;
+
+            margin-bottom: 12px;
+
+        }
+
+        .subtitle {
+
+            color: #666;
+
+            line-height: 1.8;
+
+            margin-bottom: 35px;
+
+        }
+
+        .qr-card {
+
+            background: white;
+
+            border-radius: 24px;
+
+            padding: 35px;
+
+            box-shadow: 0 10px 35px rgba(0,0,0,.07);
+
+        }
+
+        .qr-card h2 {
+
+            margin-bottom: 10px;
+
+        }
+
+        .qr {
+
+            width: 220px;
+            height: 220px;
+
+            margin: 25px auto;
+
+            border: 10px solid white;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,.1);
+
+        }
+
+        .qr img {
+
+            width: 100%;
+            height: 100%;
+
+        }
+
+        .note {
+
+            color: #777;
+
+            line-height: 1.7;
+
+        }
+
+        .home-btn {
+
+            display: inline-block;
+
+            margin-top: 30px;
+
+            padding: 15px 35px;
+
+            border-radius: 14px;
+
+            background: #4F46E5;
+
+            color: white;
+
+            text-decoration: none;
+
+        }
+
+    </style>
+
+    <style>
+        @media (max-width: 600px) {
+            .container { width:100%; padding:32px 14px 48px; }
+            h1 { font-size:clamp(25px, 8vw, 40px); line-height:1.25; }
+            .qr-card { padding:20px; }
+            .qr { width:min(220px, 75vw); height:min(220px, 75vw); }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<main class="container">
+
+    <div class="success-icon">
+
+        <i class="fa-solid fa-check"></i>
+
+    </div>
+
+    <h1>ยืนยันความเป็นเจ้าของสำเร็จ</h1>
+
+    <p class="subtitle">
+
+        ระบบตรวจสอบข้อมูลของคุณเรียบร้อยแล้ว
+        กรุณาแสดง QR Code นี้ต่อเจ้าหน้าที่เพื่อดำเนินการรับสิ่งของ
+
+    </p>
+
+
+    <div class="qr-card">
+
+        <h2>QR Code สำหรับรับสิ่งของ</h2>
+
+        <div class="qr">
+
+            <img
+                id="claimQrImage"
+                src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=CampusFind-UP-Claim"
+                alt="QR Code">
+
+        </div>
+
+        <p class="note">
+
+            กรุณาแสดง QR Code นี้แก่เจ้าหน้าที่
+            เพื่อยืนยันการรับคืนสิ่งของ
+
+        </p>
+
+        <p class="note" id="qrExpiry" style="margin-top: 12px;"></p>
+
+    </div>
+
+
+    <div id="claimDetails" class="qr-card" style="margin-top: 20px; text-align: left;">
+        <h2>รายละเอียดสิ่งของที่เคลม</h2>
+        <img id="claimItemImage" alt="รูปสิ่งของที่เคลม" style="display:none;width:100%;max-height:280px;object-fit:contain;border-radius:14px;margin:12px 0;background:#f1f5f9;">
+        <p id="claimItemDescription">กำลังโหลดข้อมูล...</p>
+        <p id="claimItemLocation" class="note"></p>
+        <p id="claimStorageLocation" class="note"></p>
+        <p id="claimItemStatus" class="note"></p>
+    </div>
+
+    <a href="dashboard.html" class="home-btn">
+
+        <i class="fa-solid fa-house"></i>
+
+        กลับหน้าหลัก
+
+    </a>
+
+</main>
+
+<script type="module">
+    import { supabase, requireLogin } from './supabaseClient.js';
+
+    await requireLogin();
+    const expiryElement = document.getElementById("qrExpiry");
+    const expiresAt = localStorage.getItem("claimQrExpiresAt");
+    const claimToken = localStorage.getItem("claimToken");
+    const qrImage = document.getElementById("claimQrImage");
+    const claimItemDescription = document.getElementById("claimItemDescription");
+    const claimItemLocation = document.getElementById("claimItemLocation");
+    const claimItemImage = document.getElementById("claimItemImage");
+    const claimStorageLocation = document.getElementById("claimStorageLocation");
+    const claimItemStatus = document.getElementById("claimItemStatus");
+    const itemId = new URLSearchParams(window.location.search).get("item_id");
+
+    if (!claimToken || !expiresAt) {
+        window.location.replace("dashboard.html");
+    }
+
+    const itemQuery = itemId
+        ? supabase.from('found_items').select('description, category, location, storage_location, image_url, status').eq('id', itemId).single()
+        : supabase.from('found_items').select('description, category, location, storage_location, image_url, status').eq('claim_token', claimToken).single();
+    const { data: claimedItem } = await itemQuery;
+    if (claimedItem) {
+        if (claimItemDescription) claimItemDescription.textContent = `${claimedItem.category || 'สิ่งของ'}: ${claimedItem.description || 'ไม่ระบุรายละเอียด'}`;
+        if (claimItemLocation) claimItemLocation.textContent = `สถานที่พบ: ${claimedItem.location || 'ไม่ระบุ'}`;
+        if (claimStorageLocation) claimStorageLocation.textContent = `จุดรับของคืน: ${claimedItem.storage_location || 'กรุณาติดต่อเจ้าหน้าที่รักษาความปลอดภัย'}`;
+        if (claimItemImage && claimedItem.image_url) {
+            claimItemImage.src = claimedItem.image_url;
+            claimItemImage.style.display = 'block';
+        }
+        if (claimItemStatus) claimItemStatus.textContent = claimedItem.status === 'returned' ? 'สถานะ: ส่งคืนแล้ว' : 'สถานะ: รอส่งคืนเจ้าของ';
+    }
+
+    if (qrImage && claimToken) {
+        qrImage.src = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data="
+            + encodeURIComponent(`CampusFind-UP-Claim:${claimToken}`);
+    }
+
+    if (expiryElement && expiresAt) {
+        const expiry = new Date(expiresAt);
+        const renderExpiry = () => {
+            const remainingMs = expiry.getTime() - Date.now();
+
+            if (Number.isNaN(expiry.getTime()) || remainingMs <= 0) {
+                expiryElement.textContent = "QR Code นี้หมดอายุแล้ว กรุณายืนยันความเป็นเจ้าของอีกครั้ง";
+                return false;
+            }
+
+            const totalSeconds = Math.floor(remainingMs / 1000);
+            const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+            const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+            const seconds = String(totalSeconds % 60).padStart(2, "0");
+
+            expiryElement.textContent = `QR Code ใช้ได้ถึง ${expiry.toLocaleString("th-TH", {
+                dateStyle: "medium",
+                timeStyle: "short"
+            })} น. · เหลือเวลา ${hours}:${minutes}:${seconds}`;
+            return true;
+        };
+
+        if (renderExpiry()) {
+            setInterval(renderExpiry, 1000);
+        }
+    }
+</script>
+
+</body>
+
+</html>

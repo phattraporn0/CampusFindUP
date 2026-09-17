@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CampusFind UP | Report Lost Success</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- ใช้ CSS เดิมของคุณ -->
+    <link rel="stylesheet"
+          href="report-success.css">
+
+</head>
+
+<body>
+
+<main class="container">
+
+    <!-- SUCCESS ICON -->
+
+    <div class="success-icon">
+
+        <i class="fa-solid fa-check"></i>
+
+    </div>
+
+
+    <h1>แจ้งของหายสำเร็จ</h1>
+
+    <p class="subtitle">
+
+        ระบบได้รับข้อมูลการแจ้งของหายของคุณแล้ว
+        หากมีผู้แจ้งพบสิ่งของที่ตรงกับข้อมูล
+        ระบบจะแจ้งเตือนให้คุณทราบ
+
+    </p>
+
+
+    <!-- SUCCESS CARD -->
+
+    <section class="success-card">
+
+
+        <!-- HEADER -->
+
+        <div class="card-header">
+
+            <div>
+
+                <p class="ref">
+                    รหัสอ้างอิง:
+                    <span id="referenceId"></span>
+                </p>
+
+                <img id="lostSuccessImage" alt="รูปสิ่งของที่หาย" style="display:none;width:100%;max-height:260px;object-fit:contain;border-radius:14px;margin:12px 0;background:#f1f5f9;">
+                <h2 id="successItemName">-</h2>
+
+            </div>
+
+            <div class="status">
+
+                กำลังค้นหา
+
+            </div>
+
+        </div>
+
+
+        <!-- BODY -->
+
+        <div class="card-body">
+
+
+            <!-- ข้อมูลสิ่งของ -->
+
+            <div class="info">
+
+                <h3>
+
+                    <i class="fa-solid fa-box"></i>
+
+                    ข้อมูลสิ่งของ
+
+                </h3>
+
+
+                <!-- หมวดหมู่ -->
+
+                <div class="item">
+
+                    <i class="fa-solid fa-cube"></i>
+
+                    <div>
+
+                        <small>
+                            หมวดหมู่
+                        </small>
+
+                        <p id="successCategory">-</p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- สถานที่ -->
+
+               <div class="item">
+
+    <i class="fa-solid fa-location-dot"></i>
+
+    <div>
+
+        <small>สถานที่คาดว่าทำหาย</small>
+
+        <p id="successLocation">-</p>
+
+    </div>
+
+</div>
+
+
+                <!-- วันที่ -->
+
+                <div class="item">
+
+    <i class="fa-solid fa-calendar"></i>
+
+    <div>
+
+        <small>วันที่ทำหาย</small>
+
+        <p id="successDate">-</p>
+
+    </div>
+
+</div>
+
+
+                <!-- รายละเอียด -->
+
+                <div class="item">
+
+    <i class="fa-solid fa-circle-info"></i>
+
+    <div>
+
+        <small>จุดเด่น / ตำหนิ</small>
+
+        <p id="successDescription">-</p>
+
+    </div>
+
+</div>
+
+
+            <!-- STATUS -->
+
+            <div class="storage">
+
+                <h3>
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    สถานะการติดตาม
+
+                </h3>
+
+
+                <div class="storage-box">
+
+                    <div class="storage-icon">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h4>
+                            กำลังค้นหาสิ่งของ
+                        </h4>
+
+                        <p>
+                            ระบบจะตรวจสอบรายการสิ่งของที่มีผู้แจ้งพบ
+                            และแจ้งเตือนคุณหากพบข้อมูลที่ตรงกัน
+                        </p>
+
+                        <hr>
+
+                        <small>
+                            สถานะ: กำลังค้นหา
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+    <section id="autoMatchSection" class="success-card" style="display:none; margin-top:24px; text-align:left;">
+        <h2>ของที่คุณกำลังตามหาอยู่นี่หรือเปล่า?</h2>
+        <p id="autoMatchMessage">ระบบกำลังค้นหารายการที่ใกล้เคียงที่สุด...</p>
+        <article id="autoMatchCard" style="display:none; margin-top:16px; padding:16px; border:1px solid #e5e7eb; border-radius:16px;">
+            <img id="autoMatchImage" alt="รายการที่อาจตรงกัน" style="display:none; width:100%; max-height:220px; object-fit:cover; border-radius:12px;">
+            <h3 id="autoMatchDescription"></h3>
+            <p id="autoMatchDetails"></p>
+            <button type="button" class="primary" id="autoMatchOpenBtn">ดูรายละเอียดและยืนยันความเป็นเจ้าของ</button>
+        </article>
+    </section>
+
+
+    <!-- BUTTONS -->
+
+    <div class="action-buttons">
+
+        <button
+            type="button"
+            class="outline"
+            id="backDashboardBtn">
+
+            <i class="fa-solid fa-house"></i>
+
+            กลับหน้าหลัก
+
+        </button>
+
+
+        <button
+            type="button"
+            class="primary"
+            id="trackLostBtn">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            ติดตามของหาย
+
+        </button>
+
+    </div>
+
+
+</main>
+
+
+<script src="report-success.js"></script>
+<script src="report-lost-success.js"></script>
+<script type="module" src="lost-automatch.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>จัดการรายการของหาย | CampusFind UP</title>
+
+    <link rel="stylesheet" href="guard-items.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="guard-header">
+
+        <h1>จัดการรายการของหาย</h1>
+
+        <button class="profile-btn" id="profileBtn" type="button" aria-label="ดูข้อมูลเจ้าหน้าที่">
+            <i class="fa-solid fa-user"></i>
+            <span>โปรไฟล์</span>
+        </button>
+
+    </header>
+
+
+    <main class="guard-container">
+
+        <!-- ================= TABS ================= -->
+
+        <div class="tabs">
+
+            <button class="tab active" id="waitingTab">
+
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+
+                ยืนยันการรับฝากของ
+                <span id="waitingCount">(0)</span>
+
+            </button>
+
+
+            <button class="tab" id="returnTab">
+
+                <i class="fa-solid fa-cube"></i>
+
+                รอส่งคืนเจ้าของ
+                <span id="returnCount">(0)</span>
+
+            </button>
+
+            <button class="tab" id="lostTab" style="display:none" aria-hidden="true">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                รายการแจ้งของหาย
+                <span id="lostCount">(0)</span>
+            </button>
+
+        </div>
+
+
+        <!-- ================= SEARCH ================= -->
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="ค้นหารหัส หรือชื่อสิ่งของ...">
+
+        </div>
+
+
+        <!-- ================= WAITING ================= -->
+
+        <section id="waitingSection">
+
+            <div class="section-title">
+
+                <h2>รายการที่มีผู้แจ้งพบล่าสุด</h2>
+
+                <span>ต้องตรวจสอบ</span>
+
+            </div>
+
+            <div id="waitingList"></div>
+
+        </section>
+
+
+        <!-- ================= RETURN ================= -->
+
+        <section id="returnSection" style="display:none;">
+
+            <div class="section-title">
+
+                <h2>ของที่เก็บรักษาที่ป้อมนี้</h2>
+
+            </div>
+
+            <div id="returnList"></div>
+
+        </section>
+
+        <section id="lostSection" style="display:none" aria-hidden="true">
+            <div class="section-title">
+                <h2>รายการแจ้งของหายจากผู้ใช้งาน</h2>
+                <span>ข้อมูลสำหรับเจ้าหน้าที่รักษาความปลอดภัย</span>
+            </div>
+            <div id="lostList"></div>
+        </section>
+
+    </main>
+
+
+    <script script type="module" src="guard-items.js"></script>
+
+</body>
+
+</html>

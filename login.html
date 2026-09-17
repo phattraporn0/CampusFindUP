@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusFind UP | login</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <span class="logo-text">
+                <span class="dark">CampusFind</span>
+                <span class="orange"> UP</span>
+            </span>
+        </div>
+
+        <h1>เข้าสู่ระบบ</h1>
+        <p class="subtitle">
+            กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ
+        </p>
+
+        <form id="loginForm" novalidate>
+            <label>อีเมลมหาวิทยาลัย</label>
+            <input
+                type="email"
+                placeholder="xxxxxx@up.ac.th"
+                required>
+
+            <label class="password-label">
+                <span>รหัสผ่าน</span>
+                <a href="#">ลืมรหัสผ่าน?</a>
+            </label>
+
+            <div class="password-box">
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="กรอกรหัสผ่าน"
+                    required>
+
+                <span id="toggleLoginPassword" class="toggle-password">
+                    <i class="fa-solid fa-eye"></i>
+                </span>
+            </div>
+
+            <button type="submit">
+                เข้าสู่ระบบ
+            </button>
+        </form>
+
+        <p class="register">
+            ยังไม่มีบัญชีผู้ใช้?
+            <a href="index.html">ลงทะเบียนที่นี่</a>
+        </p>
+    </div>
+<script type="module" src="script.js"></script>
+</body>
+</html>
+

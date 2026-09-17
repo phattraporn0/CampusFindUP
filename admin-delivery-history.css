@@ -1,0 +1,495 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+
+    font-family: "Prompt", sans-serif;
+
+    background: #fafafa;
+
+    color: #292929;
+
+}
+
+
+/* ================= HEADER ================= */
+
+.admin-header {
+
+    height: 82px;
+
+    background: white;
+
+    border-bottom: 1px solid #ddd;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 7%;
+
+}
+
+
+.logo {
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.logo i {
+
+    color: #8b1e2d;
+
+}
+
+
+.notification {
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 21px;
+
+}
+
+/* ================= HEADER ACTIONS ================= */
+
+.header-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+.back-btn {
+
+    border: 1px solid #ddd;
+
+    background: white;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.back-btn:hover {
+
+    background: #f7f7f7;
+
+}
+
+
+/* ================= CONTAINER ================= */
+
+.history-container {
+
+    width: 86%;
+
+    max-width: 1250px;
+
+    margin: auto;
+
+    padding: 50px 0;
+
+}
+
+
+.history-container h1 {
+
+    font-size: 36px;
+
+}
+
+
+.subtitle {
+
+    color: #777;
+
+    margin-top: 8px;
+
+    font-size: 17px;
+
+}
+
+
+/* ================= SEARCH ================= */
+
+.search-row {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 28px;
+
+}
+
+
+.search-box {
+
+    height: 50px;
+
+    flex: 1;
+
+    border: 1px solid #ddd;
+
+    border-radius: 12px;
+
+    background: white;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 16px;
+
+}
+
+
+.search-box i {
+
+    color: #888;
+
+}
+
+
+.search-box input {
+
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    padding-left: 10px;
+
+}
+
+
+.filter-btn {
+
+    width: 52px;
+
+    border: 1px solid #ddd;
+
+    background: white;
+
+    border-radius: 12px;
+
+    font-size: 18px;
+
+}
+
+
+/* ================= TABLE ================= */
+
+.history-table {
+
+    margin-top: 38px;
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+}
+
+
+.table-header,
+.history-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1.1fr
+        1fr
+        1.2fr
+        1.5fr
+        1.4fr
+        0.9fr;
+
+    align-items: center;
+
+}
+
+
+.table-header {
+
+    background: #fafafa;
+
+    border-bottom: 1px solid #ddd;
+
+    padding: 18px 25px;
+
+    color: #777;
+
+}
+
+
+.history-row {
+
+    padding: 22px 25px;
+
+    border-bottom: 1px solid #eee;
+
+    min-height: 100px;
+
+}
+
+
+.history-row:last-child {
+
+    border-bottom: none;
+
+}
+
+
+/* ================= DATE ================= */
+
+.date {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+}
+
+
+.date span {
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+
+/* ================= CODE ================= */
+
+.item-code {
+
+    border: 1px solid #ddd;
+
+    border-radius: 20px;
+
+    padding: 5px 12px;
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+
+/* ================= ITEM ================= */
+
+.item-name {
+
+    font-weight: 600;
+
+    font-size: 17px;
+
+}
+
+
+/* ================= STUDENT ================= */
+
+.student {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.student-avatar {
+
+    width: 40px;
+
+    height: 40px;
+
+    border-radius: 50%;
+
+    background: #fff1d3;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: white;
+
+}
+
+
+.student div:last-child {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+.student span {
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+
+/* ================= LOCATION ================= */
+
+.location {
+
+    color: #666;
+
+}
+
+
+.location i {
+
+    margin-right: 7px;
+
+}
+
+/* ================= DETAIL BUTTON ================= */
+
+.history-action {
+
+    display: flex;
+
+    justify-content: center;
+
+}
+
+.history-action .detail-btn {
+
+    border: 1px solid #ddd;
+
+    background: white;
+
+    padding: 9px 14px;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+}
+
+.history-action .detail-btn:hover {
+
+    background: #f7f7f7;
+
+}
+
+/* ================= EMPTY ================= */
+
+.empty-history {
+
+    text-align: center;
+
+    padding: 70px;
+
+    color: #888;
+
+}
+
+
+.empty-history i {
+
+    font-size: 40px;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 800px) {
+
+    .table-header {
+
+        display: none;
+
+    }
+
+
+    .history-row {
+
+        display: block;
+
+        padding: 25px;
+
+    }
+
+
+    .history-row > div {
+
+        margin-bottom: 14px;
+
+    }
+
+
+    .history-container {
+
+        width: 92%;
+
+    }
+
+}

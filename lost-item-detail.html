@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CampusFind UP | รายละเอียดสิ่งของ</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <link rel="stylesheet" href="lost-item-detail.css">
+
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header class="topbar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <div>
+                <h2>CampusFind <span>UP</span></h2>
+                <p>ระบบแจ้งและติดตามของหาย</p>
+            </div>
+
+        </div>
+
+        <div class="user-profile">
+            <i class="fa-solid fa-user"></i>
+            <span>นิสิต</span>
+        </div>
+
+    </header>
+
+
+    <!-- Main -->
+
+    <main class="container">
+
+        <a href="dashboard.html" class="back-btn">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            กลับไปหน้าค้นหา
+
+        </a>
+
+
+        <!-- Item Card -->
+
+        <section class="item-card">
+
+            <div class="item-image">
+
+                <img id="itemImage" alt="รูปภาพสิ่งของ" hidden>
+
+                <div class="photo-placeholder" id="photoPlaceholder">
+                    <i class="fa-regular fa-image"></i>
+                    <span>PHOTO</span>
+                </div>
+
+            </div>
+
+
+            <div class="item-content">
+
+                <div class="category-badge" id="category">
+                    กระเป๋า
+                </div>
+
+                <h1 id="itemName">
+                    กระเป๋าเป้สีดำ
+                </h1>
+
+                <p class="brand" id="brand">
+                    ยี่ห้อ The North Face
+                </p>
+
+
+                <div class="info-list">
+
+                    <div class="info-item">
+
+                        <div class="info-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div>
+                            <small>สถานที่พบ</small>
+                            <p id="location">
+                                ป้อมยาม ประตู 2
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-icon">
+                            <i class="fa-regular fa-calendar"></i>
+                        </div>
+
+                        <div>
+                            <small>วันที่พบ</small>
+                            <p id="date">
+                                10 สิงหาคม 2569
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-icon">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+
+                        <div>
+                            <small>เวลาที่พบ</small>
+                            <p id="time">
+                                10:30 น.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Security Notice -->
+
+                <div class="security-notice">
+
+                    <div class="security-icon">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>ข้อมูลบางส่วนถูกซ่อนไว้</h3>
+
+                        <p>
+                            ระบบจะไม่แสดงลักษณะเฉพาะหรือตำหนิของสิ่งของ
+                            เพื่อป้องกันการแอบอ้างเป็นเจ้าของ
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Claim Button -->
+
+                <button
+                    type="button"
+                    class="claim-btn"
+                    id="claimBtn"
+                >
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    ยืนยันความเป็นเจ้าของ
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script type="module" src="lost-item-detail.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>ประวัติการส่งมอบ | CampusFind UP</title>
+
+    <link rel="stylesheet"
+        href="admin-delivery-history.css">
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+
+<body>
+
+
+<header class="admin-header">
+
+    <div class="logo">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        FindIt Campus
+
+    </div>
+
+
+    <div class="header-actions">
+
+        <button
+            class="back-btn"
+            onclick="window.location.href='admin-dashboard.html'">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            กลับหน้าหลัก
+
+        </button>
+
+
+        <button class="notification">
+
+            <i class="fa-regular fa-bell"></i>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="history-container">
+
+
+    <h1>
+        ประวัติการส่งมอบ
+    </h1>
+
+
+    <p class="subtitle">
+
+        ตรวจสอบรายการสิ่งของที่ถูกส่งมอบคืนให้กับเจ้าของเรียบร้อยแล้ว
+        (เรียงจากเก่าสุดไปใหม่สุด)
+
+    </p>
+
+
+    <div class="search-row">
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="historySearch"
+                placeholder="ค้นหารายการ, รหัสนักศึกษา...">
+
+        </div>
+
+
+        <button class="filter-btn">
+
+            <i class="fa-solid fa-filter"></i>
+
+        </button>
+
+    </div>
+
+
+    <div class="history-table">
+
+
+        <div class="table-header">
+
+            <div>วัน-เวลา</div>
+
+            <div>รหัสรายการ</div>
+
+            <div>ชื่อสิ่งของ</div>
+
+            <div>ผู้รับของ (นักศึกษา)</div>
+
+            <div>จุดส่งมอบ</div>
+
+        </div>
+
+
+        <div id="historyList">
+
+            <!-- JS -->
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+<script  type="module" src="admin-delivery-history.js"></script>
+
+</body>
+
+</html>

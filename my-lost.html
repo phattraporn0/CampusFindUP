@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="th">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>รายการประกาศตามหาของฉัน | CampusFind UP</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #f7f8fc; color: #13213a; font-family: Prompt, sans-serif; }
+        main { max-width: 1180px; margin: auto; padding: 42px 24px 70px; }
+        a { color: #4f46e5; text-decoration: none; font-weight: 600; }
+        .head { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 24px; }
+        .list { display: grid; gap: 18px; margin-top: 18px; }
+        .card { display: flex; gap: 20px; background: #fff; border-radius: 22px; padding: 18px; box-shadow: 0 8px 24px rgba(15,23,42,.08); cursor: pointer; }
+        .photo { width: 150px; height: 150px; flex: 0 0 150px; object-fit: cover; border-radius: 14px; background: #eef1f8; display: grid; place-items: center; color: #64748b; }
+        .info { flex: 1; }
+        .info h2 { margin: 8px 0; }
+        .info p { margin: 6px 0; color: #64748b; }
+        .status { float: right; color: #64748b; font-size: 14px; }
+        .empty { background: #fff; border-radius: 22px; padding: 50px 20px; text-align: center; color: #64748b; }
+        @media (max-width: 650px) { .head { align-items: flex-start; flex-direction: column; } .card { flex-direction: column; } .photo { width: 100%; height: 190px; flex-basis: 190px; } .status { float: none; } }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="head">
+            <div>
+                <h1>รายการประกาศตามหาของฉัน</h1>
+                <p>โพสต์ที่คุณแจ้งหายไว้ในระบบ</p>
+            </div>
+            <a href="dashboard.html">← กลับหน้าหลัก</a>
+        </div>
+        <div id="total">0 รายการ</div>
+        <label for="categoryFilter">หมวดหมู่</label>
+        <select id="categoryFilter" style="margin-top:8px;padding:10px 14px;border:1px solid #dbe1ee;border-radius:10px;font:inherit;">
+            <option value="ทั้งหมด">ทั้งหมด</option>
+            <option value="กระเป๋า">กระเป๋า</option>
+            <option value="บัตร">บัตร</option>
+            <option value="อุปกรณ์อิเล็กทรอนิกส์">อุปกรณ์อิเล็กทรอนิกส์</option>
+            <option value="กุญแจ">กุญแจ</option>
+            <option value="อื่น ๆ">อื่น ๆ</option>
+        </select>
+        <section id="list" class="list"><div class="empty">กำลังโหลดรายการ...</div></section>
+    </main>
+    <script type="module" src="my-lost.js"></script>
+</body>
+</html>

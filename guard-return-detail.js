@@ -1,0 +1,107 @@
+import { supabase, requireRole } from './supabaseClient.js';
+
+const returnDetail = document.getElementById('returnDetail');
+const scanBtn = document.getElementById('scanBtn');
+const photoBtn = document.getElementById('photoBtn');
+const selectedItemId = localStorage.getItem('selectedGuardItemId');
+
+function escapeHtml(value) {
+    return String(value ?? '-')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function displayDate(value) {
+    if (!value) return '-';
+    const date = new Date(`${value}T00:00:00`);
+    return Number.isNaN(date.getTime())
+        ? value
+        : new Intl.DateTimeFormat('th-TH', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        }).format(date);
+}
+
+function renderItem(item) {
+    const rows = [
+        ['หมวดหมู่', item.category],
+        ['สถานที่พบ', item.location],
+        ['วันที่พบ', displayDate(item.found_date)],
+        ['เวลาที่พบ', item.found_time],
+        ['รายละเอียดสิ่งของ', item.description],
+        ['จุดเด่น / ตำหนิจากผู้แจ้ง', item.defect],
+        ['จุดรับฝาก', item.storage_location],
+        ['บันทึกเพิ่มเติมจากผู้แจ้ง', item.additional_note]
+    ];
+
+    returnDetail.innerHTML = `
+        <article class="return-card">
+            <div class="return-main">
+                <div class="return-photo">
+                    ${item.image_url
+                        ? `<img src="${escapeHtml(item.image_url)}" alt="รูปสิ่งของ">`
+                        : '<i class="fa-solid fa-box"></i>'}
+                </div>
+                <div>
+                    <p class="code">รหัสรายการ: ${escapeHtml(item.id.slice(0, 8))}</p>
+                    <h2>รายละเอียดสิ่งของ</h2>
+                    <p>ตรวจสอบข้อมูลก่อนสแกน QR Code เพื่อส่งคืนเจ้าของ</p>
+                </div>
+            </div>
+
+            <div class="return-details">
+                ${rows.map(([label, value]) => `
+                    <div class="info-row">
+                        <div class="info-label">${label}</div>
+                        <div class="info-value">${escapeHtml(value || '-')}</div>
+                    </div>
+                `).join('')}
+            </div>
+
+            ${item.guard_remark ? `
+                <section class="remark-section">
+                    <h3>ข้อมูลเพิ่มเติมจาก รปภ.</h3>
+                    <p>${escapeHtml(item.guard_remark)}</p>
+                </section>
+            ` : ''}
+        </article>
+    `;
+}
+
+async function loadItem() {
+    if (!selectedItemId) {
+        returnDetail.innerHTML = '<div class="return-card">ไม่พบรายการที่เลือก กรุณากลับไปเลือกรายการอีกครั้ง</div>';
+        scanBtn.disabled = true;
+        return;
+    }
+
+    const { data: item, error } = await supabase
+        .from('found_items')
+        .select('*')
+        .eq('id', selectedItemId)
+        .in('status', ['claimed', 'claim_verified'])
+        .single();
+
+    if (error || !item) {
+        returnDetail.innerHTML = '<div class="return-card">ไม่สามารถโหลดข้อมูลรายการได้</div>';
+        scanBtn.disabled = true;
+        console.error('Load return item detail failed:', error?.message);
+        return;
+    }
+
+    renderItem(item);
+}
+
+scanBtn.addEventListener('click', () => {
+    window.location.href = 'guard-scan.html';
+});
+
+photoBtn.addEventListener('click', () => {
+    window.location.href = 'guard-photo.html';
+});
+
+requireRole(['guard']).then((user) => {
+    if (user) loadItem();
+});

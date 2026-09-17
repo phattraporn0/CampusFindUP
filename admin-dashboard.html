@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ผู้ดูแลระบบ | CampusFind UP</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="staff.css">
+</head>
+<body>
+  <header>
+    <strong>CampusFind UP · ผู้ดูแลระบบ</strong>
+    <button id="logoutButton">ออกจากระบบ</button>
+  </header>
+
+  <main>
+    <h1>ภาพรวมรายการสิ่งของ</h1>
+    <p class="subtitle">ข้อมูลล่าสุดจากระบบและรายการที่ต้องตรวจสอบ</p>
+
+    <section class="stats">
+      <div class="stat"><small>รอยืนยันการรับฝาก</small><strong id="waitingCount">-</strong></div>
+      <div class="stat"><small>รอส่งคืนเจ้าของ</small><strong id="verifiedCount">-</strong></div>
+      <div class="stat"><small>ส่งคืนแล้ว</small><strong id="returnedCount">-</strong></div>
+      <div class="stat"><small>รอ Admin ตรวจสอบ</small><strong id="reviewCount">-</strong></div>
+      <div class="stat"><small>ทั้งหมด</small><strong id="totalCount">-</strong></div>
+    </section>
+
+    <section id="latestItemsPanel" class="panel">
+      <h2>รายการล่าสุด</h2>
+      <div id="itemList" class="list"></div>
+    </section>
+
+    <section id="reviewPanel" class="panel review-panel">
+      <h2>รายการรอ Admin ตรวจสอบ</h2>
+      <p class="subtitle">รายการที่เจ้าของตอบคำถามยืนยันผิดครบ 3 ครั้ง</p>
+      <div id="reviewList" class="list"></div>
+    </section>
+  </main>
+
+  <script type="module" src="admin-dashboard.js"></script>
+</body>
+</html>

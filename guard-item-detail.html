@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>ตรวจรับสิ่งของ</title>
+
+    <link rel="stylesheet" href="guard-item-detail.css">
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+
+<body>
+
+<header class="guard-header">
+
+    <button onclick="history.back()">
+        <i class="fa-solid fa-arrow-left"></i>
+    </button>
+
+    <h1>ตรวจสอบรายการสิ่งของ</h1>
+
+</header>
+
+
+<main class="detail-container">
+
+    <div id="itemDetail"></div>
+
+
+    <!-- ================= GUARD INPUT ================= -->
+
+    <section class="guard-input">
+
+        <h2>
+            <i class="fa-solid fa-shield-halved"></i>
+            ข้อมูลเพิ่มเติมจาก รปภ.
+        </h2>
+
+        <p>
+            ข้อมูลที่ผู้แจ้งพบกรอกไว้จะแสดงด้านบน
+            หากตรวจพบจุดเด่นหรือตำหนิเพิ่มเติม สามารถบันทึกไว้ในช่องนี้ได้
+        </p>
+
+
+        <label>
+            จุดเด่น / ตำหนิเพิ่มเติม
+        </label>
+
+        <textarea
+            id="guardRemark"
+            placeholder="กรอกจุดเด่นหรือตำหนิเพิ่มเติม เช่น รอยขีดข่วน สีของซิป ตำหนิบริเวณมุมกระเป๋า..."></textarea>
+
+    </section>
+
+
+    <button
+        class="confirm-btn"
+        id="confirmBtn">
+
+        <i class="fa-solid fa-check"></i>
+
+        ยืนยันการรับฝากของ
+
+    </button>
+
+</main>
+
+
+<script script type="module" src="guard-item-detail.js"></script>
+
+</body>
+
+</html>

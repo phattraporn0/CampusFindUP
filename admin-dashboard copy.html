@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | CampusFind UP</title>
+
+    <link rel="stylesheet" href="admin-dashboard.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+
+<body>
+
+<header class="admin-header">
+
+    <div class="admin-logo">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>FindIt Campus</span>
+    </div>
+
+    <div class="header-right">
+
+        <div class="search-top">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="globalSearch"
+                placeholder="ค้นหารหัสรายการ...">
+
+        </div>
+
+        <button class="notification-btn">
+
+            <i class="fa-regular fa-bell"></i>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="admin-container">
+
+
+    <!-- ================= TITLE ================= -->
+
+    <section class="page-title">
+
+        <h1>ภาพรวมระบบ</h1>
+
+        <p>
+            สรุปสถานการณ์ของหายและการส่งมอบภายในมหาวิทยาลัย
+        </p>
+
+    </section>
+
+
+    <!-- ================= ADD ITEM ================= -->
+
+    <button class="add-item-btn" id="addItemBtn">
+
+        <i class="fa-solid fa-box"></i>
+
+        เพิ่มรายการของหายใหม่
+
+    </button>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <section class="stats-grid">
+
+
+        <div class="stats-card" onclick="goToGuardItems()">
+
+    <div class="stats-info">
+        <p>รายการทั้งหมด</p>
+        <h2 id="totalItems">0</h2>
+    </div>
+
+    <div class="stats-icon">
+        <i class="fa-solid fa-box"></i>
+    </div>
+
+</div>
+
+
+<div class="stats-card" onclick="goToWaitingItems()">
+
+    <div class="stats-info">
+        <p>รอยืนยันการรับฝาก</p>
+        <h2 id="waitingItems">0</h2>
+    </div>
+
+    <div class="stats-icon">
+        <i class="fa-regular fa-clock"></i>
+    </div>
+
+</div>
+
+
+<div class="stats-card" onclick="goToReturnItems()">
+
+    <div class="stats-info">
+        <p>รอส่งคืนเจ้าของ</p>
+        <h2 id="returnItems">0</h2>
+    </div>
+
+    <div class="stats-icon">
+        <i class="fa-solid fa-user-check"></i>
+    </div>
+
+</div>
+
+
+<div class="stats-card" onclick="goToDeliveryHistory()">
+
+    <div class="stats-info">
+        <p>ส่งคืนแล้ว</p>
+        <h2 id="deliveredItems">0</h2>
+    </div>
+
+    <div class="stats-icon">
+        <i class="fa-regular fa-circle-check"></i>
+    </div>
+
+</div>
+    </section>
+
+
+    <section class="review-section">
+        <div class="review-header">
+            <div>
+                <h2><i class="fa-solid fa-list"></i> จัดการรายการล่าสุด</h2>
+                <p>ดูรายละเอียด แก้ไข หรือลบรายการของหาย</p>
+            </div>
+        </div>
+        <div id="adminItemList"></div>
+    </section>
+
+
+    <!-- ================= NEED REVIEW ================= -->
+
+    <section class="review-section">
+
+        <div class="review-header">
+
+            <div>
+
+                <h2>
+                    <i class="fa-regular fa-shield"></i>
+                    รายการที่ต้องตรวจสอบ
+                </h2>
+
+                <p>
+                    รายการที่มีปัญหาในการยืนยันตัวตน
+                    หรือข้อมูลที่ต้องตรวจสอบเพิ่มเติม
+                </p>
+
+            </div>
+
+            <span
+                class="review-count"
+                id="reviewCount">
+                0 รายการ
+            </span>
+
+        </div>
+
+
+        <div id="reviewList">
+
+            <!-- JS สร้างข้อมูลตรงนี้ -->
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script type="module" src="admin-dashboard copy.js"></script>
+
+</body>
+
+</html>

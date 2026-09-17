@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>รอยืนยันการรับฝาก | CampusFind UP</title>
+
+    <link rel="stylesheet"
+        href="admin-waiting.css">
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<header class="admin-header">
+
+    <div class="logo">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        FindIt Campus
+
+    </div>
+
+    <button
+        class="back-btn"
+        onclick="window.location.href='admin-dashboard.html'">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        กลับ Dashboard
+
+    </button>
+
+</header>
+
+
+<main class="admin-container">
+
+    <h1>รอยืนยันการรับฝาก</h1>
+
+    <p class="subtitle">
+        รายการสิ่งของที่กำลังรอการยืนยันจากเจ้าของ
+    </p>
+
+
+    <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="ค้นหารหัส หรือชื่อสิ่งของ...">
+
+    </div>
+
+
+    <div class="count">
+
+        จำนวน
+        <strong id="count">0</strong>
+        รายการ
+
+    </div>
+
+
+    <div id="waitingList"
+         class="item-list">
+
+    </div>
+
+</main>
+
+
+<script  type="module" src="admin-waiting.js"></script>
+
+</body>
+
+</html>

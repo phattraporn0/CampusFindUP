@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>CampusFind UP | Report Lost Item</title>
+
+    <link rel="stylesheet" href="report-lost.css">
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+
+<div class="logo-icon">
+
+<i class="fa-solid fa-location-dot"></i>
+
+</div>
+
+<div>
+
+<h2>CampusFind <span>UP</span></h2>
+
+<p>ระบบแจ้งและติดตามของหาย</p>
+
+</div>
+
+</div>
+
+<a href="#">ติดต่อเจ้าหน้าที่</a>
+
+</header>
+
+<main class="container">
+
+<a href="dashboard.html" class="back-btn">
+
+<i class="fa-solid fa-arrow-left"></i>
+
+กลับหน้าหลัก
+
+</a>
+
+<h1>แจ้งของหาย</h1>
+
+<p class="subtitle">
+
+กรุณากรอกรายละเอียดของสิ่งของที่สูญหาย
+ระบบจะช่วยจับคู่กับรายการที่มีผู้แจ้งพบ
+
+</p>
+
+<!-- แจ้งเตือน -->
+
+<section class="notice-card">
+
+<div class="notice-icon">
+
+<i class="fa-regular fa-bell"></i>
+
+</div>
+
+<div>
+
+<h3>ระบบแจ้งเตือนอัตโนมัติ</h3>
+
+<p>
+
+หากมีผู้แจ้งพบสิ่งของที่มีลักษณะตรงกับของคุณ
+ระบบจะแจ้งเตือนทันที
+
+</p>
+
+</div>
+
+</section>
+
+<!-- Card -->
+
+<section class="card">
+
+<div class="card-header">
+
+<h3>ข้อมูลสิ่งของที่สูญหาย</h3>
+
+<p>
+
+กรุณากรอกข้อมูลให้ละเอียดที่สุด
+
+</p>
+
+</div>
+
+<div class="card-body">
+
+<div class="form-group">
+
+<label>
+
+หมวดหมู่สิ่งของ <span>*</span>
+
+</label>
+
+<div class="category-select">
+
+<button
+type="button"
+class="category-btn active">
+
+กระเป๋า
+
+</button>
+
+<button
+type="button"
+class="category-btn">
+
+บัตร/เอกสาร
+
+</button>
+
+<button
+type="button"
+class="category-btn">
+
+อุปกรณ์อิเล็กทรอนิกส์
+
+</button>
+
+<button
+type="button"
+class="category-btn">
+
+กุญแจ
+
+</button>
+
+<button
+type="button"
+class="category-btn">
+
+เครื่องแต่งกาย
+
+</button>
+
+<button
+type="button"
+class="category-btn">
+
+อื่น ๆ
+
+</button>
+
+</div>
+
+<input
+type="hidden"
+id="category"
+name="category"
+value="กระเป๋า">
+
+<div
+id="otherCategoryBox"
+style="display:none;">
+
+<input
+type="text"
+id="otherCategory"
+placeholder="โปรดระบุหมวดหมู่">
+
+</div>
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+ชื่อสิ่งของ / ยี่ห้อ
+<span>*</span>
+
+</label>
+
+<input
+type="text"
+id="itemName"
+placeholder="เช่น กระเป๋าสีดำ Coach">
+
+</div>
+
+<!-- <div class="form-group">
+
+<label>
+
+จุดเด่น / ตำหนิ
+
+</label>
+
+<textarea
+id="itemDetail"
+rows="5"
+placeholder="เช่น มีรอยขีดข่วน มีพวงกุญแจสีดำ"></textarea>
+
+</div> -->
+
+<div class="form-group">
+
+
+
+    <label>
+        จุดเด่น / ตำหนิ
+        <span>*</span>
+    </label>
+
+    <textarea
+        id="itemDescription"
+        rows="5"
+        placeholder="เช่น กระเป๋าสีดำ ยี่ห้อ Coach มีพวงกุญแจตุ๊กตาหมีสีน้ำตาล..."
+    ></textarea>
+
+</div>
+
+<label>
+
+สถานที่คาดว่าทำหาย
+<span>*</span>
+
+</label>
+<div class="form-group">
+<input
+type="text"
+id="lostLocation"
+placeholder="เช่น โรงอาหารกลาง ห้อง C401">
+
+</div>
+
+<div class="two-column">
+
+<div class="form-group">
+
+<label>
+
+วันที่ทำหาย
+<span>*</span>
+
+</label>
+
+<input
+type="date"
+id="lostDate">
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+เวลาที่ทำหาย
+
+</label>
+
+<input
+type="time"
+id="lostTime">
+
+</div>
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+รูปภาพอ้างอิง (ถ้ามี)
+
+</label>
+
+<input
+type="file"
+id="itemImage"
+hidden>
+
+<label
+for="itemImage"
+class="upload-box">
+
+<div class="upload-icon">
+
+<i class="fa-solid fa-camera"></i>
+
+</div>
+
+<h3>
+
+อัปโหลดรูปภาพสิ่งของ
+
+</h3>
+
+<p>
+
+รองรับ JPG PNG ขนาดไม่เกิน 5MB
+
+</p>
+
+</label>
+
+</div>
+
+<button
+    type="button"
+    id="submitLostBtn"
+    class="submit-btn">
+
+    ยืนยันการแจ้งของหาย
+
+</button>
+
+<p class="footer-note">
+
+<i class="fa-solid fa-circle-info"></i>
+
+ข้อมูลของคุณจะถูกเก็บเป็นความลับเพื่อความปลอดภัย
+
+</p>
+
+</div>
+
+</section>
+
+</main>
+
+<script type="module" src="report-lost.js"></script>
+
+</body>
+
+</html>

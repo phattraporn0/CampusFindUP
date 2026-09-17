@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="th">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ถ่ายรูปหลักฐานการส่งมอบ</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="staff.css">
+    <style>
+        video, img { width: 100%; max-height: 420px; object-fit: cover; border-radius: 14px; background: #0f172a; }
+        .camera-btn { margin-top: 14px; border: 0; border-radius: 10px; padding: 12px 18px; background: #479b70; color: #fff; font: inherit; cursor: pointer; }
+        .hidden { display: none; }
+        @media (max-width: 600px) {
+            main.scanner { width:100%; padding:28px 14px 48px; }
+            main.scanner h1 { font-size:clamp(24px, 8vw, 34px); line-height:1.25; }
+            .panel { padding:16px; }
+            .camera-btn, .primary { width:100%; }
+        }
+    </style>
+</head>
+<body>
+    <header><strong>ถ่ายรูปหลักฐานการส่งมอบ</strong><a href="guard-return-detail.html">กลับ</a></header>
+    <main class="scanner">
+        <h1>ถ่ายรูปเจ้าของคู่กับสิ่งของ</h1>
+        <p class="subtitle">ใช้กล้องถ่ายรูปเท่านั้น ไม่สามารถเลือกรูปจากเครื่องได้</p>
+        <section class="panel">
+            <video id="camera" autoplay playsinline></video>
+            <img id="preview" class="hidden" alt="ตัวอย่างรูปหลักฐาน">
+            <button id="startCamera" class="camera-btn">เปิดกล้องถ่ายรูป</button>
+            <button id="takePhoto" class="camera-btn hidden">ถ่ายรูป</button>
+            <button id="retakePhoto" class="camera-btn hidden">ถ่ายใหม่</button>
+            <button id="savePhoto" class="primary hidden">บันทึกรูปหลักฐาน</button>
+            <canvas id="canvas" hidden></canvas>
+            <div id="result" hidden class="result"></div>
+        </section>
+    </main>
+    <script type="module" src="guard-photo.js"></script>
+</body>
+</html>

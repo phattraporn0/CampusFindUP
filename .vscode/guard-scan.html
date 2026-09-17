@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>สแกน QR Code</title>
+
+    <link rel="stylesheet"
+        href="guard-scan.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+
+<body>
+
+<header>
+
+    <button onclick="history.back()">
+        ←
+    </button>
+
+    <div>
+        <strong>FindIt Campus</strong>
+
+        <span>
+            ระบบจัดการของหาย สำหรับเจ้าหน้าที่
+        </span>
+    </div>
+
+</header>
+
+
+<main>
+
+    <h1>
+        สแกนคิวอาร์โค้ด
+    </h1>
+
+    <p>
+        สแกน QR Code ของเจ้าของเพื่อยืนยันการรับคืน
+    </p>
+
+
+    <div class="scanner">
+
+        <div class="scan-frame">
+
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+
+        </div>
+
+        <div class="scan-line"></div>
+
+    </div>
+
+    <video id="qrCamera" class="qr-camera" autoplay playsinline></video>
+    <button class="start-camera" id="startQrCamera">เปิดกล้องสแกน QR</button>
+
+
+    <button
+        class="demo-scan"
+        id="demoScan">
+
+        จำลองการสแกน QR Code
+
+    </button>
+
+</main>
+
+
+<script type="module" src="guard-scan.js"></script>
+
+</body>
+
+</html>

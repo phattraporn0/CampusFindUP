@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>CampusFind UP</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="dashboard.css">
+
+    <!-- Google Font -->
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com/"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="page">
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+<div class="overlay"></div>
+
+<header class="navbar">
+
+<div class="logo">
+
+<div class="logo-icon">
+
+<i class="fa-solid fa-location-dot"></i>
+
+</div>
+
+<div class="logo-text">
+
+<h2>CampusFind <span>UP</span></h2>
+
+
+</div>
+
+</div>
+
+<div class="nav-right">
+
+<button class="report-btn"  id="reportLostBtn">
+
+<i class="fa-solid fa-plus"></i>
+
+แจ้งของหาย
+
+</button>
+
+<div class="nav-right">
+
+<button class="report-btn" id="reportFoundBtn">
+
+<i class="fa-solid fa-plus"></i>
+
+แจ้งพบสิ่งของ
+
+</button>
+
+<button class="report-btn claim-nav-btn" id="myClaimsNavBtn" type="button">
+<i class="fa-solid fa-box-open"></i>
+รายการที่ฉันเคลม
+</button>
+
+<button class="report-btn claim-nav-btn" id="myLostNavBtn" type="button">
+<i class="fa-solid fa-magnifying-glass"></i>
+รายการประกาศตามหาของฉัน
+</button>
+
+<button class="report-btn claim-nav-btn notification-icon-btn" id="notificationBtn" type="button" aria-label="แจ้งเตือน" title="แจ้งเตือน">
+<i class="fa-regular fa-bell"></i>
+<span id="notificationCount" hidden>0</span>
+</button>
+
+
+<div class="profile">
+
+<div class="profile-img">
+
+<i class="fa-solid fa-user"></i>
+
+</div>
+
+<div class="profile-info">
+
+<h4>Student</h4>
+
+<span>มหาวิทยาลัยพะเยา</span>
+
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+<div id="notificationPanel" hidden style="position:absolute; right:24px; top:84px; z-index:10; width:min(380px,calc(100% - 32px)); background:#fff; border-radius:16px; padding:16px; box-shadow:0 12px 30px rgba(15,23,42,.18);">
+    <strong>แจ้งเตือน Automatch</strong>
+    <div id="notificationList" style="margin-top:10px;"></div>
+</div>
+
+<div class="hero-content">
+
+<div class="hero-text">
+
+<h1>
+
+ของหายไม่ใช่เรื่องใหญ่
+
+</h1>
+
+<p>
+
+ค้นหา แจ้งพบ และติดตามทรัพย์สินสูญหาย
+ภายในมหาวิทยาลัยพะเยา
+
+</p>
+
+</div>
+
+<div class="search-box">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+<input
+type="text"
+id="searchInput"
+placeholder="ค้นหาสิ่งของ เช่น กระเป๋า บัตรนักศึกษา กุญแจ">
+
+</div>
+
+</div>
+
+</section>
+<!-- ================= CATEGORY ================= -->
+
+<section class="category-section">
+
+<div class="category-header">
+
+<h2>หมวดหมู่สิ่งของ</h2>
+
+<p>เลือกหมวดหมู่เพื่อค้นหารายการได้รวดเร็วยิ่งขึ้น</p>
+
+</div>
+
+<div class="category-list">
+
+<button class="category-btn active">
+
+<i class="fa-solid fa-border-all"></i>
+
+ทั้งหมด
+
+</button>
+
+<button class="category-btn">
+
+<i class="fa-solid fa-briefcase"></i>
+
+กระเป๋า
+
+</button>
+
+<button class="category-btn">
+
+<i class="fa-solid fa-id-card"></i>
+
+บัตร
+
+</button>
+
+<button class="category-btn">
+
+<i class="fa-solid fa-laptop"></i>
+
+อุปกรณ์อิเล็กทรอนิกส์
+
+</button>
+
+<button class="category-btn">
+
+<i class="fa-solid fa-key"></i>
+
+กุญแจ
+
+</button>
+
+<button class="category-btn">
+
+<i class="fa-solid fa-box-open"></i>
+
+อื่น ๆ
+
+</button>
+
+</div>
+
+</section>
+
+<!-- ================= ITEMS ================= -->
+
+<!-- ================= ALL FOUND ITEMS ================= -->
+
+<section class="items-section all-lost-section" id="allLostSection">
+    <div class="section-header">
+        <div>
+            <h2>รายการประกาศตามหาของ</h2>
+            <p>โพสต์แจ้งหายทั้งหมดจากผู้ใช้งานในระบบ</p>
+        </div>
+        <div class="total-item" id="allLostTotal">0 รายการ</div>
+    </div>
+    <div class="items-container" id="allLostContainer">
+        <div class="empty-state"><h3>กำลังโหลดรายการประกาศตามหา...</h3></div>
+    </div>
+</section>
+
+<!-- ================= ALL FOUND ITEMS ================= -->
+
+<section class="items-section">
+
+<div class="section-header">
+
+<div>
+
+<h2>
+
+รายการประกาศพบของ
+
+</h2>
+
+<p>
+
+รายการทั้งหมดที่มีผู้แจ้งพบในระบบ
+
+</p>
+
+</div>
+
+<div class="total-item" id="allItemsTotal">
+
+0 รายการ
+
+</div>
+
+</div>
+
+<!-- พื้นที่สำหรับแสดงข้อมูลจากฐานข้อมูล -->
+
+<div class="items-container" id="allItemsContainer">
+
+<div class="empty-state">
+
+<div class="empty-icon">
+
+<i class="fa-regular fa-folder-open"></i>
+
+</div>
+
+<h3>
+
+ยังไม่มีรายการสิ่งของ
+
+</h3>
+
+<p>
+
+เมื่อมีผู้แจ้งพบสิ่งของ
+ข้อมูลทั้งหมดจะแสดงบริเวณนี้
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- Floating Button -->
+
+<button class="floating-btn">
+
+<i class="fa-solid fa-plus"></i>
+
+</button>
+
+</div>
+
+<script type="module" src="dashboard.js"></script>
+
+</body>
+
+</html>

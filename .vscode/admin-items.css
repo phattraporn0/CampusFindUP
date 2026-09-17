@@ -1,0 +1,416 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    font-family: "Prompt", sans-serif;
+
+    background: #f8f8f8;
+
+    color: #292929;
+
+}
+
+
+/* ================= HEADER ================= */
+
+.admin-header {
+
+    height: 82px;
+
+    background: white;
+
+    border-bottom: 1px solid #ddd;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 7%;
+
+}
+
+
+.logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    font-size: 25px;
+
+    font-weight: 700;
+
+}
+
+
+.logo i {
+
+    color: #8b1e2d;
+
+}
+
+
+.back-btn {
+
+    border: 1px solid #ddd;
+
+    background: white;
+
+    padding: 10px 18px;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+}
+
+
+/* ================= CONTAINER ================= */
+
+.admin-container {
+
+    width: 86%;
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    padding: 45px 0 80px;
+
+}
+
+
+.page-title h1 {
+
+    font-size: 34px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.page-title p {
+
+    color: #777;
+
+    font-size: 16px;
+
+}
+
+
+/* ================= SEARCH ================= */
+
+.search-box {
+
+    margin-top: 28px;
+
+    height: 52px;
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 13px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 16px;
+
+}
+
+
+.search-box i {
+
+    color: #888;
+
+}
+
+
+.search-box input {
+
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    padding-left: 10px;
+
+}
+
+
+/* ================= COUNT ================= */
+
+.item-count {
+
+    margin-top: 25px;
+
+    color: #777;
+
+}
+
+
+.item-count strong {
+
+    color: #8b1e2d;
+
+}
+
+
+/* ================= ITEM LIST ================= */
+
+.item-list {
+
+    margin-top: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
+
+.item-card {
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    transition: .2s;
+
+}
+
+
+.item-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 20px rgba(0,0,0,.06);
+
+}
+
+
+/* ================= IMAGE ================= */
+
+.item-image {
+
+    width: 85px;
+
+    height: 85px;
+
+    border-radius: 14px;
+
+    background: #f3f3f3;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 30px;
+
+    color: #999;
+
+}
+
+
+/* ================= INFO ================= */
+
+.item-info {
+
+    flex: 1;
+
+}
+
+
+.item-code {
+
+    color: #999;
+
+    font-size: 13px;
+
+}
+
+
+.item-info h3 {
+
+    margin: 5px 0;
+
+    font-size: 19px;
+
+}
+
+
+.item-detail {
+
+    color: #777;
+
+    font-size: 14px;
+
+    margin-top: 3px;
+
+}
+
+
+/* ================= STATUS ================= */
+
+.status {
+
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+}
+
+
+.status.waiting {
+
+    background: #fff3d8;
+
+    color: #b57900;
+
+}
+
+
+.status.return {
+
+    background: #f1e7ff;
+
+    color: #7438a8;
+
+}
+
+
+.status.delivered {
+
+    background: #e5f7ec;
+
+    color: #23834d;
+
+}
+
+
+/* ================= BUTTON ================= */
+
+.detail-btn {
+
+    border: 1px solid #ddd;
+
+    background: white;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+}
+
+
+.detail-btn:hover {
+
+    background: #f7f7f7;
+
+}
+
+
+/* ================= EMPTY ================= */
+
+.empty-state {
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 18px;
+
+    padding: 60px;
+
+    text-align: center;
+
+    color: #888;
+
+}
+
+
+.empty-state i {
+
+    font-size: 40px;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 700px) {
+
+    .admin-header {
+
+        padding: 0 20px;
+
+    }
+
+    .admin-container {
+
+        width: 92%;
+
+    }
+
+    .item-card {
+
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+
+    }
+
+    .item-action {
+
+        width: 100%;
+
+        margin-left: 105px;
+
+    }
+
+}
+ .danger-btn { color: #b91c1c; border-color: #fecaca; }
+ .admin-item-actions { display: flex; gap: 8px; flex-wrap: wrap; }

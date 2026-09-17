@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>ยืนยันการส่งมอบคืน</title>
+
+    <link rel="stylesheet"
+        href="guard-delivery.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+
+<body>
+
+<header>
+
+    <button onclick="history.back()">
+        ←
+    </button>
+
+    <h1>
+        ยืนยันการส่งมอบคืน
+    </h1>
+
+</header>
+
+
+<section class="success">
+
+    <div class="success-icon">
+        ✓
+    </div>
+
+    <h2>
+        สแกนคิวอาร์โค้ดสำเร็จ
+    </h2>
+
+    <p>
+        กรุณาตรวจสอบข้อมูลและยืนยันการส่งมอบ
+    </p>
+
+</section>
+
+
+<main>
+
+    <div id="deliveryDetail"></div>
+
+
+    <section class="evidence">
+
+        <h2>
+            หลักฐานการส่งมอบ
+        </h2>
+
+        <div class="upload-box">
+
+            <span>
+                📷
+            </span>
+
+            <p>
+                ถ่ายรูปผู้รับของพร้อมถือสิ่งของเพื่อเป็นหลักฐาน
+            </p>
+
+            <video id="evidenceCamera" class="evidence-camera" autoplay playsinline hidden></video>
+            <canvas id="evidenceCanvas" hidden></canvas>
+            <button type="button" id="startEvidenceCamera" class="photo-input-label">เปิดกล้องถ่ายรูป</button>
+            <button type="button" id="captureEvidence" class="photo-input-label" hidden>ถ่ายรูป</button>
+            <img id="photoPreview" class="photo-preview" alt="ตัวอย่างรูปหลักฐาน" hidden>
+
+        </div>
+
+    </section>
+
+
+    <button
+        class="confirm-delivery"
+        id="confirmDelivery">
+
+        ยืนยันการส่งมอบคืน
+
+    </button>
+
+</main>
+
+
+<script type="module" src="guard-delivery.js"></script>
+
+</body>
+
+</html>

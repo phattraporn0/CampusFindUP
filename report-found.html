@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CampusFind UP | Report Found Item</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="report-found.css">
+
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header class="topbar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <div>
+
+                <h2>CampusFind <span>UP</span></h2>
+
+                <p>ระบบแจ้งและติดตามของหาย</p>
+
+            </div>
+
+        </div>
+
+        <a href="#">ติดต่อเจ้าหน้าที่</a>
+
+    </header>
+
+    <!-- Main -->
+
+    <main class="container">
+
+        <a href="dashboard.html" class="back-btn">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            กลับหน้าหลัก
+
+        </a>
+
+        <h1>แจ้งพบของหาย</h1>
+
+        <p class="subtitle">
+
+            ขอบคุณที่ช่วยเก็บของมาส่งคืน กรุณากรอกรายละเอียดเพื่อให้เจ้าของมารับคืนได้ง่ายขึ้น
+
+        </p>
+
+        <!-- Card 1 -->
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <div>
+
+                    <h3>ข้อมูลสิ่งของที่พบ</h3>
+
+                    <p>ระบุรายละเอียดและลักษณะเด่นของสิ่งของ</p>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="form-group">
+
+                    <label>หมวดหมู่สิ่งของ <span>*</span></label>
+
+                    <select id="category">
+
+                        <option value="กระเป๋า">กระเป๋า</option>
+                        <option value="โทรศัพท์">โทรศัพท์</option>
+                        <option value="บัตร">บัตร</option>
+                        <option value="กุญแจ">กุญแจ</option>
+                        <option value="other">อื่น ๆ</option>
+
+                    </select>
+                    <div id="otherCategoryBox" style="display:none; margin-top:15px;">
+
+    <input
+        type="text"
+        id="otherCategory"
+        placeholder="โปรดระบุหมวดหมู่"
+    >
+
+</div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>สถานที่พบ <span>*</span></label>
+
+                    <input
+    type="text"
+    id="foundLocation"
+    placeholder="เช่น โรงอาหารกลาง โต๊ะริมหน้าต่าง"
+>
+
+                </div>
+
+                <div class="two-column">
+
+                    <div class="form-group">
+
+                        <label>วันที่พบ <span>*</span></label>
+
+                       <input
+    type="date"
+    id="foundDate"
+>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>เวลาที่พบ (โดยประมาณ)</label>
+
+                        <input
+    type="time"
+    id="foundTime"
+>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+    <label>รายละเอียดของสิ่งของ <span>*</span></label>
+
+    <textarea
+        id="itemDescription"
+        rows="5"
+        placeholder="เช่น กระเป๋าเป้สีดำ มีช่องใส่ของด้านหน้า"></textarea>
+
+</div>
+
+<div class="form-group">
+
+    <label>จุดเด่น / ตำหนิ <span>*</span></label>
+
+    <textarea
+        id="itemDefect"
+        rows="4"
+        placeholder="เช่น มีรอยขีดข่วนด้านข้าง และมีพวงกุญแจรูปแมว"></textarea>
+
+</div>
+
+                <div class="form-group">
+
+                    <label>รูปภาพสิ่งของ (ถ้ามี)</label>
+
+                    <input
+                        type="file"
+                        id="itemImage"
+                        accept="image/*"
+                        hidden
+                    >
+
+                    <label
+                        for="itemImage"
+                        class="upload-box"
+                    >
+
+                        <div class="upload-icon">
+
+                            <i class="fa-solid fa-plus"></i>
+
+                        </div>
+
+                        <h3>คลิกเพื่ออัปโหลดรูปภาพ</h3>
+
+                        <p>รองรับ JPG, PNG สูงสุด 5MB</p>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Card 2 -->
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-shield"></i>
+
+                <div>
+
+                    <h3>จุดส่งมอบ</h3>
+
+                    <p>เลือกสถานที่ที่คุณนำสิ่งของไปฝากไว้</p>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="form-group">
+
+                    <label>ป้อมยาม / จุดรับฝาก <span>*</span></label>
+
+                    <select id="storageLocation">
+
+                        <option>ป้อมยาม ประตู 1</option>
+                        <option>ป้อมยาม ประตู 2</option>
+                        <option>ป้อมยาม ประตู 3</option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>บันทึกเพิ่มเติม (ตัวเลือก)</label>
+
+                    <textarea
+    id="additionalNote"
+    rows="4"
+    placeholder="เช่น ฝากไว้กับ รปภ. ประจำป้อม"
+></textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <div class="button-group">
+
+            <button
+                type="button"
+                class="cancel-btn"
+            >
+                ยกเลิก
+            </button>
+
+            <button
+    type="button"
+    class="save-btn">
+
+    บันทึกข้อมูล
+
+</button>
+
+        </div>
+
+    </main>
+
+    <script type="module" src="report-found.js"></script>
+
+</body>
+
+</html>
