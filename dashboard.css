@@ -1156,7 +1156,7 @@ max-width:100%;
     .logo-text h2 { font-size: clamp(26px, 2.5vw, 34px); }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
     .navbar { flex-direction:column; align-items:flex-start; gap:18px; }
     .navbar > .nav-right { width:100%; }
     .navbar > .nav-right > .nav-right {
@@ -1252,6 +1252,42 @@ max-width:100%;
 }
 
 @media (max-width: 420px) {
+    .navbar > .nav-right.mobile-open > .nav-right { grid-template-columns:1fr; }
+    .navbar > .nav-right.mobile-open .profile { grid-column:auto; }
+}
+
+/* Collapse the complete navigation into the hamburger whenever the
+   available width cannot comfortably fit the logo and all actions. */
+@media (max-width: 1200px) {
+    .mobile-menu-btn { display:flex; align-items:center; justify-content:center; margin-left:auto; }
+    .navbar > .nav-right { display:none; width:100%; }
+    .navbar > .nav-right.mobile-open {
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+        gap:8px;
+        padding-top:12px;
+    }
+    .navbar > .nav-right.mobile-open > .report-btn,
+    .navbar > .nav-right.mobile-open > .nav-right > .report-btn {
+        display:flex;
+        width:100%;
+        min-height:48px;
+        justify-content:center;
+        white-space:normal;
+        text-align:center;
+    }
+    .navbar > .nav-right.mobile-open > .nav-right {
+        display:grid;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:8px;
+        width:100%;
+    }
+    .navbar > .nav-right.mobile-open .profile { grid-column:1 / -1; justify-content:center; }
+    .navbar > .nav-right.mobile-open .profile-info { display:flex; flex-direction:column; }
+}
+
+@media (max-width: 520px) {
     .navbar > .nav-right.mobile-open > .nav-right { grid-template-columns:1fr; }
     .navbar > .nav-right.mobile-open .profile { grid-column:auto; }
 }
