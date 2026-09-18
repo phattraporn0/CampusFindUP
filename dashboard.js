@@ -379,7 +379,7 @@ async function loadItems() {
     const { data, error } = await supabase
         .from("found_items_public")
         .select("*")
-        .in("status", ["waiting", "claimed", "claim_verified", "returned"])
+        .in("status", ["waiting", "claimed", "claim_verified", "claim_locked", "returned"])
         .order("created_at", { ascending: false });
 
     if (error) {

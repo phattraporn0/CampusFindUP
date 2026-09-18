@@ -1313,6 +1313,14 @@ max-width:100%;
 .section-header .total-item { order:2; margin-left:auto; white-space:nowrap; }
 .section-header .view-all-btn { order:3; margin:0; white-space:nowrap; }
 
+/* On phones/tablets keep the count and the link together on their own row. */
+@media (max-width:768px) {
+    .section-header { flex-wrap:wrap; }
+    .section-header > div:first-child { flex:1 1 100%; width:100%; }
+    .section-header .total-item { margin-left:auto; }
+    .section-header .view-all-btn { margin-left:0; }
+}
+
 @media (max-width:1200px) {
     .navbar { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px; }
     .navbar > .logo { grid-column:1; grid-row:1; }
