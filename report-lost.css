@@ -581,6 +581,8 @@ body{
 }
 
 .selected-image-preview { display:block; width:min(100%, 280px); height:160px; object-fit:cover; border-radius:12px; margin:0 auto 12px; }
+.upload-box.has-photo { padding:0; overflow:hidden; }
+.upload-box.has-photo .selected-image-preview { width:100%; max-width:none; height:100%; min-height:230px; margin:0; object-fit:cover; }
 html { font-size:16px; -webkit-text-size-adjust:100%; }
 body { overflow-x:hidden; }
 input, select, textarea, button { max-width:100%; font-size:16px; }

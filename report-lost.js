@@ -556,3 +556,12 @@ if (submitLostBtn) {
     });
 
 }
+
+// Final photo-only preview: keep the selected image full-frame.
+imageInput?.addEventListener('change', function () {
+    const file = this.files?.[0];
+    if (!file || !uploadBox) return;
+    const url = URL.createObjectURL(file);
+    uploadBox.innerHTML = `<img class="selected-image-preview" src="${url}" alt="รูปสิ่งของที่หาย">`;
+    uploadBox.classList.add('has-photo');
+}, { once: true });

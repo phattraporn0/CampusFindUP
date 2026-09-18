@@ -317,6 +317,10 @@ placeholder="ค้นหาสิ่งของ เช่น กระเป�
         while (container.children.length > 6) container.lastElementChild.remove();
     };
     const apply = () => { limit('allLostContainer'); limit('allItemsContainer'); };
+    const lostSection = document.getElementById('allLostSection');
+    const lostMore = lostSection?.querySelector('.view-all-btn');
+    const lostHeader = lostSection?.querySelector('.section-header');
+    if (lostMore && lostHeader && lostMore.parentElement !== lostHeader) lostHeader.appendChild(lostMore);
     const observer = new MutationObserver(apply);
     ['allLostContainer', 'allItemsContainer'].forEach((id) => document.getElementById(id) && observer.observe(document.getElementById(id), { childList:true }));
     apply();

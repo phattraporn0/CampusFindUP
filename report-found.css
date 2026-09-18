@@ -569,6 +569,16 @@ body{
 .upload-box.has-photo { padding:0; overflow:hidden; }
 .upload-box.has-photo .selected-image-preview { width:100%; max-width:none; height:100%; min-height:230px; margin:0; object-fit:cover; }
 
+/* Fixed visual order for the found-item form. */
+main > .card:first-of-type .card-body { display:flex; flex-direction:column; }
+main > .card:first-of-type .card-body > .form-group:has(#category) { order:1; }
+main > .card:first-of-type .card-body > .form-group:has(#itemName) { order:2; }
+main > .card:first-of-type .card-body > .form-group:has(#itemDescription) { order:3; }
+main > .card:first-of-type .card-body > .form-group:has(#itemDefect) { order:4; }
+main > .card:first-of-type .card-body > .form-group:has(#foundLocation) { order:5; }
+main > .card:first-of-type .card-body > .two-column:has(#foundDate) { order:6; }
+main > .card:first-of-type .card-body > .form-group:has(#itemImage) { order:7; }
+
 html { font-size:16px; -webkit-text-size-adjust:100%; }
 body { overflow-x:hidden; }
 input, select, textarea, button { max-width:100%; font-size:16px; }

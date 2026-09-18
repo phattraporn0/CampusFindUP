@@ -1302,6 +1302,17 @@ max-width:100%;
     .navbar > .nav-right.mobile-open .profile { grid-column:auto; }
 }
 
+.navbar { display:flex; flex-wrap:wrap; }
+.navbar > .logo { order:1; }
+.navbar > .nav-right { order:2; margin-left:auto; }
+.navbar > .mobile-menu-btn { order:3; display:flex; align-items:center; justify-content:center; margin-left:12px; flex:0 0 auto; }
+@media (max-width:1200px) {
+    .navbar { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px; }
+    .navbar > .logo { grid-column:1; grid-row:1; }
+    .navbar > .mobile-menu-btn { grid-column:2; grid-row:1; margin-left:0; }
+    .navbar > .nav-right { grid-column:1 / -1; grid-row:2; margin-left:0; }
+}
+
 html { font-size:16px; -webkit-text-size-adjust:100%; }
 body { overflow-x:hidden; }
 button, input, select, textarea { font-size:16px; max-width:100%; }
