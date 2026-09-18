@@ -14,11 +14,20 @@ function card(item, type) {
 
 const [{ data: lost }, foundResult] = await Promise.all([
   supabase.from('lost_items').select('id,item_name,description,category,location,image_url,created_at').order('created_at',{ascending:false}),
-  supabase.from('found_items_public').select('id,item_name,description,category,location,image_url,status,created_at').in('status',['waiting','claimed']).order('created_at',{ascending:false})
+  // Keep the full announcement list in sync with the dashboard.  The old
+  // query only requested waiting/claimed rows, so verified/returned posts
+  // disappeared from the "ดูทั้งหมด" page.
+  supabase.from('found_items_public')
+    .select('id,item_name,description,category,location,image_url,status,created_at')
+    .in('status',['waiting','claimed','claim_verified','returned'])
+    .order('created_at',{ascending:false})
 ]);
 let { data: found, error: foundError } = foundResult;
 if (foundError && /item_name/i.test(foundError.message || '')) {
-  ({ data: found, error: foundError } = await supabase.from('found_items_public').select('id,description,category,location,image_url,status,created_at').in('status',['waiting','claimed']).order('created_at',{ascending:false}));
+  ({ data: found, error: foundError } = await supabase.from('found_items_public')
+    .select('id,description,category,location,image_url,status,created_at')
+    .in('status',['waiting','claimed','claim_verified','returned'])
+    .order('created_at',{ascending:false}));
 }
 lostList.innerHTML = (lost || []).map((item) => card(item,'lost')).join('') || '<p>ยังไม่มีประกาศตามหาของ</p>';
 foundList.innerHTML = foundError ? `<p>โหลดประกาศพบของไม่สำเร็จ: ${escapeHtml(foundError.message)}</p>` : ((found || []).map((item) => card(item,'found')).join('') || '<p>ยังไม่มีประกาศพบของ</p>');
