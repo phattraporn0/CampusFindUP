@@ -42,6 +42,7 @@ takePhoto.addEventListener('click', () => {
         takePhoto.classList.add('hidden');
         retakePhoto.classList.remove('hidden');
         savePhoto.classList.remove('hidden');
+        showResult('ถ่ายรูปสำเร็จ สามารถกดถ่ายใหม่ หรือกดบันทึกรูปเพื่อกลับไปหน้าการเคลมได้');
         stream?.getTracks().forEach((track) => track.stop());
     }, 'image/jpeg', 0.88);
 });
@@ -65,6 +66,11 @@ savePhoto.addEventListener('click', async () => {
         return showResult('บันทึกรูปไม่สำเร็จ: ' + error.message, true);
     }
     const imageUrl = supabase.storage.from('item-photos').getPublicUrl(path).data.publicUrl;
+    localStorage.setItem('handoverPhotoUrl', imageUrl);
+    localStorage.setItem('handoverPhotoItemId', itemId);
+    showResult('ถ่ายรูปและบันทึกหลักฐานแล้ว กำลังกลับไปหน้าการเคลมเพื่อยืนยันการส่งคืน');
+    setTimeout(() => { window.location.href = 'guard-return-detail.html'; }, 500);
+    return;
     const scannedClaimToken = localStorage.getItem('scannedClaimToken');
     if (scannedClaimToken) {
         const { data, error: redeemError } = await supabase.rpc('redeem_claim_token', {

@@ -34,5 +34,16 @@ if (!itemId) {
             <div class="row"><div class="label">วันที่และเวลาที่หาย</div><div class="value">${escapeHtml(item.lost_date)} ${escapeHtml(item.lost_time || '')}</div></div>
             <div class="row"><div class="label">สถานะ</div><div class="value">ส่งแจ้งให้เจ้าหน้าที่รักษาความปลอดภัยแล้ว</div></div>
         `;
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'delete-post-btn';
+        deleteButton.textContent = 'ลบโพสต์นี้';
+        deleteButton.addEventListener('click', async () => {
+            if (!confirm('ต้องการลบโพสต์แจ้งหายนี้ใช่หรือไม่?')) return;
+            const { error: deleteError } = await supabase.from('lost_items').delete().eq('id', item.id).eq('user_id', user.id);
+            if (deleteError) return alert(`ลบโพสต์ไม่สำเร็จ: ${deleteError.message}`);
+            window.location.href = 'my-lost.html';
+        });
+        detail.appendChild(deleteButton);
     }
 }

@@ -55,6 +55,25 @@ function renderPosts() {
     `).join('');
 
     list.querySelectorAll('[data-id]').forEach((card) => {
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'delete-post-btn';
+        deleteButton.dataset.deleteId = card.dataset.id;
+        deleteButton.textContent = 'ลบโพสต์';
+        deleteButton.addEventListener('click', async (event) => {
+            event.stopPropagation();
+            if (!confirm('ต้องการลบโพสต์แจ้งหายนี้ใช่หรือไม่?')) return;
+            deleteButton.disabled = true;
+            const { error } = await supabase.from('lost_items').delete().eq('id', card.dataset.id);
+            if (error) {
+                deleteButton.disabled = false;
+                alert(`ลบโพสต์ไม่สำเร็จ: ${error.message}`);
+                return;
+            }
+            allPosts = allPosts.filter((item) => item.id !== card.dataset.id);
+            renderPosts();
+        });
+        card.querySelector('.info')?.appendChild(deleteButton);
         const open = () => {
             localStorage.setItem('selectedLostItemId', card.dataset.id);
             window.location.href = `my-lost-detail.html?id=${encodeURIComponent(card.dataset.id)}`;

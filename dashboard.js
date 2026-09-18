@@ -710,6 +710,12 @@ async function loadMatchNotifications() {
         </button>
     `).join('') : '<p style="color:#64748b;margin-bottom:0;">ยังไม่มีรายการที่ตรงกัน</p>';
 
+    list.querySelectorAll('[data-match-id]').forEach((button) => {
+        const note = document.createElement('small');
+        note.textContent = 'หากรายการนี้ยังไม่ได้รับฝาก กรุณารอเจ้าหน้าที่รักษาความปลอดภัยอนุมัติก่อนจึงจะเคลมได้';
+        note.style.cssText = 'display:block;margin-top:6px;color:#b45309;line-height:1.45;';
+        button.appendChild(note);
+    });
     list.querySelectorAll('[data-match-id]').forEach((button) => button.addEventListener('click', () => {
         localStorage.setItem('selectedFoundItemId', button.dataset.matchId);
         window.location.href = 'lost-item-detail.html';

@@ -140,6 +140,11 @@ create policy "Users can read all lost item announcements"
 on public.lost_items for select to authenticated
 using (true);
 
+drop policy if exists "Users can delete their own lost items" on public.lost_items;
+create policy "Users can delete their own lost items"
+on public.lost_items for delete to authenticated
+using (user_id = auth.uid());
+
 drop policy if exists "Guards can read lost items" on public.lost_items;
 create policy "Guards can read lost items"
 on public.lost_items for select to authenticated

@@ -1,4 +1,4 @@
-import { requireRole } from './supabaseClient.js';
+import { supabase, requireRole } from './supabaseClient.js';
 
 await requireRole(['guard', 'admin']);
 
@@ -43,9 +43,27 @@ startQrCamera.addEventListener('click', async () => {
                 const token = rawValue.replace(/^CampusFind-UP-Claim:/i, '').trim();
                 if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token)) {
                     scanning = false;
+                    const expectedItemId = localStorage.getItem('selectedGuardItemId');
+                    const { data: scannedItem, error: lookupError } = await supabase
+                        .from('found_items')
+                        .select('id, status')
+                        .eq('claim_token', token)
+                        .single();
+                    if (lookupError || !scannedItem || scannedItem.status !== 'claim_verified') {
+                        scanning = true;
+                        showResult('QR Code นี้ไม่ใช่รายการที่รอส่งคืน หรือหมดอายุแล้ว', true);
+                        requestAnimationFrame(scan);
+                        return;
+                    }
+                    if (expectedItemId && expectedItemId !== scannedItem.id) {
+                        scanning = true;
+                        showResult('QR Code ไม่ตรงกับรายการที่เลือก กรุณาสแกน QR ของรายการนี้เท่านั้น', true);
+                        requestAnimationFrame(scan);
+                        return;
+                    }
                     qrStream.getTracks().forEach((track) => track.stop());
                     localStorage.setItem('scannedClaimToken', token);
-                    window.location.href = 'guard-photo.html';
+                    window.location.href = 'guard-return-detail.html';
                     return;
                 }
             }

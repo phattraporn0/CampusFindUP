@@ -3,7 +3,9 @@ import { supabase, requireRole } from './supabaseClient.js';
 const returnDetail = document.getElementById('returnDetail');
 const scanBtn = document.getElementById('scanBtn');
 const photoBtn = document.getElementById('photoBtn');
-const selectedItemId = localStorage.getItem('selectedGuardItemId');
+const completeBtn = document.getElementById('completeBtn');
+let selectedItemId = localStorage.getItem('selectedGuardItemId');
+let scannedClaimToken = localStorage.getItem('scannedClaimToken');
 
 function escapeHtml(value) {
     return String(value ?? '-')
@@ -71,18 +73,16 @@ function renderItem(item) {
 }
 
 async function loadItem() {
-    if (!selectedItemId) {
+    if (!selectedItemId && !scannedClaimToken) {
         returnDetail.innerHTML = '<div class="return-card">ไม่พบรายการที่เลือก กรุณากลับไปเลือกรายการอีกครั้ง</div>';
         scanBtn.disabled = true;
         return;
     }
 
-    const { data: item, error } = await supabase
-        .from('found_items')
-        .select('*')
-        .eq('id', selectedItemId)
-        .in('status', ['claimed', 'claim_verified'])
-        .single();
+    const query = supabase.from('found_items').select('*').in('status', ['claimed', 'claim_verified']);
+    const { data: item, error } = await (scannedClaimToken
+        ? query.eq('claim_token', scannedClaimToken).single()
+        : query.eq('id', selectedItemId).single());
 
     if (error || !item) {
         returnDetail.innerHTML = '<div class="return-card">ไม่สามารถโหลดข้อมูลรายการได้</div>';
@@ -91,15 +91,59 @@ async function loadItem() {
         return;
     }
 
+    selectedItemId = item.id;
+    localStorage.setItem('selectedGuardItemId', item.id);
     renderItem(item);
+    const hasPhoto = localStorage.getItem('handoverPhotoItemId') === item.id
+        && Boolean(localStorage.getItem('handoverPhotoUrl'));
+    if (scannedClaimToken) {
+        scanBtn.hidden = true;
+        photoBtn.disabled = false;
+        completeBtn.hidden = !hasPhoto;
+        if (hasPhoto) {
+            returnDetail.insertAdjacentHTML('beforeend', '<p class="result">ถ่ายรูปหลักฐานแล้ว กรุณากดยืนยันเพื่อบันทึกการส่งคืน</p>');
+        }
+    } else {
+        photoBtn.disabled = true;
+        completeBtn.hidden = true;
+    }
 }
 
 scanBtn.addEventListener('click', () => {
+    localStorage.removeItem('scannedClaimToken');
+    localStorage.removeItem('handoverPhotoUrl');
+    localStorage.removeItem('handoverPhotoItemId');
     window.location.href = 'guard-scan.html';
 });
 
 photoBtn.addEventListener('click', () => {
     window.location.href = 'guard-photo.html';
+});
+
+completeBtn.addEventListener('click', async () => {
+    const token = localStorage.getItem('scannedClaimToken');
+    const imageUrl = localStorage.getItem('handoverPhotoUrl');
+    if (!token || !imageUrl) {
+        alert('กรุณาสแกน QR Code และถ่ายรูปหลักฐานก่อน');
+        return;
+    }
+    completeBtn.disabled = true;
+    const { data, error } = await supabase.rpc('redeem_claim_token', {
+        p_claim_token: token,
+        p_note: 'บันทึกการส่งคืนจากหน้าหน่วยรักษาความปลอดภัย',
+        p_image_url: imageUrl
+    });
+    if (error) {
+        completeBtn.disabled = false;
+        alert(`บันทึกการส่งคืนไม่สำเร็จ: ${error.message}`);
+        return;
+    }
+    localStorage.removeItem('scannedClaimToken');
+    localStorage.removeItem('handoverPhotoUrl');
+    localStorage.removeItem('handoverPhotoItemId');
+    completeBtn.hidden = true;
+    photoBtn.disabled = true;
+    returnDetail.insertAdjacentHTML('afterbegin', `<div class="result">ส่งคืน “${escapeHtml(data?.description || 'สิ่งของ')}” และบันทึกหลักฐานเรียบร้อยแล้ว</div>`);
 });
 
 requireRole(['guard']).then((user) => {

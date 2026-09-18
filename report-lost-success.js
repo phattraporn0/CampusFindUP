@@ -15,6 +15,11 @@ if (savedData) {
 
     // หมวดหมู่
     const category = document.getElementById("successCategory");
+    const itemName = document.getElementById("successItemName");
+    const time = document.getElementById("successTime");
+
+    if (itemName) itemName.textContent = data.item_name || "-";
+    if (time) time.textContent = data.lost_time || "-";
 
     if (category) {
         category.textContent = data.category || "-";
@@ -34,9 +39,9 @@ if (savedData) {
 
     if (date) {
 
-        if (data.date) {
+        if (data.lost_date || data.date) {
 
-            const dateObject = new Date(data.date);
+            const dateObject = new Date(data.lost_date || data.date);
 
             date.textContent =
                 dateObject.toLocaleDateString("th-TH");
