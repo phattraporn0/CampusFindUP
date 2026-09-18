@@ -309,6 +309,24 @@ placeholder="ค้นหาสิ่งของ เช่น กระเป�
 </div>
 
 <script type="module" src="dashboard.js"></script>
+<script>
+(() => {
+    const limit = (id) => {
+        const container = document.getElementById(id);
+        if (!container) return;
+        while (container.children.length > 6) container.lastElementChild.remove();
+    };
+    const apply = () => { limit('allLostContainer'); limit('allItemsContainer'); };
+    const observer = new MutationObserver(apply);
+    ['allLostContainer', 'allItemsContainer'].forEach((id) => document.getElementById(id) && observer.observe(document.getElementById(id), { childList:true }));
+    apply();
+    document.addEventListener('click', (event) => {
+        const panel = document.getElementById('notificationPanel');
+        const button = document.getElementById('notificationBtn');
+        if (panel && !panel.hidden && !panel.contains(event.target) && !button?.contains(event.target)) panel.hidden = true;
+    });
+})();
+</script>
 
 </body>
 

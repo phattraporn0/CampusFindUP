@@ -566,6 +566,8 @@ body{
 
 /* When a photo is selected, the upload area becomes photo-only. */
 .upload-box:has(.selected-image-preview) .selected-image-preview { width:100%; max-width:none; height:100%; min-height:230px; margin:0; object-fit:cover; }
+.upload-box.has-photo { padding:0; overflow:hidden; }
+.upload-box.has-photo .selected-image-preview { width:100%; max-width:none; height:100%; min-height:230px; margin:0; object-fit:cover; }
 
 html { font-size:16px; -webkit-text-size-adjust:100%; }
 body { overflow-x:hidden; }

@@ -284,6 +284,27 @@
     </main>
 
     <script type="module" src="report-found.js"></script>
+    <script>
+    (() => {
+        const arrange = () => {
+            const ids = ['category', 'itemName', 'itemDescription', 'itemDefect', 'foundLocation', 'foundDate', 'itemImage'];
+            const fields = ids.map((id) => document.getElementById(id));
+            if (fields.some((field) => !field)) return;
+            const groups = fields.map((field) => field.closest('.form-group') || field.closest('.two-column'));
+            const parent = groups[0]?.parentElement;
+            if (!parent || groups.some((group) => !group || group.parentElement !== parent)) return;
+            [...new Set(groups)].forEach((group) => parent.appendChild(group));
+            const nameGroup = document.getElementById('itemName')?.closest('.form-group');
+            const labels = nameGroup?.querySelectorAll(':scope > label');
+            if (labels?.length > 1) labels[0].remove();
+            const upload = document.querySelector('.upload-box');
+            document.getElementById('itemImage')?.addEventListener('change', () => {
+                if (upload?.querySelector('.selected-image-preview')) upload.classList.add('has-photo');
+            }, { once: true });
+        };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrange); else arrange();
+    })();
+    </script>
 
 </body>
 
