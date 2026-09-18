@@ -22,3 +22,12 @@ if (foundError && /item_name/i.test(foundError.message || '')) {
 }
 lostList.innerHTML = (lost || []).map((item) => card(item,'lost')).join('') || '<p>ยังไม่มีประกาศตามหาของ</p>';
 foundList.innerHTML = foundError ? `<p>โหลดประกาศพบของไม่สำเร็จ: ${escapeHtml(foundError.message)}</p>` : ((found || []).map((item) => card(item,'found')).join('') || '<p>ยังไม่มีประกาศพบของ</p>');
+
+const hash = window.location.hash;
+if (hash === '#lost') {
+  document.getElementById('found')?.remove();
+  document.querySelector('.announcements-page h1').textContent = 'รายการประกาศตามหาของทั้งหมด';
+} else if (hash === '#found') {
+  document.getElementById('lost')?.remove();
+  document.querySelector('.announcements-page h1').textContent = 'รายการประกาศพบของทั้งหมด';
+}

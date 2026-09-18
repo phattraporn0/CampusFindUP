@@ -1227,7 +1227,12 @@ max-width:100%;
 .post-actions .edit-post-btn, .post-actions .delete-post-btn { border:0; border-radius:9px; padding:8px 12px; font:inherit; cursor:pointer; }
 .post-actions .edit-post-btn { background:#e0e7ff; color:#3730a3; }
 .post-actions .delete-post-btn { background:#fee2e2; color:#b91c1c; }
-.view-all-btn { display:block; width:max-content; margin:18px auto 0; padding:10px 22px; border-radius:999px; background:#4338ca; color:#fff; text-decoration:none; font-weight:600; }
+.view-all-btn { display:block; width:max-content; margin:18px 0 0 auto; padding:10px 22px; border-radius:999px; background:#4338ca; color:#fff; text-decoration:none; font-weight:600; }
+.section-header .view-all-btn { margin:0 0 0 auto; flex:0 0 auto; }
+.section-header .view-all-btn { order:3; }
+.section-header .total-item { order:2; }
+.all-lost-section > .view-all-btn { margin-top:-54px; margin-bottom:18px; }
+@media (max-width:600px) { .section-header .view-all-btn { margin-left:0; margin-top:10px; } .all-lost-section > .view-all-btn { margin-top:0; } }
 
 @media (max-width: 768px) {
     .navbar { position:relative; }
