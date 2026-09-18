@@ -43,6 +43,7 @@ async function loadClaims() {
                 ${item.image_url ? `<img src="${escapeHtml(item.image_url)}" alt="รูปสิ่งของ">` : '<span>ไม่มีรูป</span>'}
             </div>
             <div class="claim-info">
+                <strong class="claim-item-name">${escapeHtml(item.item_name || item.category || 'สิ่งของ')}</strong>
                 <span class="claim-status">${item.status === 'returned' ? 'ส่งคืนแล้ว' : 'รอส่งคืนเจ้าของ'}</span>
                 <small>${escapeHtml(item.category || 'สิ่งของ')}</small>
                 <h2>${escapeHtml(item.description || 'ไม่ระบุรายละเอียด')}</h2>

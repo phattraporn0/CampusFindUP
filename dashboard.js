@@ -539,7 +539,7 @@ async function loadMyClaims() {
 
     const { data: claims, error } = await supabase
         .from('found_items')
-        .select('id, category, description, location, image_url, status, claim_token, claim_expires_at, claimed_at, returned_at')
+        .select('id, item_name, category, description, location, image_url, status, claim_token, claim_expires_at, claimed_at, returned_at')
         .eq('claimant_id', user.id)
         .in('status', ['claim_verified', 'returned'])
         .order('claimed_at', { ascending: false });
@@ -561,6 +561,7 @@ async function loadMyClaims() {
                 ${item.image_url ? `<img src="${escapeClaimHtml(item.image_url)}" alt="รูปสิ่งของ" style="width:100%;height:100%;object-fit:cover;">` : '<span>PHOTO</span>'}
             </div>
             <div class="item-info">
+                    <strong class="claim-item-name">${escapeClaimHtml(item.item_name || item.category || 'สิ่งของ')}</strong>
                 <div class="item-top"><span class="item-category">${escapeClaimHtml(item.category)}</span><span class="item-time">${claimStatusText(item.status)}</span></div>
                 <h3>${escapeClaimHtml(item.description || 'ไม่ระบุรายละเอียด')}</h3>
                 <p class="item-location">${escapeClaimHtml(item.location || '')}</p>
