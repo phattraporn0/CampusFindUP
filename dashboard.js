@@ -362,12 +362,20 @@ if (reportLostBtn) {
 // ==========================
 
 let allItems = [];
+let ownFoundIds = new Set();
+let currentUserId = null;
 let activeCategory = "ทั้งหมด";
 
 const itemsContainer = document.getElementById("allItemsContainer");
 const totalItem = document.getElementById("allItemsTotal");
 
 async function loadItems() {
+    const { data: { user } } = await supabase.auth.getUser();
+    currentUserId = user?.id || null;
+    if (user) {
+        const { data: ownItems } = await supabase.from('found_items').select('id').eq('reporter_id', user.id);
+        ownFoundIds = new Set((ownItems || []).map((item) => item.id));
+    }
     const { data, error } = await supabase
         .from("found_items_public")
         .select("*")
@@ -379,7 +387,7 @@ async function loadItems() {
         return;
     }
 
-    allItems = data;
+    allItems = data.map((item) => ({ ...item, isMine: ownFoundIds.has(item.id) }));
     renderItems();
 }
 
@@ -431,6 +439,25 @@ function renderItems() {
                     <p class="item-status">${item.status === 'claim_verified' ? 'รอส่งคืนเจ้าของ' : item.status === 'returned' ? 'ส่งคืนแล้ว' : item.status === 'claimed' ? 'พร้อมให้ยืนยันความเป็นเจ้าของ' : 'รอยืนยันการรับฝาก'}</p>
                 </div>
             `;
+
+            if (item.isMine) {
+                const actions = document.createElement('div');
+                actions.className = 'post-actions';
+                actions.innerHTML = '<button type="button" class="edit-post-btn">แก้ไข</button><button type="button" class="delete-post-btn">ลบ</button>';
+                actions.querySelector('.edit-post-btn').addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    window.location.href = `report-found.html?edit_id=${encodeURIComponent(item.id)}`;
+                });
+                actions.querySelector('.delete-post-btn').addEventListener('click', async (event) => {
+                    event.stopPropagation();
+                    if (!confirm('ต้องการลบโพสต์แจ้งพบนี้ใช่หรือไม่?')) return;
+                    const { error: deleteError } = await supabase.from('found_items').delete().eq('id', item.id).eq('reporter_id', currentUserId);
+                    if (deleteError) return alert(`ลบโพสต์ไม่สำเร็จ: ${deleteError.message}`);
+                    allItems = allItems.filter((entry) => entry.id !== item.id);
+                    renderItems();
+                });
+                card.querySelector('.item-info')?.appendChild(actions);
+            }
 
             card.addEventListener("click", function () {
                 // เก็บแค่ id ไว้ แล้วให้หน้ารายละเอียดไปดึงข้อมูลสดจาก Supabase เอง
@@ -541,6 +568,16 @@ async function loadMyClaims() {
             </div>
         </article>
     `).join('');
+
+    container.querySelectorAll('.my-claim-card').forEach((card, index) => {
+        if (claims[index]?.status === 'returned') {
+            card.querySelector('.claim-detail-btn')?.remove();
+            const done = document.createElement('p');
+            done.textContent = 'รับของคืนเรียบร้อยแล้ว';
+            done.style.cssText = 'margin:10px 0 0;color:#15803d;font-weight:600;';
+            card.appendChild(done);
+        }
+    });
 
     container.querySelectorAll('[data-claim-id]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -667,8 +704,8 @@ supabase.channel('all-lost-items-sync')
 
 function automatchScore(lost, found) {
     const normalize = (value) => String(value || '').toLowerCase().replace(/[\s\p{P}\p{S}]+/gu, '');
-    const lostText = normalize(`${lost.item_name} ${lost.description}`);
-    const foundText = normalize(found.description);
+    const lostText = normalize(`${lost.item_name} ${lost.description} ${lost.details}`);
+    const foundText = normalize(`${found.item_name} ${found.description}`);
     const lostLocation = normalize(lost.location);
     const foundLocation = normalize(found.location);
     let score = 0;
@@ -689,8 +726,8 @@ async function loadMatchNotifications() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     const [{ data: lostItems }, { data: foundItems }] = await Promise.all([
-        supabase.from('lost_items').select('id,item_name,description,category,location,lost_date').eq('user_id', user.id),
-        supabase.from('found_items_public').select('id,description,category,location,found_date,image_url,status').in('status', ['waiting', 'claimed'])
+        supabase.from('lost_items').select('id,item_name,description,details,category,location,lost_date').eq('user_id', user.id),
+        loadPublicFoundMatches()
     ]);
 
     const matches = [];
@@ -720,6 +757,18 @@ async function loadMatchNotifications() {
         localStorage.setItem('selectedFoundItemId', button.dataset.matchId);
         window.location.href = 'lost-item-detail.html';
     }));
+}
+
+async function loadPublicFoundMatches() {
+    let result = await supabase.from('found_items_public')
+        .select('id,item_name,description,category,location,found_date,image_url,status')
+        .in('status', ['waiting', 'claimed']);
+    if (result.error && /item_name/i.test(result.error.message || '')) {
+        result = await supabase.from('found_items_public')
+            .select('id,description,category,location,found_date,image_url,status')
+            .in('status', ['waiting', 'claimed']);
+    }
+    return result;
 }
 
 document.getElementById('notificationBtn')?.addEventListener('click', () => {

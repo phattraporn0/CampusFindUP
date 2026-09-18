@@ -307,7 +307,23 @@
 import { supabase, requireRole } from './supabaseClient.js';
 
 let currentUser = null;
-requireRole(["user"]).then((user) => { currentUser = user; });
+const editId = new URLSearchParams(window.location.search).get('edit_id');
+requireRole(["user"]).then(async (user) => {
+    currentUser = user;
+    if (editId) {
+        const { data: item } = await supabase.from('found_items').select('*').eq('id', editId).eq('reporter_id', user.id).single();
+        if (!item) return;
+        document.getElementById('itemName').value = item.item_name || '';
+        document.getElementById('itemDescription').value = item.description || '';
+        document.getElementById('itemDefect').value = item.defect || '';
+        document.getElementById('foundLocation').value = item.location || '';
+        document.getElementById('foundDate').value = item.found_date || '';
+        document.getElementById('foundTime').value = item.found_time || '';
+        document.getElementById('additionalNote').value = item.additional_note || '';
+        document.getElementById('storageLocation').value = item.storage_location || '';
+        category.value = item.category || category.value;
+    }
+});
 
 // =====================================
 // CATEGORY (เหมือนเดิม)
@@ -316,6 +332,11 @@ requireRole(["user"]).then((user) => { currentUser = user; });
 const category = document.getElementById("category");
 const otherCategoryBox = document.getElementById("otherCategoryBox");
 const otherCategoryInput = document.getElementById("otherCategory");
+const itemNameInput = document.getElementById("itemName");
+if (itemNameInput) {
+    const labels = itemNameInput.parentElement.querySelectorAll(':scope > label');
+    if (labels.length > 1) labels[0].remove();
+}
 
 // Use the same button-style category selector as the lost-item form while
 // keeping the original select as the value source for the submit handler.
@@ -412,6 +433,7 @@ if (saveBtn) {
         const categoryValue = document.getElementById("category")?.value || "";
         const otherCategory = document.getElementById("otherCategory")?.value || "";
         const description = document.getElementById("itemDescription")?.value.trim() || "";
+        const itemName = document.getElementById("itemName")?.value.trim() || "";
         const defect = document.getElementById("itemDefect")?.value.trim() || "";
         const foundLocation = document.getElementById("foundLocation")?.value.trim() || "";
         const foundDate = document.getElementById("foundDate")?.value || "";
@@ -423,6 +445,8 @@ if (saveBtn) {
         if (!foundDate) { alert("กรุณาเลือกวันที่พบ"); return; }
         if (!description) { alert("กรุณากรอกรายละเอียดของสิ่งของ"); return; }
         if (defect === "") { alert("กรุณากรอกจุดเด่น / ตำหนิของสิ่งของ"); return; }
+
+        if (!itemName) { alert("กรุณากรอกชื่อสิ่งของหรือยี่ห้อ"); return; }
 
         if (!currentUser) {
             alert("กรุณาเข้าสู่ระบบก่อนแจ้งพบของ");
@@ -454,11 +478,31 @@ if (saveBtn) {
             }
         }
 
+        if (editId) {
+            const { error: updateError } = await supabase.from('found_items').update({
+                category: finalCategory,
+                item_name: itemName,
+                description,
+                defect,
+                location: foundLocation,
+                found_date: foundDate,
+                found_time: foundTime || null,
+                storage_location: storageLocation,
+                additional_note: additionalNote || null,
+                ...(imageUrl ? { image_url: imageUrl } : {})
+            }).eq('id', editId).eq('reporter_id', currentUser.id);
+            saveBtn.disabled = false;
+            if (updateError) return alert(`แก้ไขโพสต์ไม่สำเร็จ: ${updateError.message}`);
+            window.location.href = 'dashboard.html';
+            return;
+        }
+
         const { data, error } = await supabase
             .from("found_items")
             .insert({
                 reporter_id: currentUser.id,
                 category: finalCategory,
+                item_name: itemName,
                 description: description,
                 defect: defect,              // เก็บเป็นคำตอบลับสำหรับยืนยันความเป็นเจ้าของ
                 location: foundLocation,

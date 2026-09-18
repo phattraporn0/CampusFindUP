@@ -384,7 +384,22 @@
 import { supabase, requireRole } from './supabaseClient.js';
 
 let currentUser = null;
-requireRole(["user"]).then((user) => { currentUser = user; });
+const editId = new URLSearchParams(window.location.search).get('edit_id');
+requireRole(["user"]).then(async (user) => {
+    currentUser = user;
+    if (editId) {
+        const { data: item } = await supabase.from('lost_items').select('*').eq('id', editId).eq('user_id', user.id).single();
+        if (!item) return;
+        document.getElementById('itemName').value = item.item_name || '';
+        document.getElementById('itemDescription').value = item.description || '';
+        document.getElementById('itemDetails').value = item.details || '';
+        document.getElementById('lostLocation').value = item.location || '';
+        document.getElementById('lostDate').value = item.lost_date || '';
+        document.getElementById('lostTime').value = item.lost_time || '';
+        if (categoryInput) categoryInput.value = item.category || '';
+        categoryButtons.forEach((button) => button.classList.toggle('active', button.textContent.trim() === item.category));
+    }
+});
 
 // =====================================
 // CATEGORY (เหมือนเดิม)
@@ -448,6 +463,7 @@ if (submitLostBtn) {
 
         const itemName = document.getElementById("itemName")?.value.trim() || "";
         const description = document.getElementById("itemDescription")?.value.trim() || "";
+        const itemDetails = document.getElementById("itemDetails")?.value.trim() || "";
         const location = document.getElementById("lostLocation")?.value.trim() || "";
         const date = document.getElementById("lostDate")?.value || "";
         const time = document.getElementById("lostTime")?.value || "";
@@ -459,6 +475,8 @@ if (submitLostBtn) {
         if (!description) { alert("กรุณากรอกรายละเอียดของสิ่งของ"); return; }
         if (!location) { alert("กรุณากรอกสถานที่คาดว่าทำหาย"); return; }
         if (!date) { alert("กรุณาเลือกวันที่ทำหาย"); return; }
+
+        if (!itemDetails) { alert("กรุณากรอกรายละเอียดสิ่งของ"); return; }
 
         if (!currentUser) {
             alert("กรุณาเข้าสู่ระบบก่อนแจ้งของหาย");
@@ -492,6 +510,23 @@ if (submitLostBtn) {
             }
         }
 
+        if (editId) {
+            const { error: updateError } = await supabase.from('lost_items').update({
+                category: finalCategory,
+                item_name: itemName,
+                description,
+                details: itemDetails,
+                location,
+                lost_date: date,
+                lost_time: time || null,
+                ...(imageUrl ? { image_url: imageUrl } : {})
+            }).eq('id', editId).eq('user_id', currentUser.id);
+            submitLostBtn.disabled = false;
+            if (updateError) return alert(`แก้ไขโพสต์ไม่สำเร็จ: ${updateError.message}`);
+            window.location.href = `my-lost-detail.html?id=${encodeURIComponent(editId)}`;
+            return;
+        }
+
         const { data, error } = await supabase
             .from("lost_items")
             .insert({
@@ -499,6 +534,7 @@ if (submitLostBtn) {
                 category: finalCategory,
                 item_name: itemName,
                 description: description,
+                details: itemDetails,
                 location: location,
                 lost_date: date,
                 lost_time: time || null,

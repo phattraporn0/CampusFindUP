@@ -28,6 +28,7 @@ function displayDate(value) {
 
 function renderItem(item) {
     const rows = [
+        ['Item name / brand', item.item_name],
         ['หมวดหมู่', item.category],
         ['สถานที่พบ', item.location],
         ['วันที่พบ', displayDate(item.found_date)],
@@ -79,7 +80,7 @@ async function loadItem() {
         return;
     }
 
-    const query = supabase.from('found_items').select('*').in('status', ['claimed', 'claim_verified']);
+    const query = supabase.from('found_items').select('*').in('status', ['claimed', 'claim_verified', 'returned']);
     const { data: item, error } = await (scannedClaimToken
         ? query.eq('claim_token', scannedClaimToken).single()
         : query.eq('id', selectedItemId).single());
@@ -94,6 +95,13 @@ async function loadItem() {
     selectedItemId = item.id;
     localStorage.setItem('selectedGuardItemId', item.id);
     renderItem(item);
+    if (item.status === 'returned') {
+        scanBtn.hidden = true;
+        photoBtn.hidden = true;
+        completeBtn.hidden = true;
+        returnDetail.insertAdjacentHTML('afterbegin', '<div class="result">รายการนี้ส่งคืนเจ้าของและบันทึกหลักฐานเรียบร้อยแล้ว</div>');
+        return;
+    }
     const hasPhoto = localStorage.getItem('handoverPhotoItemId') === item.id
         && Boolean(localStorage.getItem('handoverPhotoUrl'));
     if (scannedClaimToken) {
@@ -143,6 +151,7 @@ completeBtn.addEventListener('click', async () => {
     localStorage.removeItem('handoverPhotoItemId');
     completeBtn.hidden = true;
     photoBtn.disabled = true;
+    photoBtn.hidden = true;
     returnDetail.insertAdjacentHTML('afterbegin', `<div class="result">ส่งคืน “${escapeHtml(data?.description || 'สิ่งของ')}” และบันทึกหลักฐานเรียบร้อยแล้ว</div>`);
 });
 

@@ -19,7 +19,7 @@ async function loadLostPosts() {
 
     const { data: posts, error } = await supabase
         .from('lost_items')
-        .select('id, category, item_name, description, location, lost_date, lost_time, image_url, created_at')
+        .select('id, category, item_name, description, details, location, lost_date, lost_time, image_url, created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
@@ -74,6 +74,15 @@ function renderPosts() {
             renderPosts();
         });
         card.querySelector('.info')?.appendChild(deleteButton);
+        const editButton = document.createElement('button');
+        editButton.type = 'button';
+        editButton.className = 'edit-post-btn';
+        editButton.textContent = 'แก้ไขโพสต์';
+        editButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            window.location.href = `report-lost.html?edit_id=${encodeURIComponent(card.dataset.id)}`;
+        });
+        card.querySelector('.info')?.appendChild(editButton);
         const open = () => {
             localStorage.setItem('selectedLostItemId', card.dataset.id);
             window.location.href = `my-lost-detail.html?id=${encodeURIComponent(card.dataset.id)}`;

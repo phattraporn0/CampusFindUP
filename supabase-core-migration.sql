@@ -4,6 +4,9 @@
 create extension if not exists pgcrypto;
 create extension if not exists pg_trgm;
 
+alter table public.lost_items
+    add column if not exists details text;
+
 create table if not exists public.profiles (
     id uuid primary key references auth.users(id) on delete cascade,
     role text not null default 'user' check (role in ('user', 'guard', 'admin')),
@@ -61,6 +64,7 @@ from auth.users
 on conflict (id) do nothing;
 
 alter table public.found_items
+    add column if not exists item_name text,
     add column if not exists claimant_id uuid references auth.users(id),
     add column if not exists claim_attempts integer not null default 0,
     add column if not exists claim_locked_at timestamptz,
@@ -130,6 +134,22 @@ create policy "Users can read their claimed found items"
 on public.found_items for select to authenticated
 using (claimant_id = auth.uid());
 
+drop policy if exists "Users can manage their own found items" on public.found_items;
+create policy "Users can manage their own found items"
+on public.found_items for select to authenticated
+using (reporter_id = auth.uid());
+
+drop policy if exists "Users can update their own found items" on public.found_items;
+create policy "Users can update their own found items"
+on public.found_items for update to authenticated
+using (reporter_id = auth.uid())
+with check (reporter_id = auth.uid());
+
+drop policy if exists "Users can delete their own found items" on public.found_items;
+create policy "Users can delete their own found items"
+on public.found_items for delete to authenticated
+using (reporter_id = auth.uid());
+
 drop policy if exists "Users can read their own lost items" on public.lost_items;
 create policy "Users can read their own lost items"
 on public.lost_items for select to authenticated
@@ -144,6 +164,12 @@ drop policy if exists "Users can delete their own lost items" on public.lost_ite
 create policy "Users can delete their own lost items"
 on public.lost_items for delete to authenticated
 using (user_id = auth.uid());
+
+drop policy if exists "Users can update their own lost items" on public.lost_items;
+create policy "Users can update their own lost items"
+on public.lost_items for update to authenticated
+using (user_id = auth.uid())
+with check (user_id = auth.uid());
 
 drop policy if exists "Guards can read lost items" on public.lost_items;
 create policy "Guards can read lost items"
@@ -257,6 +283,23 @@ begin
                 from regexp_split_to_table(coalesce(p_answer, ''), '[[:space:]]+') as answer_part
                 where length(public.normalize_claim_text(answer_part)) >= 2
                   and position(public.normalize_claim_text(answer_part) in v_secret) > 0
+            )
+            or exists (
+                select 1
+                from regexp_split_to_table(coalesce(p_answer, ''), '[[:space:][:punct:]]+') as answer_part
+                cross join lateral regexp_split_to_table(
+                    coalesce(v_item.description, '') || ' ' ||
+                    coalesce(v_item.defect, '') || ' ' ||
+                    coalesce(v_item.additional_note, '') || ' ' ||
+                    coalesce(v_item.guard_remark, ''),
+                    '[[:space:][:punct:]]+'
+                ) as secret_part
+                where length(public.normalize_claim_text(answer_part)) >= 2
+                  and length(public.normalize_claim_text(secret_part)) >= 2
+                  and (
+                      position(public.normalize_claim_text(answer_part) in public.normalize_claim_text(secret_part)) > 0
+                      or position(public.normalize_claim_text(secret_part) in public.normalize_claim_text(answer_part)) > 0
+                  )
             )
         );
 

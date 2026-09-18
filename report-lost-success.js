@@ -17,9 +17,14 @@ if (savedData) {
     const category = document.getElementById("successCategory");
     const itemName = document.getElementById("successItemName");
     const time = document.getElementById("successTime");
+    const details = document.getElementById("successDetails");
+    const dateItem = document.getElementById("successDate")?.closest('.item');
+    const timeItem = time?.closest('.item');
+    if (dateItem && timeItem) dateItem.after(timeItem);
 
     if (itemName) itemName.textContent = data.item_name || "-";
     if (time) time.textContent = data.lost_time || "-";
+    if (details) details.textContent = data.details || "-";
 
     if (category) {
         category.textContent = data.category || "-";

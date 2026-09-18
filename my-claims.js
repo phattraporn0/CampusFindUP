@@ -17,7 +17,7 @@ async function loadClaims() {
 
     const { data: claims, error } = await supabase
         .from('found_items')
-        .select('id, category, description, location, image_url, status, claim_token, claim_expires_at, claimed_at, returned_at')
+        .select('id, item_name, category, description, location, image_url, status, claim_token, claim_expires_at, claimed_at, returned_at')
         .eq('claimant_id', user.id)
         .in('status', ['claim_verified', 'returned'])
         .order('claimed_at', { ascending: false });
@@ -51,6 +51,16 @@ async function loadClaims() {
             </div>
         </article>
     `).join('');
+
+    list.querySelectorAll('.claim-card').forEach((card, index) => {
+        if (activeClaims[index]?.status === 'returned') {
+            card.querySelector('.claim-detail-btn')?.remove();
+            const done = document.createElement('p');
+            done.className = 'returned-message';
+            done.textContent = 'รับของคืนเรียบร้อยแล้ว';
+            card.querySelector('.claim-info')?.appendChild(done);
+        }
+    });
 
     list.querySelectorAll('[data-id]').forEach((button) => {
         button.addEventListener('click', () => {

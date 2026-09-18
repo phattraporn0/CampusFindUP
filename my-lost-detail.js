@@ -17,7 +17,7 @@ if (!itemId) {
     const { data: { user } } = await supabase.auth.getUser();
     const { data: item, error } = await supabase
         .from('lost_items')
-        .select('id, category, item_name, description, location, lost_date, lost_time, image_url, created_at')
+        .select('id, category, item_name, description, details, location, lost_date, lost_time, image_url, created_at')
         .eq('id', itemId)
         .eq('user_id', user.id)
         .single();
@@ -26,6 +26,7 @@ if (!itemId) {
         detail.innerHTML = `<p>ไม่สามารถโหลดข้อมูลได้: ${escapeHtml(error?.message || 'ไม่พบรายการ')}</p>`;
     } else {
         detail.innerHTML = `
+            <div class="row"><div class="label">Item details</div><div class="value">${escapeHtml(item.details)}</div></div>
             ${item.image_url ? `<img class="photo" src="${escapeHtml(item.image_url)}" alt="รูปของที่หาย">` : '<div class="placeholder">ไม่มีรูปภาพ</div>'}
             <h1>${escapeHtml(item.item_name || 'ไม่ระบุชื่อสิ่งของ')}</h1>
             <div class="row"><div class="label">หมวดหมู่</div><div class="value">${escapeHtml(item.category)}</div></div>
@@ -45,5 +46,13 @@ if (!itemId) {
             window.location.href = 'my-lost.html';
         });
         detail.appendChild(deleteButton);
+        const editButton = document.createElement('button');
+        editButton.type = 'button';
+        editButton.className = 'edit-post-btn';
+        editButton.textContent = 'แก้ไขโพสต์นี้';
+        editButton.addEventListener('click', () => {
+            window.location.href = `report-lost.html?edit_id=${encodeURIComponent(item.id)}`;
+        });
+        detail.appendChild(editButton);
     }
 }

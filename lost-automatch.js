@@ -16,8 +16,8 @@ function normalize(value) {
 }
 
 function scoreMatch(lost, found) {
-    const lostText = normalize(`${lost.item_name} ${lost.description}`);
-    const foundText = normalize(`${found.description}`);
+    const lostText = normalize(`${lost.item_name} ${lost.description} ${lost.details}`);
+    const foundText = normalize(`${found.item_name} ${found.description}`);
     const lostLocation = normalize(lost.location);
     const foundLocation = normalize(found.location);
     let score = 0;
@@ -36,7 +36,7 @@ async function findBestMatch() {
 
     const { data: lostItem, error: lostError } = await supabase
         .from('lost_items')
-        .select('item_name, category, description, location, lost_date')
+        .select('item_name, category, description, details, location, lost_date')
         .eq('id', lostId)
         .single();
     if (lostError || !lostItem) {
@@ -44,10 +44,16 @@ async function findBestMatch() {
         return;
     }
 
-    const { data: foundItems, error: foundError } = await supabase
+    let { data: foundItems, error: foundError } = await supabase
         .from('found_items_public')
-        .select('id, category, description, location, found_date, image_url, status')
+        .select('id, item_name, category, description, location, found_date, image_url, status')
         .in('status', ['waiting', 'claimed']);
+    if (foundError && /item_name/i.test(foundError.message || '')) {
+        ({ data: foundItems, error: foundError } = await supabase
+            .from('found_items_public')
+            .select('id, category, description, location, found_date, image_url, status')
+            .in('status', ['waiting', 'claimed']));
+    }
     if (foundError) {
         message.textContent = 'ยังไม่สามารถค้นหารายการสิ่งของที่พบได้';
         return;

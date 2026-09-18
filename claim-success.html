@@ -189,7 +189,7 @@
     </p>
 
 
-    <div class="qr-card">
+    <div id="qrCodeCard" class="qr-card">
 
         <h2>QR Code สำหรับรับสิ่งของ</h2>
 
@@ -246,6 +246,7 @@
     const claimItemImage = document.getElementById("claimItemImage");
     const claimStorageLocation = document.getElementById("claimStorageLocation");
     const claimItemStatus = document.getElementById("claimItemStatus");
+    const qrCodeCard = document.getElementById("qrCodeCard");
     const itemId = new URLSearchParams(window.location.search).get("item_id");
 
     if (!claimToken || !expiresAt) {
@@ -253,11 +254,14 @@
     }
 
     const itemQuery = itemId
-        ? supabase.from('found_items').select('description, category, location, storage_location, image_url, status').eq('id', itemId).single()
-        : supabase.from('found_items').select('description, category, location, storage_location, image_url, status').eq('claim_token', claimToken).single();
+        ? supabase.from('found_items').select('item_name, description, category, location, storage_location, image_url, status').eq('id', itemId).single()
+        : supabase.from('found_items').select('item_name, description, category, location, storage_location, image_url, status').eq('claim_token', claimToken).single();
     const { data: claimedItem } = await itemQuery;
+    if (claimedItem?.status === 'returned') {
+        if (qrCodeCard) qrCodeCard.hidden = true;
+    }
     if (claimedItem) {
-        if (claimItemDescription) claimItemDescription.textContent = `${claimedItem.category || 'สิ่งของ'}: ${claimedItem.description || 'ไม่ระบุรายละเอียด'}`;
+        if (claimItemDescription) claimItemDescription.textContent = `${claimedItem.item_name || claimedItem.category || 'สิ่งของ'}: ${claimedItem.description || 'ไม่ระบุรายละเอียด'}`;
         if (claimItemLocation) claimItemLocation.textContent = `สถานที่พบ: ${claimedItem.location || 'ไม่ระบุ'}`;
         if (claimStorageLocation) claimStorageLocation.textContent = `จุดรับของคืน: ${claimedItem.storage_location || 'กรุณาติดต่อเจ้าหน้าที่รักษาความปลอดภัย'}`;
         if (claimItemImage && claimedItem.image_url) {
