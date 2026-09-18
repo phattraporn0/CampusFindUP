@@ -35,11 +35,11 @@ function openDetail(id) {
 async function loadDashboard() {
     let { data: items, error } = await supabase
         .from('found_items')
-        .select('id, category, description, location, image_url, status, claim_attempts, created_at')
+        .select('id, item_name, category, description, location, image_url, status, claim_attempts, created_at')
         .order('created_at', { ascending: false });
 
     // Keep the dashboard readable while an older database is being migrated.
-    if (error && /claim_attempts/i.test(error.message || '')) {
+    if (error && /claim_attempts|item_name/i.test(error.message || '')) {
         ({ data: items, error } = await supabase
             .from('found_items')
             .select('id, category, description, location, image_url, status, created_at')

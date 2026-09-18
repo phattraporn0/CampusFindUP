@@ -150,7 +150,7 @@ import { supabase, requireRole } from './supabaseClient.js';
 
 requireRole(["user"]);
 
-const itemId = localStorage.getItem("selectedFoundItemId");
+const itemId = new URLSearchParams(window.location.search).get('id') || localStorage.getItem("selectedFoundItemId");
 
 if (!itemId) {
     alert("ไม่พบรายการสิ่งของ");
@@ -196,9 +196,15 @@ async function loadDetail() {
         }, { once: true });
     }
 
-    if (claimBtn && !['claimed', 'claim_verified'].includes(item.status)) {
+    if (claimBtn && item.status !== 'claimed') {
         claimBtn.disabled = true;
         claimBtn.style.display = 'none';
+        const notice = document.createElement('div');
+        notice.className = 'security-notice';
+        notice.textContent = item.status === 'claim_verified'
+            ? 'รายการนี้มีผู้ยืนยันความเป็นเจ้าของแล้ว กรุณารอการส่งคืนให้เจ้าของรายการ'
+            : 'รายการนี้ยังไม่พร้อมให้ยืนยันความเป็นเจ้าของ';
+        claimBtn.parentElement?.appendChild(notice);
     }
 
     // เก็บ id ไว้ให้หน้ายืนยันความเป็นเจ้าของใช้ต่อ

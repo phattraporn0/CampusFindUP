@@ -420,7 +420,7 @@ function renderItems() {
             </div>
         `;
     } else {
-        filtered.forEach((item) => {
+        filtered.slice(0, 6).forEach((item) => {
             const card = document.createElement("div");
             card.className = "item-card";
             card.innerHTML = `
@@ -673,7 +673,7 @@ async function loadAllLostItems() {
         return;
     }
 
-    container.innerHTML = visiblePosts.map((item) => `
+    container.innerHTML = visiblePosts.slice(0, 6).map((item) => `
         <article class="item-card public-lost-card" data-public-lost-id="${item.id}" role="button" tabindex="0">
             <div class="item-image">${item.image_url ? `<img src="${escapeClaimHtml(item.image_url)}" alt="รูปของที่หาย" style="width:100%;height:100%;object-fit:cover;">` : '<span>PHOTO</span>'}</div>
             <div class="item-info">
@@ -775,6 +775,11 @@ async function loadPublicFoundMatches() {
 document.getElementById('notificationBtn')?.addEventListener('click', () => {
     const panel = document.getElementById('notificationPanel');
     if (panel) panel.hidden = !panel.hidden;
+});
+document.addEventListener('click', (event) => {
+    const panel = document.getElementById('notificationPanel');
+    const button = document.getElementById('notificationBtn');
+    if (panel && !panel.hidden && !panel.contains(event.target) && !button?.contains(event.target)) panel.hidden = true;
 });
 loadMatchNotifications();
 supabase.channel('user-automatch-notifications')

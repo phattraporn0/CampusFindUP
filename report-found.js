@@ -394,17 +394,34 @@ let selectedFile = null;
 const imageInput = document.getElementById("itemImage");
 const uploadBox = document.querySelector(".upload-box");
 
+const foundLocationInput = document.getElementById('foundLocation');
+const foundDateInput = document.getElementById('foundDate');
+const foundTimeInput = document.getElementById('foundTime');
+const defectInput = document.getElementById('itemDefect');
+const photoInput = document.getElementById('itemImage');
+const defectGroup = defectInput?.closest('.form-group');
+const locationGroup = foundLocationInput?.closest('.form-group');
+const dateTimeGroup = foundDateInput?.closest('.two-column');
+const photoGroup = photoInput?.closest('.form-group');
+if (defectGroup && locationGroup && dateTimeGroup && photoGroup) {
+    const parent = photoGroup.parentElement;
+    parent.insertBefore(defectGroup, locationGroup);
+    parent.insertBefore(locationGroup, photoGroup);
+    parent.insertBefore(dateTimeGroup, photoGroup);
+}
+
 if (imageInput && uploadBox) {
     imageInput.addEventListener("change", function () {
         if (this.files.length > 0) {
             selectedFile = this.files[0];
             const previewUrl = URL.createObjectURL(selectedFile);
-            uploadBox.innerHTML = `
+            uploadBox.innerHTML = `<img class="selected-image-preview" src="${previewUrl}" alt="รูปสิ่งของที่พบ">`;
+            /* uploadBox.innerHTML = `
                 <img class="selected-image-preview" src="${previewUrl}" alt="ตัวอย่างรูปสิ่งของ">
                 <div class="upload-icon"><i class="fa-solid fa-circle-check"></i></div>
                 <h3>${selectedFile.name}</h3>
                 <p>เลือกรูปภาพเรียบร้อยแล้ว</p>
-            `;
+            `; */
         }
     });
 }
