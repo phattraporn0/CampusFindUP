@@ -551,6 +551,7 @@ if (saveBtn) {
         if (!color) { alert("กรุณากรอกสี"); return; }
         if (!material) { alert("กรุณากรอกวัสดุ"); return; }
         if (!distinctiveFeature) { alert("กรุณากรอกจุดเด่นของสิ่งของ"); return; }
+        if (!additionalNote) { alert("กรุณากรอกข้อมูลลับสำหรับยืนยันเจ้าของ"); return; }
         if (Object.prototype.hasOwnProperty.call(categorySubcategories, categoryValue === "other" ? "อื่น ๆ" : categoryValue) && !finalSubcategory) {
             alert("กรุณาเลือกประเภทย่อย");
             return;
