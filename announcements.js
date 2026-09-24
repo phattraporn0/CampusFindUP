@@ -18,14 +18,14 @@ const [{ data: lost }, foundResult] = await Promise.all([
   // query only requested waiting/claimed rows, so verified/returned posts
   // disappeared from the "ดูทั้งหมด" page.
   supabase.from('found_items_public')
-    .select('id,item_name,subcategory,description,category,location,image_url,status,created_at')
+    .select('id,item_name,subcategory,category,location,found_date,found_time,image_url,status,created_at')
     .in('status',['waiting','claimed','claim_verified','claim_locked','returned'])
     .order('created_at',{ascending:false})
 ]);
 let { data: found, error: foundError } = foundResult;
 if (foundError && /item_name/i.test(foundError.message || '')) {
   ({ data: found, error: foundError } = await supabase.from('found_items_public')
-    .select('id,description,category,location,image_url,status,created_at')
+    .select('id,item_name,subcategory,category,location,found_date,found_time,image_url,status,created_at')
     .in('status',['waiting','claimed','claim_verified','claim_locked','returned'])
     .order('created_at',{ascending:false}));
 }

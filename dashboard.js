@@ -746,7 +746,7 @@ async function loadMatchNotifications() {
     list.innerHTML = matches.length ? matches.map(({ lost, found }) => `
         <button type="button" data-match-id="${found.id}" style="display:block;width:100%;border:0;background:#f8fafc;border-radius:10px;padding:10px;margin-top:8px;text-align:left;cursor:pointer;">
             <strong>นี่อาจจะเป็นสิ่งของที่คุณกำลังตามหาอยู่หรือเปล่า?</strong><br>
-            <small>${escapeClaimHtml(found.description || 'รายการที่อาจตรงกัน')} · ${escapeClaimHtml(lost.item_name || 'ของที่คุณแจ้งหาย')}</small>
+            <small>${escapeClaimHtml(found.item_name || found.category || 'รายการที่อาจตรงกัน')} · ${escapeClaimHtml(lost.item_name || 'ของที่คุณแจ้งหาย')}</small>
         </button>
     `).join('') : '<p style="color:#64748b;margin-bottom:0;">ยังไม่มีรายการที่ตรงกัน</p>';
 
@@ -764,11 +764,11 @@ async function loadMatchNotifications() {
 
 async function loadPublicFoundMatches() {
     let result = await supabase.from('found_items_public')
-        .select('id,description,category,location,found_date,image_url,status')
+        .select('id,item_name,subcategory,category,location,found_date,found_time,image_url,status')
         .in('status', ['waiting', 'claimed']);
     if (result.error && /item_name/i.test(result.error.message || '')) {
         result = await supabase.from('found_items_public')
-            .select('id,description,category,location,found_date,image_url,status')
+            .select('id,item_name,subcategory,category,location,found_date,found_time,image_url,status')
             .in('status', ['waiting', 'claimed']);
     }
     return result;
