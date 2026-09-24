@@ -180,8 +180,8 @@ async function loadDetail() {
     const photoPlaceholder = document.getElementById("photoPlaceholder");
 
     if (categoryEl) categoryEl.textContent = item.category;
-    if (nameEl) nameEl.textContent = item.description;
-    if (brandEl) brandEl.textContent = item.additional_note || "";
+    if (nameEl) nameEl.textContent = item.item_name || item.category || "สิ่งของ";
+    if (brandEl) brandEl.textContent = "";
     if (locationEl) locationEl.textContent = item.location;
     if (dateEl) dateEl.textContent = item.found_date;
     if (timeEl) timeEl.textContent = item.found_time || "-";

@@ -432,7 +432,7 @@ function renderItems() {
                         <span class="item-category">${item.category}</span>
                         <span class="item-time"><i class="fa-regular fa-clock"></i> ${item.found_time || ""}</span>
                     </div>
-                    <h3>${item.description}</h3>
+                    <h3>${item.category || 'สิ่งของที่พบ'}</h3>
                     <p class="item-location"><i class="fa-solid fa-location-dot"></i> ${item.location}</p>
                     <p class="item-status">${item.status === 'claim_verified' ? 'รอส่งคืนเจ้าของ' : item.status === 'returned' ? 'ส่งคืนแล้ว' : item.status === 'claimed' ? 'พร้อมให้ยืนยันความเป็นเจ้าของ' : 'รอยืนยันการรับฝาก'}</p>
                 </div>
@@ -463,6 +463,7 @@ function renderItems() {
                 window.location.href = "lost-item-detail.html";
             });
 
+            card.querySelector('.item-image')?.remove();
             itemsContainer.appendChild(card);
         });
     }
@@ -561,7 +562,7 @@ async function loadMyClaims() {
             <div class="item-info">
                     <strong class="claim-item-name">${escapeClaimHtml(item.item_name || item.category || 'สิ่งของ')}</strong>
                 <div class="item-top"><span class="item-category">${escapeClaimHtml(item.category)}</span><span class="item-time">${claimStatusText(item.status)}</span></div>
-                <h3>${escapeClaimHtml(item.description || 'ไม่ระบุรายละเอียด')}</h3>
+                <h3>${escapeClaimHtml(item.item_name || item.category || 'สิ่งของที่เคลม')}</h3>
                 <p class="item-location">${escapeClaimHtml(item.location || '')}</p>
                 <button class="claim-detail-btn" data-claim-id="${item.id}" data-claim-token="${escapeClaimHtml(item.claim_token)}" data-claim-expiry="${escapeClaimHtml(item.claim_expires_at)}">ดูรายละเอียดและ QR Code</button>
             </div>
@@ -630,7 +631,7 @@ async function loadMyLostItems() {
             <div class="item-info">
                 <div class="item-top"><span class="item-category">${escapeClaimHtml(item.category || 'สิ่งของ')}</span><span class="item-time">กำลังตามหา</span></div>
                 <h3>${escapeClaimHtml(item.item_name || item.description || 'ไม่ระบุชื่อสิ่งของ')}</h3>
-                <p class="item-location">รายละเอียด: ${escapeClaimHtml(item.description || '-')}</p>
+                <p class="item-location">รายละเอียดจะแสดงเฉพาะในขั้นตอนยืนยันเจ้าของ</p>
                 <p class="item-location">สถานที่หาย: ${escapeClaimHtml(item.location || '-')}</p>
                 <p class="item-location">วันที่หาย: ${escapeClaimHtml(item.lost_date || '-')} ${escapeClaimHtml(item.lost_time || '')}</p>
             </div>
@@ -683,6 +684,10 @@ async function loadAllLostItems() {
         </article>
     `).join('');
 
+    container.querySelectorAll('.public-lost-card').forEach((card) => {
+        card.querySelector('.item-image')?.remove();
+        card.querySelector('.item-location')?.remove();
+    });
     container.querySelectorAll('[data-public-lost-id]').forEach((card) => {
         const open = () => { window.location.href = `lost-post-detail.html?id=${encodeURIComponent(card.dataset.publicLostId)}`; };
         card.addEventListener('click', open);
