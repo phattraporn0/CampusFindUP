@@ -150,7 +150,7 @@ async function findBestMatch() {
 
     let { data: foundItems, error: foundError } = await supabase
         .from('found_items_public')
-        .select('id, category, subcategory, item_name, brand, color, material, description, distinctive_feature, location, found_date, found_time, image_url, status')
+        .select('id, category, description, location, found_date, image_url, status')
         .in('status', ['waiting', 'claimed']);
     if (foundError) {
         ({ data: foundItems, error: foundError } = await supabase

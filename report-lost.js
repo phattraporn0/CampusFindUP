@@ -601,7 +601,10 @@ if (submitLostBtn) {
                 .upload(filePath, selectedFile);
 
             if (uploadError) {
+                submitLostBtn.disabled = false;
+                submitLostBtn.textContent = "ยืนยันการแจ้งของหาย";
                 alert("อัปโหลดรูปภาพไม่สำเร็จ: " + uploadError.message);
+                return;
             } else {
                 const { data: publicUrlData } = supabase
                     .storage

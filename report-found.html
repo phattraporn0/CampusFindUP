@@ -197,7 +197,7 @@
     <label>จุดเด่น / ตำหนิ <span>*</span></label>
 
     <textarea
-        id="itemDefect"
+                        id="itemDefect"
         rows="4"
         placeholder="เช่น มีรอยขีดข่วนด้านข้าง และมีพวงกุญแจรูปแมว"></textarea>
 
@@ -234,7 +234,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>จุดเด่นของสิ่งของ</label>
+                    <label>จุดเด่นของสิ่งของ <span>*</span></label>
                     <textarea
                         id="distinctiveFeature"
                         rows="4"
@@ -320,7 +320,7 @@
     <script>
     (() => {
         const arrange = () => {
-            const ids = ['category', 'subcategory', 'itemName', 'brand', 'color', 'material', 'itemDescription', 'distinctiveFeature', 'itemDefect', 'foundLocation', 'foundDate', 'itemImage'];
+            const ids = ['category', 'subcategory', 'itemName', 'brand', 'color', 'material', 'itemDescription', 'distinctiveFeature', 'foundLocation', 'foundDate', 'itemImage'];
             const fields = ids.map((id) => document.getElementById(id));
             if (fields.some((field) => !field)) return;
             const groups = fields.map((field) => field.closest('.form-group') || field.closest('.two-column'));

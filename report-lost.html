@@ -232,31 +232,32 @@ placeholder="โปรดระบุหมวดหมู่">
 <input
 type="text"
 id="itemName"
+required
 placeholder="เช่น กระเป๋าสีดำ">
 
 </div>
 
 <div class="form-group">
-<label for="brand">ยี่ห้อ</label>
-<input type="text" id="brand" placeholder="เช่น Samsung, Coach หรือไม่ทราบ">
+<label for="brand">ยี่ห้อ <span>*</span></label>
+<input type="text" id="brand" placeholder="เช่น Samsung, Coach หรือไม่ทราบ" required>
 </div>
 
 <div class="two-column">
 <div class="form-group">
-<label for="color">สี</label>
-<input type="text" id="color" placeholder="เช่น ดำ น้ำเงิน หรือหลายสี">
+<label for="color">สี <span>*</span></label>
+<input type="text" id="color" placeholder="เช่น ดำ น้ำเงิน หรือหลายสี" required>
 </div>
 
 <div class="form-group">
-<label for="material">วัสดุ</label>
-<input type="text" id="material" placeholder="เช่น ผ้า โลหะ หรือพลาสติก">
+<label for="material">วัสดุ <span>*</span></label>
+<input type="text" id="material" placeholder="เช่น ผ้า โลหะ หรือพลาสติก" required>
 </div>
 </div>
 
 <div class="form-group">
 
-<label>จุดเด่นของสิ่งของ</label>
-<textarea id="distinctiveFeature" rows="4" placeholder="เช่น มีสติกเกอร์รูปแมวด้านหลัง หรือมีรอยขีดที่มุมขวา"></textarea>
+<label>จุดเด่นของสิ่งของ <span>*</span></label>
+<textarea id="distinctiveFeature" rows="4" placeholder="เช่น มีสติกเกอร์รูปแมวด้านหลัง หรือมีรอยขีดที่มุมขวา" required></textarea>
 
 </div>
 
@@ -280,6 +281,7 @@ placeholder="เช่น กระเป๋าสีดำ">
 <input
 type="text"
 id="lostLocation"
+required
 placeholder="เช่น โรงอาหารกลาง ห้อง C401">
 
 </div>
@@ -297,7 +299,8 @@ placeholder="เช่น โรงอาหารกลาง ห้อง C401
 
 <input
 type="date"
-id="lostDate">
+id="lostDate"
+required>
 
 </div>
 

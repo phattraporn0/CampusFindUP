@@ -583,7 +583,10 @@ if (saveBtn) {
                 .upload(filePath, selectedFile);
 
             if (uploadError) {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "บันทึกข้อมูล";
                 alert("อัปโหลดรูปภาพไม่สำเร็จ: " + uploadError.message);
+                return;
             } else {
                 const { data: publicUrlData } = supabase
                     .storage
