@@ -434,6 +434,12 @@ function renderItems() {
                     <p class="item-status">${item.status === 'claim_verified' ? 'รอส่งคืนเจ้าของ' : item.status === 'returned' ? 'ส่งคืนแล้ว' : item.status === 'claimed' ? 'พร้อมให้ยืนยันความเป็นเจ้าของ' : 'รอยืนยันการรับฝาก'}</p>
                 </div>
             `;
+            const categoryLabel = [item.category, item.subcategory].filter(Boolean).join(' / ');
+            const title = item.item_name || item.category || 'สิ่งของที่พบ';
+            const categoryElement = card.querySelector('.item-category');
+            const titleElement = card.querySelector('h3');
+            if (categoryElement) categoryElement.textContent = categoryLabel || 'สิ่งของที่พบ';
+            if (titleElement) titleElement.textContent = title;
 
             if (item.isMine) {
                 const actions = document.createElement('div');
@@ -600,7 +606,7 @@ async function loadMyLostItems() {
 
     const { data: lostItems, error } = await supabase
         .from('lost_items')
-        .select('id, category, item_name, description, location, lost_date, lost_time, image_url, created_at')
+        .select('id, category, subcategory, item_name, description, location, lost_date, lost_time, image_url, created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
@@ -673,6 +679,11 @@ async function loadAllLostItems() {
         </article>
     `).join('');
 
+    container.querySelectorAll('.public-lost-card').forEach((card) => {
+        const categoryElement = card.querySelector('.item-category');
+        const item = visiblePosts.find((entry) => entry.id === card.dataset.publicLostId);
+        if (categoryElement && item) categoryElement.textContent = [item.category, item.subcategory].filter(Boolean).join(' / ');
+    });
     container.querySelectorAll('.public-lost-card .item-location').forEach((node, index) => {
         if (index % 2 === 0) node.remove();
     });
