@@ -640,10 +640,9 @@ if (saveBtn) {
             .select()
             .single();
 
-        saveBtn.disabled = false;
-        saveBtn.textContent = "บันทึกข้อมูล";
-
         if (error) {
+            saveBtn.disabled = false;
+            saveBtn.textContent = "บันทึกข้อมูล";
             alert("บันทึกไม่สำเร็จ: " + error.message);
             return;
         }

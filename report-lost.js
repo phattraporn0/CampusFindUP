@@ -654,10 +654,9 @@ if (submitLostBtn) {
             .select()
             .single();
 
-        submitLostBtn.disabled = false;
-        submitLostBtn.textContent = "ยืนยันการแจ้งของหาย";
-
         if (error) {
+            submitLostBtn.disabled = false;
+            submitLostBtn.textContent = "ยืนยันการแจ้งของหาย";
             alert("บันทึกไม่สำเร็จ: " + error.message);
             return;
         }

@@ -120,7 +120,7 @@
 
 </header>
 
-<div id="notificationPanel" hidden style="position:absolute; right:24px; top:84px; z-index:10; width:min(380px,calc(100% - 32px)); background:#fff; border-radius:16px; padding:16px; box-shadow:0 12px 30px rgba(15,23,42,.18);">
+<div id="notificationPanel" hidden style="position:absolute; right:24px; top:84px; z-index:10; width:min(380px,calc(100% - 32px)); max-height:min(70vh,520px); overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; background:#fff; border-radius:16px; padding:16px; box-shadow:0 12px 30px rgba(15,23,42,.18);">
     <strong>แจ้งเตือน Automatch</strong>
     <div id="notificationList" style="margin-top:10px;"></div>
 </div>
