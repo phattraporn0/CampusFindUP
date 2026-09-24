@@ -6,10 +6,9 @@ const foundList = document.getElementById('foundList');
 const escapeHtml = (value) => String(value ?? '-').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
 function card(item, type) {
-  const title = item.item_name || item.description || 'ไม่ระบุชื่อสิ่งของ';
-  const detail = type === 'lost' ? item.location : item.location;
+  const title = item.item_name || item.category || 'สิ่งของ';
   const href = type === 'lost' ? `lost-post-detail.html?id=${encodeURIComponent(item.id)}` : `lost-item-detail.html?id=${encodeURIComponent(item.id)}`;
-  return `<article class="announcement-card"><a href="${href}">${item.image_url ? `<img src="${escapeHtml(item.image_url)}" alt="รูปสิ่งของ">` : '<div class="announcement-placeholder">ไม่มีรูปภาพ</div>'}</a><div class="announcement-body"><small>${escapeHtml(item.category || 'สิ่งของ')}</small><h3>${escapeHtml(title)}</h3><p>${escapeHtml(detail || '-')}</p><a href="${href}">ดูรายละเอียด</a></div></article>`;
+  return `<article class="announcement-card"><div class="announcement-body"><small>${escapeHtml(item.category || 'สิ่งของ')}</small><h3>${escapeHtml(title)}</h3><a href="${href}">ดูรายละเอียด</a></div></article>`;
 }
 
 const [{ data: lost }, foundResult] = await Promise.all([
