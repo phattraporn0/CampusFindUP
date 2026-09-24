@@ -5,7 +5,6 @@ await requireRole(['user']);
 const section = document.getElementById('autoMatchSection');
 const message = document.getElementById('autoMatchMessage');
 const card = document.getElementById('autoMatchCard');
-const image = document.getElementById('autoMatchImage');
 const description = document.getElementById('autoMatchDescription');
 const details = document.getElementById('autoMatchDetails');
 const openButton = document.getElementById('autoMatchOpenBtn');
@@ -201,10 +200,6 @@ async function findBestMatch() {
     details.textContent = `หมวดหมู่: ${item.category || '-'} · ประเภทย่อย: ${item.subcategory || '-'} · สถานที่พบ: ${item.location || '-'} · สถานะ: ${item.status === 'claimed' ? 'พร้อมให้ยืนยันความเป็นเจ้าของ' : 'รอเจ้าหน้าที่รับฝาก'}`;
     if (item.status === 'waiting') {
         details.textContent += ' · ต้องรอเจ้าหน้าที่รักษาความปลอดภัยยืนยันการรับฝากก่อน จึงจะยืนยันความเป็นเจ้าของและเคลมได้';
-    }
-    if (item.imageUrl) {
-        image.src = item.imageUrl;
-        image.style.display = 'block';
     }
     card.style.display = 'block';
     openButton.addEventListener('click', () => {
