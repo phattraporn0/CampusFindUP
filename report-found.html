@@ -89,7 +89,7 @@
 
                     <label>หมวดหมู่สิ่งของ <span>*</span></label>
 
-                    <select id="category">
+                    <select id="category" required>
                         <option value="กระเป๋าและสัมภาระ">กระเป๋าและสัมภาระ</option>
                         <option value="บัตรและเอกสาร">บัตรและเอกสาร</option>
                         <option value="อุปกรณ์อิเล็กทรอนิกส์">อุปกรณ์อิเล็กทรอนิกส์</option>
@@ -113,7 +113,7 @@
 
                 <div class="form-group">
                     <label>ประเภทย่อย <span>*</span></label>
-                    <select id="subcategory">
+                    <select id="subcategory" required>
                         <option value="">-- เลือกประเภทย่อย --</option>
                     </select>
                     <div id="otherSubcategoryBox" style="display:none; margin-top:12px;">
@@ -128,6 +128,7 @@
                     <input
     type="text"
     id="foundLocation"
+    required
     placeholder="เช่น โรงอาหารกลาง โต๊ะริมหน้าต่าง"
 >
 
@@ -142,6 +143,7 @@
                        <input
     type="date"
     id="foundDate"
+    required
 >
 
                     </div>
@@ -162,23 +164,23 @@
                 <div class="form-group">
 
                     <label>ชื่อสิ่งของ <span>*</span></label>
-                    <input type="text" id="itemName" placeholder="เช่น พัดลม Hatari หรือ ปากกา Lamy">
+                    <input type="text" id="itemName" placeholder="เช่น พัดลม Hatari หรือ ปากกา Lamy" required>
 
                 </div>
 
                 <div class="form-group">
-                    <label>ยี่ห้อ</label>
-                    <input type="text" id="brand" placeholder="เช่น Samsung, Coach หรือไม่ทราบ">
+                    <label>ยี่ห้อ <span>*</span></label>
+                    <input type="text" id="brand" placeholder="เช่น Samsung, Coach หรือไม่ทราบ" required>
                 </div>
 
                 <div class="two-column">
                     <div class="form-group">
-                        <label>สี</label>
-                        <input type="text" id="color" placeholder="เช่น ดำ น้ำเงิน หรือหลายสี">
+                        <label>สี <span>*</span></label>
+                        <input type="text" id="color" placeholder="เช่น ดำ น้ำเงิน หรือหลายสี" required>
                     </div>
                     <div class="form-group">
-                        <label>วัสดุ</label>
-                        <input type="text" id="material" placeholder="เช่น ผ้า โลหะ หรือพลาสติก">
+                        <label>วัสดุ <span>*</span></label>
+                        <input type="text" id="material" placeholder="เช่น ผ้า โลหะ หรือพลาสติก" required>
                     </div>
                 </div>
 
@@ -187,19 +189,9 @@
     <label>รายละเอียดของสิ่งของ <span>*</span></label>
     <textarea
         id="itemDescription"
+        required
         rows="5"
         placeholder="เช่น กระเป๋าเป้สีดำ มีช่องใส่ของด้านหน้า"></textarea>
-
-</div>
-
-<div class="form-group">
-
-    <label>จุดเด่น / ตำหนิ <span>*</span></label>
-
-    <textarea
-                        id="itemDefect"
-        rows="4"
-        placeholder="เช่น มีรอยขีดข่วนด้านข้าง และมีพวงกุญแจรูปแมว"></textarea>
 
 </div>
 
@@ -237,6 +229,7 @@
                     <label>จุดเด่นของสิ่งของ <span>*</span></label>
                     <textarea
                         id="distinctiveFeature"
+                        required
                         rows="4"
                         placeholder="เช่น มีสติกเกอร์รูปแมวด้านหลัง หรือมีรอยขีดที่มุมขวา"></textarea>
                 </div>

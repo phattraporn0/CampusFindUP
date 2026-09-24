@@ -563,6 +563,10 @@ if (submitLostBtn) {
 
         if (!category) { alert("กรุณาเลือกหมวดหมู่สิ่งของ"); return; }
         if (!itemName) { alert("กรุณากรอกชื่อสิ่งของ / ยี่ห้อ"); return; }
+        if (!brand) { alert("กรุณากรอกยี่ห้อ"); return; }
+        if (!color) { alert("กรุณากรอกสี"); return; }
+        if (!material) { alert("กรุณากรอกวัสดุ"); return; }
+        if (!distinctiveFeature) { alert("กรุณากรอกจุดเด่นของสิ่งของ"); return; }
         if (!description) { alert("กรุณากรอกรายละเอียดของสิ่งของ"); return; }
         if (!location) { alert("กรุณากรอกสถานที่คาดว่าทำหาย"); return; }
         if (!date) { alert("กรุณาเลือกวันที่ทำหาย"); return; }

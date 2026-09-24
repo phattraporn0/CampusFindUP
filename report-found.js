@@ -330,7 +330,6 @@ requireRole(["user"]).then(async (user) => {
         document.getElementById('color').value = item.color || '';
         document.getElementById('material').value = item.material || '';
         document.getElementById('itemDescription').value = item.description || '';
-        document.getElementById('itemDefect').value = item.defect || '';
         document.getElementById('distinctiveFeature').value = item.distinctive_feature || '';
         document.getElementById('foundLocation').value = item.location || '';
         document.getElementById('foundDate').value = item.found_date || '';
@@ -453,15 +452,12 @@ const uploadBox = document.querySelector(".upload-box");
 const foundLocationInput = document.getElementById('foundLocation');
 const foundDateInput = document.getElementById('foundDate');
 const foundTimeInput = document.getElementById('foundTime');
-const defectInput = document.getElementById('itemDefect');
 const photoInput = document.getElementById('itemImage');
-const defectGroup = defectInput?.closest('.form-group');
 const locationGroup = foundLocationInput?.closest('.form-group');
 const dateTimeGroup = foundDateInput?.closest('.two-column');
 const photoGroup = photoInput?.closest('.form-group');
-if (defectGroup && locationGroup && dateTimeGroup && photoGroup) {
+if (locationGroup && dateTimeGroup && photoGroup) {
     const parent = photoGroup.parentElement;
-    parent.insertBefore(defectGroup, locationGroup);
     parent.insertBefore(locationGroup, photoGroup);
     parent.insertBefore(dateTimeGroup, photoGroup);
 }
@@ -541,7 +537,6 @@ if (saveBtn) {
         const color = document.getElementById("color")?.value.trim() || "";
         const material = document.getElementById("material")?.value.trim() || "";
         const distinctiveFeature = document.getElementById("distinctiveFeature")?.value.trim() || "";
-        const defect = document.getElementById("itemDefect")?.value.trim() || "";
         const foundLocation = document.getElementById("foundLocation")?.value.trim() || "";
         const foundDate = document.getElementById("foundDate")?.value || "";
         const foundTime = document.getElementById("foundTime")?.value || "";
@@ -551,9 +546,11 @@ if (saveBtn) {
         if (!foundLocation) { alert("กรุณากรอกสถานที่พบ"); return; }
         if (!foundDate) { alert("กรุณาเลือกวันที่พบ"); return; }
         if (!description) { alert("กรุณากรอกรายละเอียดของสิ่งของ"); return; }
-        if (defect === "") { alert("กรุณากรอกจุดเด่น / ตำหนิของสิ่งของ"); return; }
-
         if (!itemName) { alert("กรุณากรอกชื่อสิ่งของหรือยี่ห้อ"); return; }
+        if (!brand) { alert("กรุณากรอกยี่ห้อ"); return; }
+        if (!color) { alert("กรุณากรอกสี"); return; }
+        if (!material) { alert("กรุณากรอกวัสดุ"); return; }
+        if (!distinctiveFeature) { alert("กรุณากรอกจุดเด่นของสิ่งของ"); return; }
         if (Object.prototype.hasOwnProperty.call(categorySubcategories, categoryValue === "other" ? "อื่น ๆ" : categoryValue) && !finalSubcategory) {
             alert("กรุณาเลือกประเภทย่อย");
             return;
@@ -605,7 +602,6 @@ if (saveBtn) {
                 color: color || null,
                 material: material || null,
                 description,
-                defect,
                 distinctive_feature: distinctiveFeature || null,
                 location: foundLocation,
                 found_date: foundDate,
@@ -631,7 +627,6 @@ if (saveBtn) {
                 color: color || null,
                 material: material || null,
                 description: description,
-                defect: defect,              // เก็บเป็นคำตอบลับสำหรับยืนยันความเป็นเจ้าของ
                 distinctive_feature: distinctiveFeature || null,
                 location: foundLocation,
                 found_date: foundDate,

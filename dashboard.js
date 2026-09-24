@@ -425,9 +425,7 @@ function renderItems() {
             card.className = "item-card";
             card.innerHTML = `
                 <div class="item-image">
-                    ${item.image_url
-                        ? `<img src="${item.image_url}" alt="${item.category}" style="width:100%;height:100%;object-fit:cover;">`
-                        : `<span>PHOTO</span>`}
+                    <span>ไม่แสดงรูปภาพ</span>
                 </div>
                 <div class="item-info">
                     <div class="item-top">
@@ -558,7 +556,7 @@ async function loadMyClaims() {
     container.innerHTML = claims.map((item) => `
         <article class="item-card my-claim-card">
             <div class="item-image">
-                ${item.image_url ? `<img src="${escapeClaimHtml(item.image_url)}" alt="รูปสิ่งของ" style="width:100%;height:100%;object-fit:cover;">` : '<span>PHOTO</span>'}
+                <span>ไม่แสดงรูปภาพ</span>
             </div>
             <div class="item-info">
                     <strong class="claim-item-name">${escapeClaimHtml(item.item_name || item.category || 'สิ่งของ')}</strong>
@@ -627,7 +625,7 @@ async function loadMyLostItems() {
     container.innerHTML = visibleLostItems.map((item) => `
         <article class="item-card my-lost-card" data-lost-id="${item.id}" role="button" tabindex="0">
             <div class="item-image">
-                ${item.image_url ? `<img src="${escapeClaimHtml(item.image_url)}" alt="รูปของที่หาย" style="width:100%;height:100%;object-fit:cover;">` : '<span>PHOTO</span>'}
+                <span>ไม่แสดงรูปภาพ</span>
             </div>
             <div class="item-info">
                 <div class="item-top"><span class="item-category">${escapeClaimHtml(item.category || 'สิ่งของ')}</span><span class="item-time">กำลังตามหา</span></div>
@@ -675,7 +673,7 @@ async function loadAllLostItems() {
 
     container.innerHTML = visiblePosts.slice(0, 6).map((item) => `
         <article class="item-card public-lost-card" data-public-lost-id="${item.id}" role="button" tabindex="0">
-            <div class="item-image">${item.image_url ? `<img src="${escapeClaimHtml(item.image_url)}" alt="รูปของที่หาย" style="width:100%;height:100%;object-fit:cover;">` : '<span>PHOTO</span>'}</div>
+            <div class="item-image"><span>ไม่แสดงรูปภาพ</span></div>
             <div class="item-info">
                 <div class="item-top"><span class="item-category">${escapeClaimHtml(item.category || 'สิ่งของ')}</span><span class="item-time">กำลังตามหา</span></div>
                 <h3>${escapeClaimHtml(item.item_name || 'ไม่ระบุชื่อสิ่งของ')}</h3>

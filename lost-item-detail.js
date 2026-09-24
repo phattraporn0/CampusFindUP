@@ -186,15 +186,8 @@ async function loadDetail() {
     if (dateEl) dateEl.textContent = item.found_date;
     if (timeEl) timeEl.textContent = item.found_time || "-";
 
-    if (imageEl && item.image_url) {
-        imageEl.src = item.image_url;
-        imageEl.hidden = false;
-        if (photoPlaceholder) photoPlaceholder.hidden = true;
-        imageEl.addEventListener("error", () => {
-            imageEl.hidden = true;
-            if (photoPlaceholder) photoPlaceholder.hidden = false;
-        }, { once: true });
-    }
+    if (imageEl) imageEl.hidden = true;
+    if (photoPlaceholder) photoPlaceholder.hidden = false;
 
     if (claimBtn && item.status !== 'claimed') {
         claimBtn.disabled = true;

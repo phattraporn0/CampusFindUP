@@ -293,13 +293,6 @@
         const data =
             JSON.parse(savedData);
 
-        const successImage = document.getElementById("foundSuccessImage");
-        if (successImage && data.image_url) {
-            successImage.src = data.image_url;
-            successImage.style.display = "block";
-        }
-
-
         // หมวดหมู่
         const category =
             document.getElementById("itemCategory");

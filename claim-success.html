@@ -288,10 +288,7 @@
         if (claimItemDescription) claimItemDescription.textContent = `${claimedItem.item_name || claimedItem.category || 'สิ่งของ'}: ${claimedItem.description || 'ไม่ระบุรายละเอียด'}`;
         if (claimItemLocation) claimItemLocation.textContent = `สถานที่พบ: ${claimedItem.location || 'ไม่ระบุ'}`;
         if (claimStorageLocation) claimStorageLocation.textContent = `จุดรับของคืน: ${claimedItem.storage_location || 'กรุณาติดต่อเจ้าหน้าที่รักษาความปลอดภัย'}`;
-        if (claimItemImage && claimedItem.image_url) {
-            claimItemImage.src = claimedItem.image_url;
-            claimItemImage.style.display = 'block';
-        }
+        if (claimItemImage) claimItemImage.hidden = true;
         if (claimItemStatus) claimItemStatus.textContent = claimedItem.status === 'returned' ? 'สถานะ: ส่งคืนแล้ว' : 'สถานะ: รอส่งคืนเจ้าของ';
     }
 

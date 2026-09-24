@@ -7,12 +7,6 @@ const savedData = localStorage.getItem("lostItemData");
 if (savedData) {
 
     const data = JSON.parse(savedData);
-    const successImage = document.getElementById("lostSuccessImage");
-    if (successImage && data.image_url) {
-        successImage.src = data.image_url;
-        successImage.style.display = "block";
-    }
-
     // หมวดหมู่
     const category = document.getElementById("successCategory");
     const itemName = document.getElementById("successItemName");

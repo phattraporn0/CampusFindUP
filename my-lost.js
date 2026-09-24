@@ -42,7 +42,7 @@ function renderPosts() {
 
     list.innerHTML = posts.map((item) => `
         <article class="card" data-id="${item.id}" tabindex="0" role="button">
-            <div class="photo">${item.image_url ? `<img class="photo" src="${escapeHtml(item.image_url)}" alt="รูปสิ่งของ">` : 'ไม่มีรูป'}</div>
+            <div class="photo">ไม่แสดงรูปภาพ</div>
             <div class="info">
                 <span class="status">กำลังตามหา</span>
                 <small>${escapeHtml(item.category || 'สิ่งของ')}</small>

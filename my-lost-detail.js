@@ -27,7 +27,7 @@ if (!itemId) {
     } else {
         detail.innerHTML = `
             <div class="row"><div class="label">Item details</div><div class="value">${escapeHtml(item.details)}</div></div>
-            ${item.image_url ? `<img class="photo" src="${escapeHtml(item.image_url)}" alt="รูปของที่หาย">` : '<div class="placeholder">ไม่มีรูปภาพ</div>'}
+            <div class="placeholder">ไม่แสดงรูปภาพ</div>
             <h1>${escapeHtml(item.item_name || 'ไม่ระบุชื่อสิ่งของ')}</h1>
             <div class="row"><div class="label">หมวดหมู่</div><div class="value">${escapeHtml(item.category)}</div></div>
             <div class="row"><div class="label">รายละเอียด</div><div class="value">${escapeHtml(item.description)}</div></div>
