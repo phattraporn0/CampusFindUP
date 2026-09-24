@@ -424,9 +424,6 @@ function renderItems() {
             const card = document.createElement("div");
             card.className = "item-card";
             card.innerHTML = `
-                <div class="item-image">
-                    <span>ไม่แสดงรูปภาพ</span>
-                </div>
                 <div class="item-info">
                     <div class="item-top">
                         <span class="item-category">${item.category}</span>
@@ -463,7 +460,6 @@ function renderItems() {
                 window.location.href = "lost-item-detail.html";
             });
 
-            card.querySelector('.item-image')?.remove();
             itemsContainer.appendChild(card);
         });
     }
@@ -556,9 +552,6 @@ async function loadMyClaims() {
 
     container.innerHTML = claims.map((item) => `
         <article class="item-card my-claim-card">
-            <div class="item-image">
-                <span>ไม่แสดงรูปภาพ</span>
-            </div>
             <div class="item-info">
                     <strong class="claim-item-name">${escapeClaimHtml(item.item_name || item.category || 'สิ่งของ')}</strong>
                 <div class="item-top"><span class="item-category">${escapeClaimHtml(item.category)}</span><span class="item-time">${claimStatusText(item.status)}</span></div>
@@ -625,9 +618,6 @@ async function loadMyLostItems() {
 
     container.innerHTML = visibleLostItems.map((item) => `
         <article class="item-card my-lost-card" data-lost-id="${item.id}" role="button" tabindex="0">
-            <div class="item-image">
-                <span>ไม่แสดงรูปภาพ</span>
-            </div>
             <div class="item-info">
                 <div class="item-top"><span class="item-category">${escapeClaimHtml(item.category || 'สิ่งของ')}</span><span class="item-time">กำลังตามหา</span></div>
                 <h3>${escapeClaimHtml(item.item_name || item.description || 'ไม่ระบุชื่อสิ่งของ')}</h3>
@@ -674,7 +664,6 @@ async function loadAllLostItems() {
 
     container.innerHTML = visiblePosts.slice(0, 6).map((item) => `
         <article class="item-card public-lost-card" data-public-lost-id="${item.id}" role="button" tabindex="0">
-            <div class="item-image"><span>ไม่แสดงรูปภาพ</span></div>
             <div class="item-info">
                 <div class="item-top"><span class="item-category">${escapeClaimHtml(item.category || 'สิ่งของ')}</span><span class="item-time">กำลังตามหา</span></div>
                 <h3>${escapeClaimHtml(item.item_name || 'ไม่ระบุชื่อสิ่งของ')}</h3>
@@ -684,9 +673,8 @@ async function loadAllLostItems() {
         </article>
     `).join('');
 
-    container.querySelectorAll('.public-lost-card').forEach((card) => {
-        card.querySelector('.item-image')?.remove();
-        card.querySelector('.item-location')?.remove();
+    container.querySelectorAll('.public-lost-card .item-location').forEach((node, index) => {
+        if (index % 2 === 0) node.remove();
     });
     container.querySelectorAll('[data-public-lost-id]').forEach((card) => {
         const open = () => { window.location.href = `lost-post-detail.html?id=${encodeURIComponent(card.dataset.publicLostId)}`; };
