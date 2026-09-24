@@ -565,11 +565,61 @@ const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
 
+    const loginEmailInput = document.getElementById("loginEmail");
+    const loginPasswordError = document.getElementById("loginPasswordError");
+    const loginEmailError = document.getElementById("loginEmailError");
+
+    function setLoginFieldError(input, errorElement, message = "") {
+        if (!input || !errorElement) return;
+        errorElement.textContent = message;
+        input.classList.toggle("input-error", Boolean(message));
+        input.setAttribute("aria-invalid", message ? "true" : "false");
+    }
+
+    function clearLoginErrors() {
+        setLoginFieldError(loginEmailInput, loginEmailError);
+        setLoginFieldError(loginPassword, loginPasswordError);
+    }
+
+    [loginEmailInput, loginPassword].forEach((input) => {
+        input?.addEventListener("input", () => {
+            const errorElement = input === loginEmailInput ? loginEmailError : loginPasswordError;
+            setLoginFieldError(input, errorElement);
+        });
+    });
+
     loginForm.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        const email = loginForm.querySelector('input[type="email"]').value.trim();
-        const pass = document.getElementById("loginPassword").value;
+        const email = loginEmailInput.value.trim();
+        const pass = loginPassword.value;
+
+        clearLoginErrors();
+
+        const emailMissing = !email;
+        const passwordMissing = !pass;
+        if (emailMissing || passwordMissing) {
+            const missingMessage = "กรุณากรอกอีเมลและรหัสผ่านให้ครบถ้วน";
+            if (emailMissing) {
+                setLoginFieldError(loginEmailInput, loginEmailError, missingMessage);
+            }
+            if (passwordMissing) {
+                setLoginFieldError(loginPassword, loginPasswordError, missingMessage);
+            }
+            (emailMissing ? loginEmailInput : loginPassword).focus();
+            return;
+        }
+
+        const universityEmailPattern = /^[^\s@]+@up\.ac\.th$/i;
+        if (!universityEmailPattern.test(email)) {
+            setLoginFieldError(
+                loginEmailInput,
+                loginEmailError,
+                "กรุณาใช้อีเมลมหาวิทยาลัยที่ลงท้ายด้วย @up.ac.th"
+            );
+            loginEmailInput.focus();
+            return;
+        }
 
         const submitBtn = loginForm.querySelector('button[type="submit"]');
         if (submitBtn) submitBtn.disabled = true;
@@ -582,7 +632,12 @@ if (loginForm) {
         if (submitBtn) submitBtn.disabled = false;
 
         if (error) {
-            alert("เข้าสู่ระบบไม่สำเร็จ: " + error.message);
+            setLoginFieldError(
+                loginPassword,
+                loginPasswordError,
+                "อีเมลหรือรหัสผ่านไม่ถูกต้อง หรือไม่พบบัญชีผู้ใช้"
+            );
+            loginPassword.focus();
             return;
         }
 

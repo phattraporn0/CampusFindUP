@@ -589,3 +589,111 @@ input, select, textarea, button { max-width:100%; font-size:16px; }
     .category-btn { flex:1 1 140px; }
     .two-column { grid-template-columns:1fr; }
 }
+
+/* Shared visual language with report-lost.css. */
+body {
+    background:
+        radial-gradient(circle at 8% 0%, rgba(99,102,241,.12), transparent 28rem),
+        #F7F8FC;
+}
+
+.topbar {
+    background:linear-gradient(135deg, #312E81 0%, #4338CA 55%, #6366F1 100%);
+    box-shadow:0 8px 24px rgba(49,46,129,.18);
+}
+
+.card {
+    border:1px solid rgba(99,102,241,.08);
+    box-shadow:0 16px 42px rgba(31,41,85,.08);
+}
+
+.card-header {
+    background:linear-gradient(180deg, #FFFFFF 0%, #FAFAFF 100%);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    border-color:#D8DCE5;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color:#4F46E5;
+    box-shadow:0 0 0 4px rgba(79,70,229,.10);
+}
+
+.form-group select {
+    appearance:none;
+    cursor:pointer;
+    padding-right:44px;
+    background-image:linear-gradient(45deg, transparent 50%, #6366F1 50%), linear-gradient(135deg, #6366F1 50%, transparent 50%);
+    background-position:calc(100% - 21px) 52%, calc(100% - 15px) 52%;
+    background-size:6px 6px, 6px 6px;
+    background-repeat:no-repeat;
+}
+
+.category-select {
+    gap:10px;
+    padding:14px;
+    border:1px solid #E5E7F2;
+    border-radius:16px;
+    background:#FAFAFF;
+}
+
+.category-btn {
+    color:#3F435C;
+    border-radius:12px;
+    box-shadow:0 2px 5px rgba(31,41,85,.03);
+}
+
+.category-btn.active,
+.category-btn:hover {
+    background:linear-gradient(135deg, #4F46E5, #6366F1);
+    border-color:#4F46E5;
+    color:#fff;
+    box-shadow:0 6px 14px rgba(79,70,229,.2);
+}
+
+.upload-box {
+    border:2px dashed #D8DCE5;
+    background:#FCFCFF;
+}
+
+.upload-box:hover {
+    border-color:#4F46E5;
+    background:#F8F8FF;
+}
+
+.upload-icon {
+    background:#EEF2FF;
+}
+
+.upload-icon i {
+    color:#4F46E5;
+}
+
+.save-btn {
+    background:linear-gradient(135deg, #4F46E5, #6366F1);
+    box-shadow:0 10px 20px rgba(79,70,229,.2);
+}
+
+.save-btn:hover {
+    background:#4338CA;
+    transform:translateY(-1px);
+    box-shadow:0 13px 24px rgba(79,70,229,.27);
+}
+
+/* Keep the same field order as the Lost form while retaining Found-only fields. */
+main > .card:first-of-type .card-body > .form-group:has(#category) { order:1; }
+main > .card:first-of-type .card-body > .form-group:has(#subcategory) { order:2; }
+main > .card:first-of-type .card-body > .form-group:has(#itemName) { order:3; }
+main > .card:first-of-type .card-body > .form-group:has(#brand) { order:4; }
+main > .card:first-of-type .card-body > .two-column:has(#color) { order:5; }
+main > .card:first-of-type .card-body > .form-group:has(#itemDescription) { order:6; }
+main > .card:first-of-type .card-body > .form-group:has(#distinctiveFeature) { order:7; }
+main > .card:first-of-type .card-body > .form-group:has(#itemDefect) { order:8; }
+main > .card:first-of-type .card-body > .form-group:has(#foundLocation) { order:9; }
+main > .card:first-of-type .card-body > .two-column:has(#foundDate) { order:10; }
+main > .card:first-of-type .card-body > .form-group:has(#itemImage) { order:11; }

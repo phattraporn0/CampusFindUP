@@ -1,0 +1,442 @@
+[
+  {
+    "test_case_id": "TC-001",
+    "group": "Positive",
+    "lost": {
+      "item_name": "โทรศัพท์มือถือ",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "สมาร์ตโฟน",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Highly Similar",
+    "reason": "ใช้คำเรียกโทรศัพท์มือถือและสมาร์ตโฟนต่างกัน แต่หมายถึงสิ่งของประเภทเดียวกันและมีสีเดียวกัน"
+  },
+  {
+    "test_case_id": "TC-002",
+    "group": "Positive",
+    "lost": {
+      "item_name": "กระเป๋าเป้",
+      "brand": "",
+      "color": "กรมท่า",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "เป้สะพายหลัง",
+      "brand": "",
+      "color": "น้ำเงินเข้ม",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Highly Similar",
+    "reason": "กระเป๋าเป้และเป้สะพายหลังเป็นคำเรียกสิ่งของชนิดเดียวกัน และสีอยู่ในกลุ่มใกล้เคียงกัน"
+  },
+  {
+    "test_case_id": "TC-003",
+    "group": "Positive",
+    "lost": {
+      "item_name": "โทรศัพท์",
+      "brand": "Samsung",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "มือถือ",
+      "brand": "ซัมซุง",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Highly Similar",
+    "reason": "ใช้ Brand ภาษาอังกฤษและภาษาไทยต่างกัน แต่หมายถึง Samsung และมีชนิดสิ่งของกับสีตรงกัน"
+  },
+  {
+    "test_case_id": "TC-004",
+    "group": "Thai Language Robustness",
+    "lost": {
+      "item_name": "กระเป๋า",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "กระเป๋า",
+      "brand": "",
+      "color": "ดำสนิท",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Similar",
+    "reason": "สีดำและดำสนิทมีความหมายใกล้เคียงกัน แต่ข้อความไม่ได้ระบุรายละเอียดอื่นเพิ่มเติม"
+  },
+  {
+    "test_case_id": "TC-005",
+    "group": "Thai Language Robustness",
+    "lost": {
+      "item_name": "กระเป๋า",
+      "brand": "",
+      "color": "",
+      "material": "ผ้า",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "กระเป๋า",
+      "brand": "",
+      "color": "",
+      "material": "ผ้าไนลอน",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Similar",
+    "reason": "ผ้าไนลอนเป็นวัสดุประเภทผ้า แต่ Found ระบุรายละเอียดวัสดุเฉพาะเจาะจงกว่า"
+  },
+  {
+    "test_case_id": "TC-006",
+    "group": "Positive",
+    "lost": {
+      "item_name": "กระเป๋าสตางค์",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "มีช่องใส่บัตรหลายช่อง",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "กระเป๋าใส่เงิน",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "ภายในมีช่องสำหรับบัตรจำนวนมาก",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Highly Similar",
+    "reason": "ชื่อสิ่งของและประโยคอธิบายต่างกัน แต่สื่อถึงกระเป๋าสตางค์สีดำที่มีช่องใส่บัตรหลายช่อง"
+  },
+  {
+    "test_case_id": "TC-007",
+    "group": "Hard Negative",
+    "lost": {
+      "item_name": "โทรศัพท์มือถือ",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "กระเป๋าเป้",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Different",
+    "reason": "มีคำว่าสีดำเหมือนกัน แต่โทรศัพท์มือถือและกระเป๋าเป้เป็นสิ่งของคนละชนิด"
+  },
+  {
+    "test_case_id": "TC-008",
+    "group": "Structured vs Semantic Conflict",
+    "lost": {
+      "item_name": "อุปกรณ์อิเล็กทรอนิกส์",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "มีรอยขีดด้านหลัง",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "โทรศัพท์มือถือ",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "มีรอยขีดด้านหลัง",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Similar",
+    "reason": "อยู่ใน Category ใหญ่เดียวกันและมีรายละเอียดเหมือนกัน แต่ Subcategory ของ Lost ไม่ละเอียดเท่ากับ Found"
+  },
+  {
+    "test_case_id": "TC-009",
+    "group": "Hard Negative",
+    "lost": {
+      "item_name": "กระเป๋าสะพาย",
+      "brand": "",
+      "color": "แดง",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "โทรศัพท์",
+      "brand": "",
+      "color": "แดง",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Different",
+    "reason": "Category และชนิดสิ่งของต่างกัน แม้จะมีสีแดงเหมือนกัน"
+  },
+  {
+    "test_case_id": "TC-010",
+    "group": "Positive",
+    "lost": {
+      "item_name": "แล็ปท็อป",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "",
+      "distinctive_feature": "มีสติกเกอร์รูปแมวด้านหลัง"
+    },
+    "found": {
+      "item_name": "โน้ตบุ๊ก",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "",
+      "distinctive_feature": "ติดสติกเกอร์แมวบริเวณฝาหลัง"
+    },
+    "expected_relationship": "Highly Similar",
+    "reason": "แล็ปท็อปและโน้ตบุ๊กหมายถึงสิ่งของชนิดเดียวกัน และจุดสังเกตเป็นสติกเกอร์แมวด้านหลังเหมือนกัน"
+  },
+  {
+    "test_case_id": "TC-011",
+    "group": "Hard Negative",
+    "lost": {
+      "item_name": "โทรศัพท์",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "",
+      "distinctive_feature": "มีรอยขีดที่มุมขวา"
+    },
+    "found": {
+      "item_name": "โทรศัพท์",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "",
+      "distinctive_feature": "มีสติกเกอร์รูปแมวด้านหลัง"
+    },
+    "expected_relationship": "Different",
+    "reason": "ชนิดสิ่งของเหมือนกัน แต่จุดสังเกตสำคัญแตกต่างกันอย่างชัดเจน"
+  },
+  {
+    "test_case_id": "TC-012",
+    "group": "Ambiguous",
+    "lost": {
+      "item_name": "มือถือ",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "สมาร์ตโฟน",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Uncertain",
+    "reason": "ข้อมูลทั้งสองสั้นมากและไม่มี Brand รุ่น หรือจุดสังเกตเพียงพอสำหรับแยกสิ่งของแต่ละชิ้น"
+  },
+  {
+    "test_case_id": "TC-013",
+    "group": "Ambiguous",
+    "lost": {
+      "item_name": "กระเป๋า",
+      "brand": "Samsung",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "กระเป๋า",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Uncertain",
+    "reason": "Category และสีใกล้เคียงกัน แต่ Found ขาด Brand และรายละเอียดสำคัญ"
+  },
+  {
+    "test_case_id": "TC-014",
+    "group": "Positive",
+    "lost": {
+      "item_name": "หูฟังไร้สาย",
+      "brand": "",
+      "color": "ขาว",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "wireless earbuds",
+      "brand": "",
+      "color": "ขาว",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Highly Similar",
+    "reason": "เป็นคำภาษาไทยและภาษาอังกฤษที่หมายถึงหูฟังไร้สายชนิดเดียวกัน และมีสีตรงกัน"
+  },
+  {
+    "test_case_id": "TC-015",
+    "group": "Thai Language Robustness",
+    "lost": {
+      "item_name": "กระเป๋าสตางค์",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "กระเป๋าสตางค",
+      "brand": "",
+      "color": "ดำ",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Similar",
+    "reason": "ข้อความมีการสะกดคำว่ากระเป๋าสตางค์ต่างกันหนึ่งตัวอักษร แต่ยังสื่อถึงสิ่งของเดียวกัน"
+  },
+  {
+    "test_case_id": "TC-016",
+    "group": "Positive",
+    "lost": {
+      "item_name": "บัตรนักศึกษามหาวิทยาลัย",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "บัตรประจำตัวนักศึกษา",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Highly Similar",
+    "reason": "เป็นคำเรียกต่างรูปแบบของบัตรนักศึกษาและมีบริบทความหมายเดียวกัน"
+  },
+  {
+    "test_case_id": "TC-017",
+    "group": "Ambiguous",
+    "lost": {
+      "item_name": "กุญแจรถ",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "พร้อมพวงกุญแจรูปหมี",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "พวงกุญแจ",
+      "brand": "",
+      "color": "",
+      "material": "",
+      "description": "รูปหมีติดกับกุญแจรถ",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Similar",
+    "reason": "รายละเอียดกล่าวถึงกุญแจรถและพวงกุญแจรูปหมีร่วมกัน แต่ Item Name และ Subcategory ต่างกัน"
+  },
+  {
+    "test_case_id": "TC-018",
+    "group": "Structured vs Semantic Conflict",
+    "lost": {
+      "item_name": "รองเท้าผ้าใบ",
+      "brand": "",
+      "color": "ขาว",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "รองเท้าออกกำลังกาย",
+      "brand": "",
+      "color": "ขาว",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Similar",
+    "reason": "เป็นรองเท้าที่มีความหมายใกล้เคียงและสีตรงกัน แต่ Category หรือ Subcategory อาจต่างกัน"
+  },
+  {
+    "test_case_id": "TC-019",
+    "group": "Ambiguous",
+    "lost": {
+      "item_name": "สมุด",
+      "brand": "",
+      "color": "แดง",
+      "material": "",
+      "description": "มีลายดอกไม้",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "สมุด",
+      "brand": "",
+      "color": "แดง",
+      "material": "",
+      "description": "",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Similar",
+    "reason": "Category ชนิดสิ่งของและสีตรงกัน แต่ Found ไม่มีรายละเอียดลายดอกไม้"
+  },
+  {
+    "test_case_id": "TC-020",
+    "group": "Positive",
+    "lost": {
+      "item_name": "กระเป๋าเป้",
+      "brand": "Adidas",
+      "color": "ดำ",
+      "material": "ผ้าไนลอน",
+      "description": "มีช่องด้านหน้า",
+      "distinctive_feature": ""
+    },
+    "found": {
+      "item_name": "กระเป๋า",
+      "brand": "Adidas",
+      "color": "ดำ",
+      "material": "ผ้า",
+      "description": "มีช่องกระเป๋าด้านหน้า",
+      "distinctive_feature": ""
+    },
+    "expected_relationship": "Highly Similar",
+    "reason": "Brand และสีตรงกัน วัสดุอยู่ในกลุ่มเดียวกัน และรายละเอียดช่องด้านหน้ามีความหมายใกล้เคียงกัน"
+  }
+]

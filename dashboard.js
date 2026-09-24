@@ -706,7 +706,7 @@ supabase.channel('all-lost-items-sync')
 function automatchScore(lost, found) {
     const normalize = (value) => String(value || '').toLowerCase().replace(/[\s\p{P}\p{S}]+/gu, '');
     const lostText = normalize(`${lost.item_name} ${lost.description} ${lost.details}`);
-    const foundText = normalize(`${found.item_name} ${found.description}`);
+    const foundText = normalize(`${found.item_name || ''} ${found.description || ''}`);
     const lostLocation = normalize(lost.location);
     const foundLocation = normalize(found.location);
     let score = 0;
@@ -762,7 +762,7 @@ async function loadMatchNotifications() {
 
 async function loadPublicFoundMatches() {
     let result = await supabase.from('found_items_public')
-        .select('id,item_name,description,category,location,found_date,image_url,status')
+        .select('id,description,category,location,found_date,image_url,status')
         .in('status', ['waiting', 'claimed']);
     if (result.error && /item_name/i.test(result.error.message || '')) {
         result = await supabase.from('found_items_public')

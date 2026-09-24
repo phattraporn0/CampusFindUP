@@ -385,6 +385,18 @@ import { supabase, requireRole } from './supabaseClient.js';
 
 let currentUser = null;
 const editId = new URLSearchParams(window.location.search).get('edit_id');
+
+const categorySubcategories = {
+    "กระเป๋าและสัมภาระ": ["กระเป๋าเป้", "กระเป๋าสะพาย", "กระเป๋าสตางค์", "กระเป๋าเอกสาร"],
+    "บัตรและเอกสาร": ["บัตรนักศึกษา", "บัตรประชาชน", "ใบขับขี่", "เอกสารทั่วไป"],
+    "อุปกรณ์อิเล็กทรอนิกส์": ["โทรศัพท์มือถือ", "แท็บเล็ต", "โน้ตบุ๊ก", "หูฟัง", "อุปกรณ์ชาร์จ"],
+    "กุญแจและอุปกรณ์ล็อก": ["กุญแจบ้าน", "กุญแจรถ", "คีย์การ์ด", "พวงกุญแจ"],
+    "เครื่องแต่งกายและของใช้ส่วนตัว": ["เสื้อผ้า", "รองเท้า", "หมวก", "แว่นตา", "ร่ม"],
+    "เครื่องเขียนและอุปกรณ์การเรียน": ["ปากกา", "ดินสอ", "สมุด", "เครื่องคิดเลข"],
+    "อุปกรณ์กีฬา": ["ลูกบอล", "รองเท้าออกกำลังกาย", "อุปกรณ์กีฬาอื่น ๆ"],
+    "อื่น ๆ": []
+};
+
 requireRole(["user"]).then(async (user) => {
     currentUser = user;
     if (editId) {
@@ -392,12 +404,22 @@ requireRole(["user"]).then(async (user) => {
         if (!item) return;
         document.getElementById('itemName').value = item.item_name || '';
         document.getElementById('itemDescription').value = item.description || '';
-        document.getElementById('itemDetails').value = item.details || '';
+        document.getElementById('brand').value = item.brand || '';
+        document.getElementById('color').value = item.color || '';
+        document.getElementById('material').value = item.material || '';
+        document.getElementById('distinctiveFeature').value = item.distinctive_feature || item.details || '';
         document.getElementById('lostLocation').value = item.location || '';
         document.getElementById('lostDate').value = item.lost_date || '';
         document.getElementById('lostTime').value = item.lost_time || '';
-        if (categoryInput) categoryInput.value = item.category || '';
-        categoryButtons.forEach((button) => button.classList.toggle('active', button.textContent.trim() === item.category));
+        if (categoryInput) {
+            const knownCategory = Object.prototype.hasOwnProperty.call(categorySubcategories, item.category);
+            const categoryForForm = knownCategory ? item.category : "อื่น ๆ";
+            categoryInput.value = categoryForForm;
+            categoryButtons.forEach((button) => button.classList.toggle('active', button.textContent.trim() === categoryForForm));
+            if (otherCategoryBox) otherCategoryBox.style.display = knownCategory ? "none" : "block";
+            if (!knownCategory) otherCategoryInput.value = item.category || '';
+            updateSubcategoryOptions(categoryForForm, item.subcategory || '');
+        }
     }
 });
 
@@ -409,6 +431,37 @@ const categoryButtons = document.querySelectorAll(".category-btn");
 const categoryInput = document.getElementById("category");
 const otherCategoryBox = document.getElementById("otherCategoryBox");
 const otherCategoryInput = document.getElementById("otherCategory");
+const subcategoryInput = document.getElementById("subcategory");
+const otherSubcategoryBox = document.getElementById("otherSubcategoryBox");
+const otherSubcategoryInput = document.getElementById("otherSubcategory");
+
+function updateSubcategoryOptions(category, selectedValue = "") {
+    if (!subcategoryInput) return;
+
+    const options = categorySubcategories[category] || [];
+    const optionsWithOther = [...options, "อื่น ๆ"];
+    subcategoryInput.innerHTML = '<option value="">-- เลือกประเภทย่อย --</option>';
+    optionsWithOther.forEach((subcategory) => {
+        const option = document.createElement("option");
+        option.value = subcategory;
+        option.textContent = subcategory;
+        subcategoryInput.appendChild(option);
+    });
+
+    const isCustomSubcategory = selectedValue && !options.includes(selectedValue);
+    subcategoryInput.value = isCustomSubcategory ? "อื่น ๆ" : (selectedValue || "");
+    if (otherSubcategoryBox) otherSubcategoryBox.style.display = isCustomSubcategory ? "block" : "none";
+    if (otherSubcategoryInput) otherSubcategoryInput.value = isCustomSubcategory ? selectedValue : "";
+}
+
+if (subcategoryInput) {
+    subcategoryInput.addEventListener("change", () => {
+        const isOther = subcategoryInput.value === "อื่น ๆ";
+        if (otherSubcategoryBox) otherSubcategoryBox.style.display = isOther ? "block" : "none";
+        if (!isOther && otherSubcategoryInput) otherSubcategoryInput.value = "";
+        if (isOther) otherSubcategoryInput?.focus();
+    });
+}
 
 categoryButtons.forEach(function (button) {
     button.addEventListener("click", function () {
@@ -416,6 +469,7 @@ categoryButtons.forEach(function (button) {
         this.classList.add("active");
         const selectedCategory = this.textContent.trim();
         if (categoryInput) categoryInput.value = selectedCategory;
+        updateSubcategoryOptions(selectedCategory);
 
         if (selectedCategory === "อื่น ๆ") {
             if (otherCategoryBox) otherCategoryBox.style.display = "block";
@@ -425,6 +479,10 @@ categoryButtons.forEach(function (button) {
         }
     });
 });
+
+const initialCategory = categoryButtons[0]?.textContent.trim() || categoryInput?.value || "";
+if (categoryInput) categoryInput.value = initialCategory;
+updateSubcategoryOptions(categoryInput?.value || initialCategory);
 
 // =====================================
 // UPLOAD IMAGE (เก็บไฟล์ไว้ในตัวแปร ยังไม่อัปโหลดจนกว่าจะกดยืนยัน)
@@ -454,6 +512,33 @@ if (imageInput && uploadBox) {
 // SUBMIT LOST ITEM → บันทึกลง Supabase
 // =====================================
 
+function buildLostMatchingText({ itemName, brand, color, material, description, distinctiveFeature }) {
+    return [
+        ["ชื่อสิ่งของ", itemName],
+        ["ยี่ห้อ", brand],
+        ["สี", color],
+        ["วัสดุ", material],
+        ["รายละเอียด", description],
+        ["จุดสังเกต", distinctiveFeature]
+    ]
+        .filter(([, value]) => String(value ?? '').trim() !== '')
+        .map(([label, value]) => `${label}: ${String(value).trim()}`)
+        .join('\n');
+}
+
+function validateLostEmbeddingResponse(response) {
+    if (!response || response.success !== true || !Array.isArray(response.embedding)) {
+        throw new Error('Edge Function returned an invalid embedding response.');
+    }
+    if (response.dimension !== 384 || response.embedding.length !== 384) {
+        throw new Error('Embedding dimension must be 384.');
+    }
+    if (response.embedding.some((value) => typeof value !== 'number' || !Number.isFinite(value))) {
+        throw new Error('Embedding contains an invalid numeric value.');
+    }
+    return response.embedding;
+}
+
 const submitLostBtn = document.querySelector(".submit-btn");
 
 if (submitLostBtn) {
@@ -463,20 +548,32 @@ if (submitLostBtn) {
 
         const itemName = document.getElementById("itemName")?.value.trim() || "";
         const description = document.getElementById("itemDescription")?.value.trim() || "";
-        const itemDetails = document.getElementById("itemDetails")?.value.trim() || "";
+        const brand = document.getElementById("brand")?.value.trim() || "";
+        const color = document.getElementById("color")?.value.trim() || "";
+        const material = document.getElementById("material")?.value.trim() || "";
+        const distinctiveFeature = document.getElementById("distinctiveFeature")?.value.trim() || "";
         const location = document.getElementById("lostLocation")?.value.trim() || "";
         const date = document.getElementById("lostDate")?.value || "";
         const time = document.getElementById("lostTime")?.value || "";
         const category = document.getElementById("category")?.value || "";
         const otherCategory = document.getElementById("otherCategory")?.value.trim() || "";
+        const selectedSubcategory = document.getElementById("subcategory")?.value || "";
+        const otherSubcategory = document.getElementById("otherSubcategory")?.value.trim() || "";
+        const finalSubcategory = selectedSubcategory === "อื่น ๆ" ? otherSubcategory : selectedSubcategory;
 
         if (!category) { alert("กรุณาเลือกหมวดหมู่สิ่งของ"); return; }
         if (!itemName) { alert("กรุณากรอกชื่อสิ่งของ / ยี่ห้อ"); return; }
         if (!description) { alert("กรุณากรอกรายละเอียดของสิ่งของ"); return; }
         if (!location) { alert("กรุณากรอกสถานที่คาดว่าทำหาย"); return; }
         if (!date) { alert("กรุณาเลือกวันที่ทำหาย"); return; }
-
-        if (!itemDetails) { alert("กรุณากรอกรายละเอียดสิ่งของ"); return; }
+        if (selectedSubcategory === "อื่น ๆ" && !otherSubcategory) {
+            alert("กรุณาระบุประเภทย่อย");
+            return;
+        }
+        if (category !== "อื่น ๆ" && Object.prototype.hasOwnProperty.call(categorySubcategories, category) && !finalSubcategory) {
+            alert("กรุณาเลือกประเภทย่อย");
+            return;
+        }
 
         if (!currentUser) {
             alert("กรุณาเข้าสู่ระบบก่อนแจ้งของหาย");
@@ -493,7 +590,11 @@ if (submitLostBtn) {
         // อัปโหลดรูป (ถ้ามี) ไปที่ Storage bucket "item-photos"
         let imageUrl = null;
         if (selectedFile) {
-            const filePath = `lost/${currentUser.id}/${Date.now()}_${selectedFile.name}`;
+            const originalExtension = selectedFile.name.includes('.')
+                ? selectedFile.name.slice(selectedFile.name.lastIndexOf('.') + 1).toLowerCase()
+                : '';
+            const safeExtension = originalExtension.replace(/[^a-z0-9]/g, '') || 'bin';
+            const filePath = `lost/${currentUser.id}/${Date.now()}_${crypto.randomUUID()}.${safeExtension}`;
             const { error: uploadError } = await supabase
                 .storage
                 .from("item-photos")
@@ -513,9 +614,14 @@ if (submitLostBtn) {
         if (editId) {
             const { error: updateError } = await supabase.from('lost_items').update({
                 category: finalCategory,
+                subcategory: finalSubcategory || null,
                 item_name: itemName,
+                brand: brand || null,
+                color: color || null,
+                material: material || null,
                 description,
-                details: itemDetails,
+                details: distinctiveFeature || null,
+                distinctive_feature: distinctiveFeature || null,
                 location,
                 lost_date: date,
                 lost_time: time || null,
@@ -532,9 +638,14 @@ if (submitLostBtn) {
             .insert({
                 user_id: currentUser.id,
                 category: finalCategory,
+                subcategory: finalSubcategory || null,
                 item_name: itemName,
+                brand: brand || null,
+                color: color || null,
+                material: material || null,
                 description: description,
-                details: itemDetails,
+                details: distinctiveFeature || null,
+                distinctive_feature: distinctiveFeature || null,
                 location: location,
                 lost_date: date,
                 lost_time: time || null,
@@ -548,6 +659,57 @@ if (submitLostBtn) {
 
         if (error) {
             alert("บันทึกไม่สำเร็จ: " + error.message);
+            return;
+        }
+
+        const matchingText = buildLostMatchingText({
+            itemName,
+            brand,
+            color,
+            material,
+            description,
+            distinctiveFeature
+        });
+
+        const { data: embeddingResponse, error: embeddingError } = await supabase.functions.invoke(
+            'generate-embedding',
+            {
+                body: {
+                    text: matchingText,
+                    type: 'query'
+                }
+            }
+        );
+
+        if (embeddingError) {
+            alert(`บันทึกข้อมูลแล้ว แต่สร้าง Embedding ไม่สำเร็จ: ${embeddingError.message}`);
+            return;
+        }
+
+        let embedding;
+        try {
+            embedding = validateLostEmbeddingResponse(embeddingResponse);
+        } catch (embeddingValidationError) {
+            alert(`บันทึกข้อมูลแล้ว แต่ได้รับ Embedding ไม่ถูกต้อง: ${embeddingValidationError.message}`);
+            return;
+        }
+
+        const { data: updatedEmbeddingRow, error: embeddingUpdateError } = await supabase
+            .from('lost_items')
+            .update({ embedding })
+            .eq('id', data.id)
+            .eq('user_id', currentUser.id)
+            .select('id')
+            .single();
+
+        if (
+            embeddingUpdateError
+            || !updatedEmbeddingRow
+            || updatedEmbeddingRow.id !== data.id
+        ) {
+            const updateMessage = embeddingUpdateError?.message
+                || 'ไม่พบแถวข้อมูลที่ถูกอัปเดต หรือรหัสรายการไม่ตรงกัน';
+            alert(`บันทึกข้อมูลแล้ว แต่จัดเก็บ Embedding ไม่สำเร็จ: ${updateMessage}`);
             return;
         }
 

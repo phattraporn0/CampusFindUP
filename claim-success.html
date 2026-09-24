@@ -197,7 +197,7 @@
 
             <img
                 id="claimQrImage"
-                src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=CampusFind-UP-Claim"
+                hidden
                 alt="QR Code">
 
         </div>
@@ -236,9 +236,8 @@
 <script type="module">
     import { supabase, requireLogin } from './supabaseClient.js';
 
-    await requireLogin();
+    const currentUser = await requireLogin();
     const expiryElement = document.getElementById("qrExpiry");
-    const expiresAt = localStorage.getItem("claimQrExpiresAt");
     const claimToken = localStorage.getItem("claimToken");
     const qrImage = document.getElementById("claimQrImage");
     const claimItemDescription = document.getElementById("claimItemDescription");
@@ -247,16 +246,41 @@
     const claimStorageLocation = document.getElementById("claimStorageLocation");
     const claimItemStatus = document.getElementById("claimItemStatus");
     const qrCodeCard = document.getElementById("qrCodeCard");
+    const claimDetails = document.getElementById("claimDetails");
+    const pageTitle = document.querySelector("h1");
+    const pageSubtitle = document.querySelector(".subtitle");
     const itemId = new URLSearchParams(window.location.search).get("item_id");
 
-    if (!claimToken || !expiresAt) {
-        window.location.replace("dashboard.html");
+    let claimedItem = null;
+    let claimError = null;
+    if (currentUser && claimToken) {
+        ({ data: claimedItem, error: claimError } = await supabase
+            .from('found_items')
+            .select('id, item_name, description, category, location, storage_location, image_url, status, claim_token, claim_expires_at, claimant_id')
+            .eq('claim_token', claimToken)
+            .eq('claimant_id', currentUser.id)
+            .eq('status', 'claim_verified')
+            .maybeSingle());
     }
 
-    const itemQuery = itemId
-        ? supabase.from('found_items').select('item_name, description, category, location, storage_location, image_url, status').eq('id', itemId).single()
-        : supabase.from('found_items').select('item_name, description, category, location, storage_location, image_url, status').eq('claim_token', claimToken).single();
-    const { data: claimedItem } = await itemQuery;
+    const expiresAt = claimedItem?.claim_expires_at || null;
+    const claimIsValid = !claimError
+        && Boolean(currentUser)
+        && Boolean(claimedItem)
+        && claimedItem.claim_token === claimToken
+        && (!itemId || claimedItem.id === itemId)
+        && claimedItem.status === 'claim_verified'
+        && claimedItem.claimant_id === currentUser.id
+        && Boolean(expiresAt)
+        && new Date(expiresAt).getTime() > Date.now();
+
+    if (!claimIsValid) {
+        if (qrCodeCard) qrCodeCard.hidden = true;
+        if (claimDetails) claimDetails.hidden = true;
+        if (claimItemImage) claimItemImage.hidden = true;
+        if (pageTitle) pageTitle.textContent = 'ไม่สามารถยืนยันการเคลมได้';
+        if (pageSubtitle) pageSubtitle.textContent = 'Claim ไม่ถูกต้องหรือหมดอายุ';
+    } else {
     if (claimedItem?.status === 'returned') {
         if (qrCodeCard) qrCodeCard.hidden = true;
     }
@@ -271,9 +295,10 @@
         if (claimItemStatus) claimItemStatus.textContent = claimedItem.status === 'returned' ? 'สถานะ: ส่งคืนแล้ว' : 'สถานะ: รอส่งคืนเจ้าของ';
     }
 
-    if (qrImage && claimToken) {
+    if (qrImage && claimedItem.claim_token) {
+        qrImage.hidden = false;
         qrImage.src = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data="
-            + encodeURIComponent(`CampusFind-UP-Claim:${claimToken}`);
+            + encodeURIComponent(`CampusFind-UP-Claim:${claimedItem.claim_token}`);
     }
 
     if (expiryElement && expiresAt) {
@@ -301,6 +326,7 @@
         if (renderExpiry()) {
             setInterval(renderExpiry, 1000);
         }
+    }
     }
 </script>
 

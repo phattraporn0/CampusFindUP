@@ -90,13 +90,14 @@
                     <label>หมวดหมู่สิ่งของ <span>*</span></label>
 
                     <select id="category">
-
-                        <option value="กระเป๋า">กระเป๋า</option>
-                        <option value="โทรศัพท์">โทรศัพท์</option>
-                        <option value="บัตร">บัตร</option>
-                        <option value="กุญแจ">กุญแจ</option>
+                        <option value="กระเป๋าและสัมภาระ">กระเป๋าและสัมภาระ</option>
+                        <option value="บัตรและเอกสาร">บัตรและเอกสาร</option>
+                        <option value="อุปกรณ์อิเล็กทรอนิกส์">อุปกรณ์อิเล็กทรอนิกส์</option>
+                        <option value="กุญแจและอุปกรณ์ล็อก">กุญแจและอุปกรณ์ล็อก</option>
+                        <option value="เครื่องแต่งกายและของใช้ส่วนตัว">เครื่องแต่งกายและของใช้ส่วนตัว</option>
+                        <option value="เครื่องเขียนและอุปกรณ์การเรียน">เครื่องเขียนและอุปกรณ์การเรียน</option>
+                        <option value="อุปกรณ์กีฬา">อุปกรณ์กีฬา</option>
                         <option value="other">อื่น ๆ</option>
-
                     </select>
                     <div id="otherCategoryBox" style="display:none; margin-top:15px;">
 
@@ -108,6 +109,16 @@
 
 </div>
 
+                </div>
+
+                <div class="form-group">
+                    <label>ประเภทย่อย <span>*</span></label>
+                    <select id="subcategory">
+                        <option value="">-- เลือกประเภทย่อย --</option>
+                    </select>
+                    <div id="otherSubcategoryBox" style="display:none; margin-top:12px;">
+                        <input type="text" id="otherSubcategory" placeholder="โปรดระบุประเภทย่อย">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -150,12 +161,26 @@
 
                 <div class="form-group">
 
-    <label>รายละเอียดของสิ่งของ <span>*</span></label>
+                    <label>ชื่อสิ่งของ <span>*</span></label>
+                    <input type="text" id="itemName" placeholder="เช่น พัดลม Hatari หรือ ปากกา Lamy">
 
-    <label>ชื่อสิ่งของ / ยี่ห้อ <span>*</span></label>
-    <input type="text" id="itemName" placeholder="เช่น พัดลม Hatari หรือ ปากกา Lamy">
+                </div>
 
-</div>
+                <div class="form-group">
+                    <label>ยี่ห้อ</label>
+                    <input type="text" id="brand" placeholder="เช่น Samsung, Coach หรือไม่ทราบ">
+                </div>
+
+                <div class="two-column">
+                    <div class="form-group">
+                        <label>สี</label>
+                        <input type="text" id="color" placeholder="เช่น ดำ น้ำเงิน หรือหลายสี">
+                    </div>
+                    <div class="form-group">
+                        <label>วัสดุ</label>
+                        <input type="text" id="material" placeholder="เช่น ผ้า โลหะ หรือพลาสติก">
+                    </div>
+                </div>
 
 <div class="form-group">
 
@@ -206,6 +231,14 @@
 
                     </label>
 
+                </div>
+
+                <div class="form-group">
+                    <label>จุดเด่นของสิ่งของ</label>
+                    <textarea
+                        id="distinctiveFeature"
+                        rows="4"
+                        placeholder="เช่น มีสติกเกอร์รูปแมวด้านหลัง หรือมีรอยขีดที่มุมขวา"></textarea>
                 </div>
 
             </div>
@@ -287,7 +320,7 @@
     <script>
     (() => {
         const arrange = () => {
-            const ids = ['category', 'itemName', 'itemDescription', 'itemDefect', 'foundLocation', 'foundDate', 'itemImage'];
+            const ids = ['category', 'subcategory', 'itemName', 'brand', 'color', 'material', 'itemDescription', 'distinctiveFeature', 'itemDefect', 'foundLocation', 'foundDate', 'itemImage'];
             const fields = ids.map((id) => document.getElementById(id));
             if (fields.some((field) => !field)) return;
             const groups = fields.map((field) => field.closest('.form-group') || field.closest('.two-column'));

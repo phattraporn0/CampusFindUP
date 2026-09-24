@@ -129,7 +129,7 @@
 type="button"
 class="category-btn active">
 
-กระเป๋า
+กระเป๋าและสัมภาระ
 
 </button>
 
@@ -137,7 +137,7 @@ class="category-btn active">
 type="button"
 class="category-btn">
 
-บัตร/เอกสาร
+บัตรและเอกสาร
 
 </button>
 
@@ -153,7 +153,7 @@ class="category-btn">
 type="button"
 class="category-btn">
 
-กุญแจ
+กุญแจและอุปกรณ์ล็อก
 
 </button>
 
@@ -161,7 +161,23 @@ class="category-btn">
 type="button"
 class="category-btn">
 
-เครื่องแต่งกาย
+เครื่องแต่งกายและของใช้ส่วนตัว
+
+</button>
+
+<button
+type="button"
+class="category-btn">
+
+เครื่องเขียนและอุปกรณ์การเรียน
+
+</button>
+
+<button
+type="button"
+class="category-btn">
+
+อุปกรณ์กีฬา
 
 </button>
 
@@ -195,6 +211,16 @@ placeholder="โปรดระบุหมวดหมู่">
 </div>
 
 <div class="form-group">
+<label for="subcategory">ประเภทย่อย <span>*</span></label>
+<select id="subcategory" name="subcategory">
+<option value="">-- เลือกประเภทย่อย --</option>
+</select>
+<div id="otherSubcategoryBox" style="display:none; margin-top:12px;">
+<input type="text" id="otherSubcategory" placeholder="โปรดระบุประเภทย่อย">
+</div>
+</div>
+
+<div class="form-group">
 
 <label>
 
@@ -210,34 +236,36 @@ placeholder="เช่น กระเป๋าสีดำ Coach">
 
 </div>
 
-<!-- <div class="form-group">
+<div class="form-group">
+<label for="brand">ยี่ห้อ</label>
+<input type="text" id="brand" placeholder="เช่น Samsung, Coach หรือไม่ทราบ">
+</div>
 
-<label>
+<div class="two-column">
+<div class="form-group">
+<label for="color">สี</label>
+<input type="text" id="color" placeholder="เช่น ดำ น้ำเงิน หรือหลายสี">
+</div>
 
-จุดเด่น / ตำหนิ
-
-</label>
-
-<textarea
-id="itemDetail"
-rows="5"
-placeholder="เช่น มีรอยขีดข่วน มีพวงกุญแจสีดำ"></textarea>
-
-</div> -->
+<div class="form-group">
+<label for="material">วัสดุ</label>
+<input type="text" id="material" placeholder="เช่น ผ้า โลหะ หรือพลาสติก">
+</div>
+</div>
 
 <div class="form-group">
 
-<label>รายละเอียดสิ่งของ <span>*</span></label>
-<textarea id="itemDetails" rows="4" placeholder="เช่น สี ขนาด วัสดุ หรือข้อมูลที่ช่วยระบุสิ่งของ"></textarea>
+<label>จุดเด่นของสิ่งของ</label>
+<textarea id="distinctiveFeature" rows="4" placeholder="เช่น มีสติกเกอร์รูปแมวด้านหลัง หรือมีรอยขีดที่มุมขวา"></textarea>
 
 </div>
 
 <div class="form-group">
-<label>จุดเด่น / ตำหนิ <span>*</span></label>
+<label>รายละเอียดสิ่งของ <span>*</span></label>
 <textarea
         id="itemDescription"
         rows="5"
-        placeholder="เช่น กระเป๋าสีดำ ยี่ห้อ Coach มีพวงกุญแจตุ๊กตาหมีสีน้ำตาล..."
+        placeholder="เช่น กระเป๋าสะพายขนาดกลาง มีช่องใส่ของด้านหน้า"
     ></textarea>
 
 </div>

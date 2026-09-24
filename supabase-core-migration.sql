@@ -265,14 +265,12 @@ begin
 
     v_answer := public.normalize_claim_text(p_answer);
     v_secret := public.normalize_claim_text(
-        coalesce(v_item.description, '') || ' ' ||
         coalesce(v_item.defect, '') || ' ' ||
-        coalesce(v_item.additional_note, '') || ' ' ||
         coalesce(v_item.guard_remark, '')
     );
 
     -- The answer must contain a real phrase/word from the reporter's
-    -- details, the defect, or the guard's note. Do not use fuzzy similarity:
+    -- defect or the guard's note. Do not use fuzzy similarity:
     -- short values such as "20" must not pass by accident.
     v_is_match := length(v_answer) >= 2
         and v_answer !~ '^[0-9]+$'
@@ -288,9 +286,7 @@ begin
                 select 1
                 from regexp_split_to_table(coalesce(p_answer, ''), '[[:space:][:punct:]]+') as answer_part
                 cross join lateral regexp_split_to_table(
-                    coalesce(v_item.description, '') || ' ' ||
                     coalesce(v_item.defect, '') || ' ' ||
-                    coalesce(v_item.additional_note, '') || ' ' ||
                     coalesce(v_item.guard_remark, ''),
                     '[[:space:][:punct:]]+'
                 ) as secret_part
