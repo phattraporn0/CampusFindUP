@@ -334,7 +334,6 @@ requireRole(["user"]).then(async (user) => {
         document.getElementById('foundLocation').value = item.location || '';
         document.getElementById('foundDate').value = item.found_date || '';
         document.getElementById('foundTime').value = item.found_time || '';
-        document.getElementById('additionalNote').value = item.additional_note || '';
         document.getElementById('storageLocation').value = item.storage_location || '';
         const knownCategory = Object.prototype.hasOwnProperty.call(categorySubcategories, item.category);
         const categoryForForm = knownCategory ? item.category : "other";
@@ -541,8 +540,7 @@ if (saveBtn) {
         const foundDate = document.getElementById("foundDate")?.value || "";
         const foundTime = document.getElementById("foundTime")?.value || "";
         const storageLocation = document.getElementById("storageLocation")?.value || "";
-        const additionalNote = document.getElementById("additionalNote")?.value.trim() || "";
-        const defect = additionalNote || distinctiveFeature || description;
+        const defect = distinctiveFeature || description;
 
         if (!foundLocation) { alert("กรุณากรอกสถานที่พบ"); return; }
         if (!foundDate) { alert("กรุณาเลือกวันที่พบ"); return; }
@@ -552,7 +550,6 @@ if (saveBtn) {
         if (!color) { alert("กรุณากรอกสี"); return; }
         if (!material) { alert("กรุณากรอกวัสดุ"); return; }
         if (!distinctiveFeature) { alert("กรุณากรอกจุดเด่นของสิ่งของ"); return; }
-        if (!additionalNote) { alert("กรุณากรอกข้อมูลลับสำหรับยืนยันเจ้าของ"); return; }
         if (Object.prototype.hasOwnProperty.call(categorySubcategories, categoryValue === "other" ? "อื่น ๆ" : categoryValue) && !finalSubcategory) {
             alert("กรุณาเลือกประเภทย่อย");
             return;
@@ -609,7 +606,7 @@ if (saveBtn) {
                 found_date: foundDate,
                 found_time: foundTime || null,
                 storage_location: storageLocation,
-                additional_note: additionalNote || null,
+                additional_note: null,
                 defect,
                 ...(imageUrl ? { image_url: imageUrl } : {})
             }).eq('id', editId).eq('reporter_id', currentUser.id);
@@ -635,7 +632,7 @@ if (saveBtn) {
                 found_date: foundDate,
                 found_time: foundTime || null,
                 storage_location: storageLocation,
-                additional_note: additionalNote || null,
+                additional_note: null,
                 defect,
                 image_url: imageUrl,
             })

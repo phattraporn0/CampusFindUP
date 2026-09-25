@@ -25,13 +25,19 @@ function displayDate(value) {
 }
 
 function renderItem(item) {
+    const defect = item.defect || item.distinctive_feature || item.additional_note;
     const rows = [
+        ['ชื่อสิ่งของ', item.item_name],
         ['หมวดหมู่', item.category],
+        ['ประเภทย่อย', item.subcategory],
+        ['ยี่ห้อ', item.brand],
+        ['สี', item.color],
+        ['วัสดุ', item.material],
         ['สถานที่พบ', item.location],
         ['วันที่พบ', displayDate(item.found_date)],
         ['เวลาที่พบ', item.found_time],
         ['รายละเอียดสิ่งของ', item.description],
-        ['จุดเด่น / ตำหนิ', item.defect],
+        ['จุดเด่น / ตำหนิ', defect],
         ['จุดส่งมอบที่ผู้แจ้งระบุ', item.storage_location],
         ['บันทึกเพิ่มเติมจากผู้แจ้ง', item.additional_note]
     ];

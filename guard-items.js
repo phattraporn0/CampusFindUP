@@ -627,7 +627,7 @@ function renderWaitingItems(keyword = "") {
     const kw = keyword.toLowerCase().trim();
 
     const filtered = waitingItems.filter((item) => {
-        const text = `${item.id} ${item.description} ${item.category} ${item.location}`.toLowerCase();
+        const text = `${item.id} ${item.item_name} ${item.description} ${item.category} ${item.subcategory} ${item.location}`.toLowerCase();
         return text.includes(kw);
     });
 
@@ -649,7 +649,7 @@ function renderWaitingItems(keyword = "") {
             <div class="item-image">${item.image_url ? `<img src="${item.image_url}">` : `<i class="fa-solid fa-box"></i>`}</div>
             <div class="item-info">
                 <span class="item-code">${item.id.slice(0, 8)}</span>
-                <h3>${item.description || "ไม่ระบุชื่อสิ่งของ"}</h3>
+                <h3>${item.item_name || item.description || "ไม่ระบุชื่อสิ่งของ"}</h3>
                 <div class="item-detail"><i class="fa-solid fa-location-dot"></i> ${item.location || "ไม่ระบุสถานที่"}</div>
                 <div class="item-detail"><i class="fa-regular fa-clock"></i> ${item.found_time || "-"}</div>
             </div>
@@ -668,7 +668,7 @@ function renderReturnItems(keyword = "") {
     const kw = keyword.toLowerCase().trim();
 
     const filtered = returnItems.filter((item) => {
-        const text = `${item.id} ${item.description} ${item.category} ${item.location}`.toLowerCase();
+        const text = `${item.id} ${item.item_name} ${item.description} ${item.category} ${item.subcategory} ${item.location}`.toLowerCase();
         return text.includes(kw);
     });
 
@@ -690,7 +690,7 @@ function renderReturnItems(keyword = "") {
             <div class="item-image">${item.image_url ? `<img src="${item.image_url}">` : `<i class="fa-solid fa-box"></i>`}</div>
             <div class="item-info">
                 <span class="item-code">${item.id.slice(0, 8)}</span>
-                <h3>${item.description || "ไม่ระบุชื่อสิ่งของ"}</h3>
+                <h3>${item.item_name || item.description || "ไม่ระบุชื่อสิ่งของ"}</h3>
                 <div class="item-detail">หมวดหมู่: ${item.category || "-"}</div>
                 <div class="item-detail">สถานะ: รอส่งคืนเจ้าของ</div>
             </div>
