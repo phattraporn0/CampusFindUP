@@ -362,9 +362,29 @@ if (reportLostBtn) {
 // ==========================
 
 let allItems = [];
+let allLostItems = [];
 let ownFoundIds = new Set();
 let currentUserId = null;
 let activeCategory = "ทั้งหมด";
+const standardCategories = new Set([
+    "กระเป๋าและสัมภาระ",
+    "บัตรและเอกสาร",
+    "อุปกรณ์อิเล็กทรอนิกส์",
+    "กุญแจและอุปกรณ์ล็อก",
+    "เครื่องแต่งกายและของใช้ส่วนตัว",
+    "เครื่องเขียนและอุปกรณ์การเรียน",
+    "อุปกรณ์กีฬา"
+]);
+const legacyCategoryAliases = {
+    "กระเป๋า": "กระเป๋าและสัมภาระ",
+    "บัตร": "บัตรและเอกสาร",
+    "กุญแจ": "กุญแจและอุปกรณ์ล็อก"
+};
+function categoryMatches(itemCategory) {
+    if (activeCategory === "ทั้งหมด") return true;
+    if (activeCategory === "อื่น ๆ") return !standardCategories.has(itemCategory) && itemCategory !== "";
+    return itemCategory === activeCategory || legacyCategoryAliases[itemCategory] === activeCategory;
+}
 
 const itemsContainer = document.getElementById("allItemsContainer");
 const totalItem = document.getElementById("allItemsTotal");
@@ -397,13 +417,14 @@ function renderItems() {
     const keyword = (searchInput?.value || "").trim().toLowerCase();
 
     const filtered = allItems.filter((item) => {
-        const matchCategory =
-            activeCategory === "ทั้งหมด" || item.category === activeCategory;
+        const matchCategory = categoryMatches(item.category);
 
         const matchKeyword =
             keyword === "" ||
             item.description?.toLowerCase().includes(keyword) ||
+            item.item_name?.toLowerCase().includes(keyword) ||
             item.category?.toLowerCase().includes(keyword) ||
+            item.subcategory?.toLowerCase().includes(keyword) ||
             item.location?.toLowerCase().includes(keyword);
 
         return matchCategory && matchKeyword;
@@ -479,7 +500,11 @@ function renderItems() {
 
 const searchInput = document.getElementById("searchInput");
 if (searchInput) {
-    searchInput.addEventListener("keyup", renderItems);
+    searchInput.addEventListener("input", () => {
+        renderItems();
+        renderAllLostItems();
+        updateAnnouncementLinks();
+    });
 }
 
 // ==========================
@@ -494,9 +519,11 @@ categoryButtons.forEach((button) => {
         activeCategory = button.textContent.trim();
         renderItems();
         loadMyLostItems();
-        loadAllLostItems();
+        renderAllLostItems();
+        updateAnnouncementLinks();
     });
 });
+updateAnnouncementLinks();
 
 loadItems();
 
@@ -615,7 +642,7 @@ async function loadMyLostItems() {
         return;
     }
 
-    const visibleLostItems = lostItems.filter((item) => activeCategory === 'ทั้งหมด' || item.category === activeCategory);
+    const visibleLostItems = lostItems.filter((item) => categoryMatches(item.category));
     total.textContent = `${visibleLostItems.length} รายการ`;
     if (!visibleLostItems.length) {
         container.innerHTML = '<div class="empty-state"><h3>ยังไม่มีรายการแจ้งของหาย</h3><p>รายการที่คุณแจ้งจะแสดงตรงนี้</p></div>';
@@ -653,7 +680,7 @@ async function loadAllLostItems() {
 
     const { data: posts, error } = await supabase
         .from('lost_items')
-        .select('id, category, item_name, description, location, lost_date, lost_time, image_url, created_at')
+        .select('id, category, subcategory, item_name, description, location, lost_date, lost_time, image_url, created_at')
         .order('created_at', { ascending: false });
 
     if (error) {
@@ -661,7 +688,23 @@ async function loadAllLostItems() {
         return;
     }
 
-    const visiblePosts = (posts || []).filter((item) => activeCategory === 'ทั้งหมด' || item.category === activeCategory);
+    allLostItems = posts || [];
+    renderAllLostItems();
+}
+
+function renderAllLostItems() {
+    const container = document.getElementById('allLostContainer');
+    const total = document.getElementById('allLostTotal');
+    if (!container) return;
+
+    const keyword = (searchInput?.value || '').trim().toLowerCase();
+    const visiblePosts = allLostItems.filter((item) => {
+        const matchCategory = categoryMatches(item.category);
+        const searchableText = [item.item_name, item.description, item.category, item.subcategory, item.location]
+            .filter(Boolean).join(' ').toLowerCase();
+        return matchCategory && (!keyword || searchableText.includes(keyword));
+    });
+
     total.textContent = `${visiblePosts.length} รายการ`;
     if (!visiblePosts.length) {
         container.innerHTML = '<div class="empty-state"><h3>ยังไม่มีรายการประกาศตามหา</h3><p>เมื่อมีผู้แจ้งของหาย รายการจะแสดงตรงนี้</p></div>';
@@ -671,7 +714,7 @@ async function loadAllLostItems() {
     container.innerHTML = visiblePosts.slice(0, 6).map((item) => `
         <article class="item-card public-lost-card" data-public-lost-id="${item.id}" role="button" tabindex="0">
             <div class="item-info">
-                <div class="item-top"><span class="item-category">${escapeClaimHtml(item.category || 'สิ่งของ')}</span><span class="item-time">กำลังตามหา</span></div>
+                <div class="item-top"><span class="item-category">${escapeClaimHtml([item.category, item.subcategory].filter(Boolean).join(' / ') || 'สิ่งของ')}</span><span class="item-time">กำลังตามหา</span></div>
                 <h3>${escapeClaimHtml(item.item_name || 'ไม่ระบุชื่อสิ่งของ')}</h3>
                 <p class="item-location">รายละเอียด: ${escapeClaimHtml(item.description || '-')}</p>
                 <p class="item-location">สถานที่หาย: ${escapeClaimHtml(item.location || '-')}</p>
@@ -679,11 +722,6 @@ async function loadAllLostItems() {
         </article>
     `).join('');
 
-    container.querySelectorAll('.public-lost-card').forEach((card) => {
-        const categoryElement = card.querySelector('.item-category');
-        const item = visiblePosts.find((entry) => entry.id === card.dataset.publicLostId);
-        if (categoryElement && item) categoryElement.textContent = [item.category, item.subcategory].filter(Boolean).join(' / ');
-    });
     container.querySelectorAll('.public-lost-card .item-location').forEach((node, index) => {
         if (index % 2 === 0) node.remove();
     });
@@ -692,6 +730,16 @@ async function loadAllLostItems() {
         card.addEventListener('click', open);
         card.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') open(); });
     });
+}
+
+function updateAnnouncementLinks() {
+    const params = new URLSearchParams();
+    if (activeCategory !== 'ทั้งหมด') params.set('category', activeCategory);
+    const keyword = (searchInput?.value || '').trim();
+    if (keyword) params.set('search', keyword);
+    const suffix = params.toString() ? `?${params.toString()}` : '';
+    document.querySelector('.all-lost-section .view-all-btn')?.setAttribute('href', `announcements.html${suffix}#lost`);
+    document.querySelector('.items-section:not(.all-lost-section) .view-all-btn')?.setAttribute('href', `announcements.html${suffix}#found`);
 }
 
 loadMyLostItems();
