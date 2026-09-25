@@ -542,6 +542,7 @@ if (saveBtn) {
         const foundTime = document.getElementById("foundTime")?.value || "";
         const storageLocation = document.getElementById("storageLocation")?.value || "";
         const additionalNote = document.getElementById("additionalNote")?.value.trim() || "";
+        const defect = additionalNote || distinctiveFeature || description;
 
         if (!foundLocation) { alert("กรุณากรอกสถานที่พบ"); return; }
         if (!foundDate) { alert("กรุณาเลือกวันที่พบ"); return; }
@@ -609,7 +610,7 @@ if (saveBtn) {
                 found_time: foundTime || null,
                 storage_location: storageLocation,
                 additional_note: additionalNote || null,
-                defect: additionalNote,
+                defect,
                 ...(imageUrl ? { image_url: imageUrl } : {})
             }).eq('id', editId).eq('reporter_id', currentUser.id);
             saveBtn.disabled = false;
@@ -635,7 +636,7 @@ if (saveBtn) {
                 found_time: foundTime || null,
                 storage_location: storageLocation,
                 additional_note: additionalNote || null,
-                defect: additionalNote,
+                defect,
                 image_url: imageUrl,
             })
             .select()
