@@ -609,6 +609,7 @@ if (saveBtn) {
                 found_time: foundTime || null,
                 storage_location: storageLocation,
                 additional_note: additionalNote || null,
+                defect: additionalNote,
                 ...(imageUrl ? { image_url: imageUrl } : {})
             }).eq('id', editId).eq('reporter_id', currentUser.id);
             saveBtn.disabled = false;
@@ -634,6 +635,7 @@ if (saveBtn) {
                 found_time: foundTime || null,
                 storage_location: storageLocation,
                 additional_note: additionalNote || null,
+                defect: additionalNote,
                 image_url: imageUrl,
             })
             .select()
