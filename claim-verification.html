@@ -215,7 +215,8 @@
 
         }
 
-        textarea {
+        textarea,
+        .question-box input {
 
             width: 100%;
 
@@ -237,7 +238,8 @@
 
         }
 
-        textarea:focus {
+        textarea:focus,
+        .question-box input:focus {
 
             border-color: #4F46E5;
 
@@ -364,18 +366,23 @@
 
 
         <div class="question-box">
+            <label for="answerBrand">ยี่ห้อของสิ่งของคืออะไร?</label>
+            <input id="answerBrand" type="text" placeholder="กรอกยี่ห้อ" required>
+        </div>
 
-            <label>
+        <div class="question-box">
+            <label for="answerColor">สีของสิ่งของคืออะไร?</label>
+            <input id="answerColor" type="text" placeholder="กรอกสี" required>
+        </div>
 
-                จุดเด่น / ตำหนิของสิ่งของคืออะไร?
+        <div class="question-box">
+            <label for="answerDescription">รายละเอียดของสิ่งของเป็นอย่างไร?</label>
+            <textarea id="answerDescription" placeholder="กรอกรายละเอียดของสิ่งของ" required></textarea>
+        </div>
 
-            </label>
-
-            <textarea
-                id="answer"
-                placeholder="กรุณาระบุจุดเด่นหรือตำหนิของสิ่งของ">
-            </textarea>
-
+        <div class="question-box">
+            <label for="answerDistinctiveFeature">จุดเด่น/ตำหนิของสิ่งของคืออะไร?</label>
+            <textarea id="answerDistinctiveFeature" placeholder="กรอกจุดเด่นหรือตำหนิของสิ่งของ" required></textarea>
         </div>
 
 
@@ -400,7 +407,7 @@
 </main>
 
 
-<script type="module" src="claim-verification.js"></script>
+<script type="module" src="claim-verification.js?v=20260925-2"></script>
 
 </body>
 

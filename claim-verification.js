@@ -257,7 +257,13 @@ if (!foundItemId) {
 // ELEMENTS (id เดิมในหน้า HTML)
 // =====================================
 
-const answerInput = document.getElementById("answer");
+const answerInputs = {
+    brand: document.getElementById("answerBrand"),
+    color: document.getElementById("answerColor"),
+    description: document.getElementById("answerDescription"),
+    distinctive_feature: document.getElementById("answerDistinctiveFeature")
+};
+const answerFields = Object.values(answerInputs);
 const submitAnswer = document.getElementById("submitAnswer");
 const attemptCount = document.getElementById("attemptCount");
 
@@ -295,7 +301,7 @@ async function checkClaimStatus() {
     if (item.status === "claim_locked") {
         submitAnswer.disabled = true;
         submitAnswer.style.background = "#9CA3AF";
-        answerInput.disabled = true;
+        answerFields.forEach((input) => { input.disabled = true; });
         alert("คุณตอบผิดครบ 3 ครั้งแล้ว\nกรุณารอ Admin ตรวจสอบรายการ");
     }
 }
@@ -311,18 +317,31 @@ if (submitAnswer) {
 
     submitAnswer.addEventListener("click", async function () {
 
-        const userAnswer = answerInput.value.trim();
+        const answers = Object.fromEntries(Object.entries(answerInputs).map(([key, input]) => [key, input.value.trim()]));
 
-        if (userAnswer === "") {
-            alert("กรุณากรอกคำตอบ");
+        if (Object.values(answers).some((value) => !value)) {
+            alert("กรุณากรอกคำตอบให้ครบทั้ง 4 ข้อ");
             return;
         }
 
         submitAnswer.disabled = true;
 
-        const { data, error } = await supabase.rpc("verify_claim", {
+        const embeddingResults = await Promise.all(Object.entries(answers).map(async ([key, text]) => {
+            const result = await supabase.functions.invoke('generate-embedding', {
+                body: { text, type: 'query' }
+            });
+            return [key, result];
+        }));
+        const embeddingError = embeddingResults.find(([, result]) => result.error || !result.data?.success || !Array.isArray(result.data.embedding));
+        if (embeddingError) {
+            submitAnswer.disabled = false;
+            alert(`สร้างข้อมูลสำหรับตรวจคำตอบไม่สำเร็จ: ${embeddingError[1].error?.message || embeddingError[1].data?.error || 'ข้อมูลไม่ถูกต้อง'}`);
+            return;
+        }
+        const answerEmbeddings = Object.fromEntries(embeddingResults.map(([key, result]) => [key, result.data.embedding]));
+        const { data, error } = await supabase.rpc("verify_claim_answers", {
             p_found_item_id: foundItemId,
-            p_answer: userAnswer,
+            p_answers: answerEmbeddings,
         });
 
         submitAnswer.disabled = false;
@@ -347,14 +366,14 @@ if (submitAnswer) {
             alert("คุณตอบผิดครบ 3 ครั้งแล้ว\nไม่สามารถยืนยันความเป็นเจ้าของได้");
             submitAnswer.disabled = true;
             submitAnswer.style.background = "#9CA3AF";
-            answerInput.disabled = true;
+            answerFields.forEach((input) => { input.disabled = true; });
         } else if (data.already_claimed) {
             alert("รายการนี้มีผู้ยืนยันความเป็นเจ้าของและยังไม่หมดอายุ QR Code");
             window.location.href = "dashboard.html";
         } else {
             alert("คำตอบไม่ถูกต้อง\nกรุณาลองใหม่อีกครั้ง");
-            answerInput.value = "";
-            answerInput.focus();
+            answerFields.forEach((input) => { input.value = ""; });
+            answerInputs.brand.focus();
         }
     });
 

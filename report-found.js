@@ -519,6 +519,18 @@ function validateFoundEmbeddingResponse(response) {
     return response.embedding;
 }
 
+async function generateClaimAnswerEmbeddings({ brand, color, description, distinctiveFeature }) {
+    const fields = { brand, color, description, distinctive_feature: distinctiveFeature };
+    const entries = await Promise.all(Object.entries(fields).map(async ([key, text]) => {
+        const { data, error } = await supabase.functions.invoke('generate-embedding', {
+            body: { text, type: 'passage' }
+        });
+        if (error) throw error;
+        return [key, validateFoundEmbeddingResponse(data)];
+    }));
+    return Object.fromEntries(entries);
+}
+
 const saveBtn = document.querySelector(".save-btn");
 
 if (saveBtn) {
@@ -593,6 +605,14 @@ if (saveBtn) {
         }
 
         if (editId) {
+            let claimAnswerEmbeddings;
+            try {
+                claimAnswerEmbeddings = await generateClaimAnswerEmbeddings({ brand, color, description, distinctiveFeature });
+            } catch (embeddingError) {
+                saveBtn.disabled = false;
+                alert(`บันทึกไม่สำเร็จ: สร้างข้อมูลตรวจสอบเจ้าของไม่สำเร็จ: ${embeddingError.message}`);
+                return;
+            }
             const { error: updateError } = await supabase.from('found_items').update({
                 category: finalCategory,
                 subcategory: finalSubcategory || null,
@@ -608,6 +628,10 @@ if (saveBtn) {
                 storage_location: storageLocation,
                 additional_note: null,
                 defect,
+                brand_embedding: claimAnswerEmbeddings.brand,
+                color_embedding: claimAnswerEmbeddings.color,
+                description_embedding: claimAnswerEmbeddings.description,
+                distinctive_feature_embedding: claimAnswerEmbeddings.distinctive_feature,
                 ...(imageUrl ? { image_url: imageUrl } : {})
             }).eq('id', editId).eq('reporter_id', currentUser.id);
             saveBtn.disabled = false;
@@ -670,6 +694,14 @@ if (saveBtn) {
             return;
         }
 
+        let claimAnswerEmbeddings;
+        try {
+            claimAnswerEmbeddings = await generateClaimAnswerEmbeddings({ brand, color, description, distinctiveFeature });
+        } catch (embeddingError) {
+            alert(`บันทึกข้อมูลแล้ว แต่สร้างข้อมูลตรวจสอบเจ้าของไม่สำเร็จ: ${embeddingError.message}`);
+            return;
+        }
+
         let embedding;
         try {
             embedding = validateFoundEmbeddingResponse(embeddingResponse);
@@ -687,7 +719,13 @@ if (saveBtn) {
 
         const { data: updatedEmbeddingRow, error: embeddingUpdateError } = await supabase
             .from('found_items')
-            .update({ embedding })
+            .update({
+                embedding,
+                brand_embedding: claimAnswerEmbeddings.brand,
+                color_embedding: claimAnswerEmbeddings.color,
+                description_embedding: claimAnswerEmbeddings.description,
+                distinctive_feature_embedding: claimAnswerEmbeddings.distinctive_feature
+            })
             .eq('id', data.id)
             .eq('reporter_id', currentUser.id)
             .select('id')
