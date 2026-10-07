@@ -56,11 +56,21 @@ function hasSameValue(left, right) {
     return Boolean(normalizedLeft && normalizedRight && normalizedLeft === normalizedRight);
 }
 
+function hasSameCategory(left, right) {
+    const aliases = {
+        'กระเป๋า': 'กระเป๋าและสัมภาระ',
+        'บัตร': 'บัตรและเอกสาร',
+        'กุญแจ': 'กุญแจและอุปกรณ์ล็อก'
+    };
+    const canonical = (value) => aliases[String(value ?? '').trim()] || String(value ?? '').trim();
+    return hasSameValue(canonical(left), canonical(right));
+}
+
 function hasStructuredConflict(lost, found) {
     const categoryProvided = normalizeText(lost.category) && normalizeText(found.category);
     const subcategoryProvided = normalizeText(lost.subcategory) && normalizeText(found.subcategory);
 
-    if (categoryProvided && !hasSameValue(lost.category, found.category)) return true;
+    if (categoryProvided && !hasSameCategory(lost.category, found.category)) return true;
     if (subcategoryProvided && !hasSameValue(lost.subcategory, found.subcategory)) return true;
 
     return false;
@@ -93,7 +103,7 @@ function scoreMatch(lost, found) {
     const foundLocation = normalizeText(found.location);
     let score = 0;
 
-    if (hasSameValue(lost.category, found.category)) score += 35;
+    if (hasSameCategory(lost.category, found.category)) score += 35;
     if (hasSameValue(lost.subcategory, found.subcategory)) score += 10;
     if (hasSameValue(lost.brand, found.brand)) score += 5;
     if (hasSameValue(lost.color, found.color)) score += 5;
@@ -163,7 +173,7 @@ async function findBestMatch() {
     }
 
     const normalizedLostItem = normalizeMatchingItem(lostItem, 'lost');
-    const scoreCandidates = (items, prioritizeSimilarity = false) => (items || [])
+    const scoreCandidates = (items) => (items || [])
         .map((item) => {
             const normalizedFoundItem = normalizeMatchingItem(item, 'found');
             return {
@@ -174,19 +184,14 @@ async function findBestMatch() {
         })
         .filter(({ item }) => !hasStructuredConflict(normalizedLostItem, item))
         .sort((a, b) => {
-            if (prioritizeSimilarity && b.similarity !== a.similarity) {
-                return b.similarity - a.similarity;
-            }
             if (b.score !== a.score) return b.score - a.score;
             return (b.similarity ?? -Infinity) - (a.similarity ?? -Infinity);
         });
 
-    const semanticCandidates = similarityMap.size > 0
-        ? (foundItems || []).filter((item) => similarityMap.has(item.id))
-        : [];
-    let rankedCandidates = semanticCandidates.length > 0
-        ? scoreCandidates(semanticCandidates, true)
-        : scoreCandidates(foundItems);
+    // ใช้ข้อมูล Semantic เป็นตัวช่วยจัดลำดับเท่านั้น ไม่ตัดรายการที่ตรงจาก
+    // ข้อมูลหมวดหมู่/รายละเอียดทิ้ง เพราะ RPC อาจคืนผู้สมัครที่คะแนนข้อความต่ำกว่า
+    // แต่รายการอื่นใน found_items_public ตรงกับโพสต์มากกว่า
+    const rankedCandidates = scoreCandidates(foundItems);
     let best = rankedCandidates[0];
 
     if (!best || best.score < 35) {
