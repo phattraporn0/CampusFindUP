@@ -159,13 +159,11 @@ async function findBestMatch() {
 
     let { data: foundItems, error: foundError } = await supabase
         .from('found_items_public')
-        .select('*')
-        .in('status', ['waiting', 'claimed']);
+        .select('*');
     if (foundError) {
         ({ data: foundItems, error: foundError } = await supabase
             .from('found_items_public')
-            .select('*')
-            .in('status', ['waiting', 'claimed']));
+            .select('id, item_name, subcategory, category, location, found_date, found_time, image_url, status'));
     }
     if (foundError) {
         message.textContent = 'ยังไม่สามารถค้นหารายการสิ่งของที่พบได้';
@@ -173,6 +171,9 @@ async function findBestMatch() {
     }
 
     const normalizedLostItem = normalizeMatchingItem(lostItem, 'lost');
+    const eligibleFoundItems = (foundItems || []).filter((item) =>
+        !['returned', 'claim_verified'].includes(String(item.status || '').toLowerCase())
+    );
     const scoreCandidates = (items) => (items || [])
         .map((item) => {
             const normalizedFoundItem = normalizeMatchingItem(item, 'found');
@@ -182,7 +183,6 @@ async function findBestMatch() {
                 similarity: similarityMap.get(item.id) ?? null
             };
         })
-        .filter(({ item }) => !hasStructuredConflict(normalizedLostItem, item))
         .sort((a, b) => {
             if (b.score !== a.score) return b.score - a.score;
             return (b.similarity ?? -Infinity) - (a.similarity ?? -Infinity);
@@ -191,7 +191,7 @@ async function findBestMatch() {
     // ใช้ข้อมูล Semantic เป็นตัวช่วยจัดลำดับเท่านั้น ไม่ตัดรายการที่ตรงจาก
     // ข้อมูลหมวดหมู่/รายละเอียดทิ้ง เพราะ RPC อาจคืนผู้สมัครที่คะแนนข้อความต่ำกว่า
     // แต่รายการอื่นใน found_items_public ตรงกับโพสต์มากกว่า
-    const rankedCandidates = scoreCandidates(foundItems);
+    const rankedCandidates = scoreCandidates(eligibleFoundItems);
     let best = rankedCandidates[0];
 
     if (!best || best.score < 35) {
