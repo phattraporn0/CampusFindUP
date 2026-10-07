@@ -3,6 +3,10 @@ import { supabase, requireRole } from './supabaseClient.js';
 const itemList = document.getElementById('itemList');
 const reviewPanel = document.getElementById('reviewPanel');
 const latestItemsPanel = document.getElementById('latestItemsPanel');
+const categoryList = document.getElementById('categoryList');
+const categorySummary = document.getElementById('categorySummary');
+const categoryFilterDescription = document.getElementById('categoryFilterDescription');
+const itemsPanelTitle = document.getElementById('itemsPanelTitle');
 
 function setReviewMode(visible) {
     if (reviewPanel) reviewPanel.hidden = !visible;
@@ -11,6 +15,49 @@ function setReviewMode(visible) {
 
 setReviewMode(false);
 let currentFilter = 'all';
+let currentCategory = 'all';
+
+// ใช้เฉพาะหมวดหมู่หลักชุดเดียวกับแบบฟอร์มปัจจุบันของระบบ
+const standardCategories = [
+    'กระเป๋าและสัมภาระ',
+    'บัตรและเอกสาร',
+    'อุปกรณ์อิเล็กทรอนิกส์',
+    'กุญแจและอุปกรณ์ล็อก',
+    'เครื่องแต่งกายและของใช้ส่วนตัว',
+    'เครื่องเขียนและอุปกรณ์การเรียน',
+    'อุปกรณ์กีฬา',
+    'อื่น ๆ'
+];
+const legacyCategoryAliases = {
+    'กระเป๋า': 'กระเป๋าและสัมภาระ',
+    'บัตร': 'บัตรและเอกสาร',
+    'กุญแจ': 'กุญแจและอุปกรณ์ล็อก',
+    other: 'อื่น ๆ'
+};
+
+function categoryLabel(category) {
+    const value = String(category || '').trim();
+    return standardCategories.includes(value)
+        ? value
+        : (legacyCategoryAliases[value] || 'อื่น ๆ');
+}
+
+function matchesStatusFilter(item) {
+    return currentFilter === 'all'
+        || (currentFilter === 'claimed' && ['claimed', 'claim_verified'].includes(item.status))
+        || (currentFilter === 'review' && (item.status === 'claim_locked' || Number(item.claim_attempts || 0) >= 3))
+        || item.status === currentFilter;
+}
+
+function statusFilterLabel() {
+    return {
+        waiting: 'รอยืนยันการรับฝาก',
+        claimed: 'รอส่งคืนเจ้าของ',
+        returned: 'ส่งคืนแล้ว',
+        review: 'รอ Admin ตรวจสอบ',
+        all: 'ทั้งหมด'
+    }[currentFilter] || 'ทั้งหมด';
+}
 
 function escapeHtml(value) {
     return String(value ?? '-').replace(/[&<>"']/g, (char) => ({
@@ -30,6 +77,43 @@ function statusText(status) {
 
 function openDetail(id) {
     window.location.href = `admin-item-detail.html?id=${encodeURIComponent(id)}`;
+}
+
+function renderCategories(items) {
+    if (!categoryList) return;
+
+    const statusFilteredItems = items.filter(matchesStatusFilter);
+    const categoryCounts = standardCategories.reduce((result, category) => {
+        result[category] = 0;
+        return result;
+    }, {});
+    statusFilteredItems.forEach((item) => {
+        categoryCounts[categoryLabel(item.category)] += 1;
+    });
+
+    categoryList.innerHTML = [
+        ['all', 'ทั้งหมด', statusFilteredItems.length],
+        ...standardCategories.map((label) => [label, label, categoryCounts[label]])
+    ].map(([value, label, count]) => `
+        <button type="button" class="category-card${currentCategory === value ? ' category-active' : ''}"
+                data-category="${escapeHtml(value)}">
+            <span class="category-name">${escapeHtml(label)}</span>
+            <strong>${count}</strong>
+            <small>รายการ</small>
+        </button>
+    `).join('');
+
+    if (categorySummary) {
+        const selectedCount = currentCategory === 'all'
+            ? statusFilteredItems.length
+            : (categoryCounts[currentCategory] || 0);
+        categorySummary.textContent = currentCategory === 'all'
+            ? `ทั้งหมด ${selectedCount} รายการ`
+            : `${currentCategory} · ${selectedCount} รายการ`;
+    }
+    if (categoryFilterDescription) {
+        categoryFilterDescription.textContent = `จำนวนหมวดหมู่ตามสถานะ: ${statusFilterLabel()}`;
+    }
 }
 
 async function loadDashboard() {
@@ -63,9 +147,11 @@ async function loadDashboard() {
     document.getElementById('returnedCount').textContent = counts.returned || 0;
     document.getElementById('reviewCount').textContent = items.filter((item) => item.status === 'claim_locked' || Number(item.claim_attempts || 0) >= 3).length;
     document.getElementById('totalCount').textContent = items.length;
+    renderCategories(items);
 
-    const lockedItems = items.filter((item) => item.status === 'claim_locked'
-        || Number(item.claim_attempts || 0) >= 3);
+    const lockedItems = items.filter((item) => matchesStatusFilter(item)
+        && (item.status === 'claim_locked' || Number(item.claim_attempts || 0) >= 3)
+        && (currentCategory === 'all' || categoryLabel(item.category) === currentCategory));
     const reviewList = document.getElementById('reviewList');
     if (reviewList) {
         reviewList.innerHTML = lockedItems.length
@@ -85,10 +171,15 @@ async function loadDashboard() {
         });
     }
 
-    const visibleItems = items.filter((item) => currentFilter === 'all'
-        || (currentFilter === 'claimed' && ['claimed', 'claim_verified'].includes(item.status))
-        || (currentFilter === 'review' && (item.status === 'claim_locked' || Number(item.claim_attempts || 0) >= 3))
-        || item.status === currentFilter);
+    const visibleItems = items.filter((item) =>
+        (currentCategory === 'all' || categoryLabel(item.category) === currentCategory)
+        && matchesStatusFilter(item));
+
+    if (itemsPanelTitle) {
+        itemsPanelTitle.textContent = currentCategory === 'all'
+            ? 'รายการล่าสุด'
+            : `รายการในหมวดหมู่ ${currentCategory}`;
+    }
 
     itemList.innerHTML = visibleItems.length
         ? visibleItems.map((item) => `
@@ -109,6 +200,14 @@ async function loadDashboard() {
         `).join('')
         : '<p class="empty">ไม่มีรายการในหมวดนี้</p>';
 }
+
+categoryList?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-category]');
+    if (!button) return;
+    currentCategory = button.dataset.category || 'all';
+    setReviewMode(currentFilter === 'review');
+    loadDashboard();
+});
 
 [['waitingCount', 'waiting'], ['verifiedCount', 'claimed'], ['returnedCount', 'returned'], ['reviewCount', 'review'], ['totalCount', 'all']]
     .forEach(([id, status]) => {

@@ -362,7 +362,6 @@ if (reportLostBtn) {
 // ==========================
 
 let allItems = [];
-let allLostItems = [];
 let ownFoundIds = new Set();
 let currentUserId = null;
 let activeCategory = "ทั้งหมด";
@@ -502,7 +501,6 @@ const searchInput = document.getElementById("searchInput");
 if (searchInput) {
     searchInput.addEventListener("input", () => {
         renderItems();
-        renderAllLostItems();
         updateAnnouncementLinks();
     });
 }
@@ -518,8 +516,6 @@ categoryButtons.forEach((button) => {
         button.classList.add("active");
         activeCategory = button.textContent.trim();
         renderItems();
-        loadMyLostItems();
-        renderAllLostItems();
         updateAnnouncementLinks();
     });
 });
@@ -673,85 +669,14 @@ async function loadMyLostItems() {
     });
 }
 
-async function loadAllLostItems() {
-    const container = document.getElementById('allLostContainer');
-    const total = document.getElementById('allLostTotal');
-    if (!container) return;
-
-    const { data: posts, error } = await supabase
-        .from('lost_items')
-        .select('id, category, subcategory, item_name, description, location, lost_date, lost_time, image_url, created_at')
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        container.innerHTML = `<div class="empty-state"><h3>โหลดรายการประกาศตามหาไม่สำเร็จ</h3><p>${escapeClaimHtml(error.message)}</p></div>`;
-        return;
-    }
-
-    allLostItems = posts || [];
-    renderAllLostItems();
-}
-
-function renderAllLostItems() {
-    const container = document.getElementById('allLostContainer');
-    const total = document.getElementById('allLostTotal');
-    if (!container) return;
-
-    const keyword = (searchInput?.value || '').trim().toLowerCase();
-    const visiblePosts = allLostItems.filter((item) => {
-        const matchCategory = categoryMatches(item.category);
-        const searchableText = [item.item_name, item.description, item.category, item.subcategory, item.location]
-            .filter(Boolean).join(' ').toLowerCase();
-        return matchCategory && (!keyword || searchableText.includes(keyword));
-    });
-
-    total.textContent = `${visiblePosts.length} รายการ`;
-    if (!visiblePosts.length) {
-        container.innerHTML = '<div class="empty-state"><h3>ยังไม่มีรายการประกาศตามหา</h3><p>เมื่อมีผู้แจ้งของหาย รายการจะแสดงตรงนี้</p></div>';
-        return;
-    }
-
-    container.innerHTML = visiblePosts.slice(0, 6).map((item) => `
-        <article class="item-card public-lost-card" data-public-lost-id="${item.id}" role="button" tabindex="0">
-            <div class="item-info">
-                <div class="item-top"><span class="item-category">${escapeClaimHtml([item.category, item.subcategory].filter(Boolean).join(' / ') || 'สิ่งของ')}</span><span class="item-time">กำลังตามหา</span></div>
-                <h3>${escapeClaimHtml(item.item_name || 'ไม่ระบุชื่อสิ่งของ')}</h3>
-                <p class="item-location">รายละเอียด: ${escapeClaimHtml(item.description || '-')}</p>
-                <p class="item-location">สถานที่หาย: ${escapeClaimHtml(item.location || '-')}</p>
-            </div>
-        </article>
-    `).join('');
-
-    container.querySelectorAll('.public-lost-card .item-location').forEach((node, index) => {
-        if (index % 2 === 0) node.remove();
-    });
-    container.querySelectorAll('[data-public-lost-id]').forEach((card) => {
-        const open = () => { window.location.href = `lost-post-detail.html?id=${encodeURIComponent(card.dataset.publicLostId)}`; };
-        card.addEventListener('click', open);
-        card.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') open(); });
-    });
-}
-
 function updateAnnouncementLinks() {
     const params = new URLSearchParams();
     if (activeCategory !== 'ทั้งหมด') params.set('category', activeCategory);
     const keyword = (searchInput?.value || '').trim();
     if (keyword) params.set('search', keyword);
     const suffix = params.toString() ? `?${params.toString()}` : '';
-    document.querySelector('.all-lost-section .view-all-btn')?.setAttribute('href', `announcements.html${suffix}#lost`);
-    document.querySelector('.items-section:not(.all-lost-section) .view-all-btn')?.setAttribute('href', `announcements.html${suffix}#found`);
+    document.querySelector('.items-section .view-all-btn')?.setAttribute('href', `announcements.html${suffix}#found`);
 }
-
-loadMyLostItems();
-loadAllLostItems();
-window.addEventListener('pageshow', loadMyLostItems);
-window.addEventListener('pageshow', loadAllLostItems);
-supabase.channel('user-lost-items-sync')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'lost_items' }, loadMyLostItems)
-    .subscribe();
-supabase.channel('all-lost-items-sync')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'lost_items' }, loadAllLostItems)
-    .subscribe();
 
 function automatchScore(lost, found) {
     const normalize = (value) => String(value || '').toLowerCase().replace(/[\s\p{P}\p{S}]+/gu, '');
@@ -776,13 +701,24 @@ async function loadMatchNotifications() {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const [{ data: lostItems }, { data: foundItems }] = await Promise.all([
+    const [{ data: lostItems }, { data: foundItems }, { data: claimedFoundItems }] = await Promise.all([
         supabase.from('lost_items').select('id,item_name,description,details,category,location,lost_date').eq('user_id', user.id),
-        loadPublicFoundMatches()
+        loadPublicFoundMatches(),
+        supabase.from('found_items')
+            .select('id,item_name,description,category,location,found_date,status')
+            .eq('claimant_id', user.id)
+            .in('status', ['claim_verified', 'returned'])
     ]);
 
     const matches = [];
     (lostItems || []).forEach((lost) => {
+        // ถ้าผู้ใช้ยืนยันรับของที่ตรงกับโพสต์นี้แล้ว ให้ถือว่าโพสต์นี้จบงานแล้ว
+        // และไม่แจ้งเตือนรายการใกล้เคียงซ้ำอีก
+        const hasReceivedMatch = (claimedFoundItems || []).some((found) =>
+            automatchScore(lost, found) >= 50
+        );
+        if (hasReceivedMatch) return;
+
         const best = (foundItems || [])
             .map((found) => ({ found, score: automatchScore(lost, found) }))
             .sort((a, b) => b.score - a.score)[0];

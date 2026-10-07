@@ -224,25 +224,7 @@ placeholder="ค้นหาสิ่งของ เช่น กระเป�
 
 </section>
 
-<!-- ================= ITEMS ================= -->
-
-<!-- ================= ALL FOUND ITEMS ================= -->
-
-<section class="items-section all-lost-section" id="allLostSection">
-    <div class="section-header">
-        <div>
-            <h2>รายการประกาศตามหาของ</h2>
-            <p>โพสต์แจ้งหายทั้งหมดจากผู้ใช้งานในระบบ</p>
-        </div>
-        <div class="total-item" id="allLostTotal">0 รายการ</div>
-    </div>
-    <a class="view-all-btn" href="announcements.html#lost">ดูทั้งหมด</a>
-    <div class="items-container" id="allLostContainer">
-        <div class="empty-state"><h3>กำลังโหลดรายการประกาศตามหา...</h3></div>
-    </div>
-</section>
-
-<!-- ================= ALL FOUND ITEMS ================= -->
+<!-- ================= FOUND ITEMS ================= -->
 
 <section class="items-section">
 
@@ -316,13 +298,9 @@ placeholder="ค้นหาสิ่งของ เช่น กระเป�
         if (!container) return;
         while (container.children.length > 6) container.lastElementChild.remove();
     };
-    const apply = () => { limit('allLostContainer'); limit('allItemsContainer'); };
-    const lostSection = document.getElementById('allLostSection');
-    const lostMore = lostSection?.querySelector('.view-all-btn');
-    const lostHeader = lostSection?.querySelector('.section-header');
-    if (lostMore && lostHeader && lostMore.parentElement !== lostHeader) lostHeader.appendChild(lostMore);
+    const apply = () => { limit('allItemsContainer'); };
     const observer = new MutationObserver(apply);
-    ['allLostContainer', 'allItemsContainer'].forEach((id) => document.getElementById(id) && observer.observe(document.getElementById(id), { childList:true }));
+    ['allItemsContainer'].forEach((id) => document.getElementById(id) && observer.observe(document.getElementById(id), { childList:true }));
     apply();
     document.addEventListener('click', (event) => {
         const panel = document.getElementById('notificationPanel');
