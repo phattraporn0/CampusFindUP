@@ -12,6 +12,8 @@ if (savedData) {
     const itemName = document.getElementById("successItemName");
     const time = document.getElementById("successTime");
     const details = document.getElementById("successDetails");
+    const successImages = document.getElementById("successImages");
+    const successImagesItem = document.getElementById("successImagesItem");
     const dateItem = document.getElementById("successDate")?.closest('.item');
     const timeItem = time?.closest('.item');
     if (dateItem && timeItem) dateItem.after(timeItem);
@@ -19,6 +21,13 @@ if (savedData) {
     if (itemName) itemName.textContent = data.item_name || "-";
     if (time) time.textContent = data.lost_time || "-";
     if (details) details.textContent = data.details || "-";
+    const imageUrls = Array.isArray(data.image_urls)
+        ? data.image_urls
+        : (data.image_url ? [data.image_url] : []);
+    if (successImages && imageUrls.length) {
+        successImages.innerHTML = imageUrls.map((url) => `<img src="${String(url).replace(/"/g, '&quot;')}" alt="รูปสิ่งของที่หาย">`).join('');
+        if (successImagesItem) successImagesItem.hidden = false;
+    }
 
     if (category) {
         category.textContent = data.category || "-";

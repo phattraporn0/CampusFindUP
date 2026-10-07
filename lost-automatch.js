@@ -149,12 +149,12 @@ async function findBestMatch() {
 
     let { data: foundItems, error: foundError } = await supabase
         .from('found_items_public')
-        .select('id, item_name, subcategory, category, location, found_date, found_time, image_url, status')
+        .select('*')
         .in('status', ['waiting', 'claimed']);
     if (foundError) {
         ({ data: foundItems, error: foundError } = await supabase
             .from('found_items_public')
-            .select('id, item_name, subcategory, category, location, found_date, found_time, image_url, status')
+            .select('*')
             .in('status', ['waiting', 'claimed']));
     }
     if (foundError) {

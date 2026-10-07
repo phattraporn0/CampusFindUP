@@ -653,6 +653,10 @@ body{
 }
 
 .selected-image-preview { display:block; width:min(100%, 280px); height:160px; object-fit:cover; border-radius:12px; margin:0 auto 12px; }
+.selected-images-preview { display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px; width:100%; padding:12px; }
+.selected-images-preview .selected-image-preview { width:100%; height:120px; margin:0; }
+.success-images { display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:8px; margin-top:6px; }
+.success-images img { width:100%; height:100px; object-fit:cover; border-radius:10px; }
 .upload-box.has-photo { padding:0; overflow:hidden; }
 .upload-box.has-photo .selected-image-preview { width:100%; max-width:none; height:100%; min-height:230px; margin:0; object-fit:cover; }
 html { font-size:16px; -webkit-text-size-adjust:100%; }

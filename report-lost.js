@@ -488,23 +488,31 @@ updateSubcategoryOptions(categoryInput?.value || initialCategory);
 // UPLOAD IMAGE (เก็บไฟล์ไว้ในตัวแปร ยังไม่อัปโหลดจนกว่าจะกดยืนยัน)
 // =====================================
 
-let selectedFile = null;
+let selectedFiles = [];
 
 const imageInput = document.getElementById("itemImage");
 const uploadBox = document.querySelector(".upload-box");
 
 if (imageInput && uploadBox) {
     imageInput.addEventListener("change", function () {
-        if (this.files && this.files.length > 0) {
-            selectedFile = this.files[0];
-            const previewUrl = URL.createObjectURL(selectedFile);
-            uploadBox.innerHTML = `
-                <img class="selected-image-preview" src="${previewUrl}" alt="ตัวอย่างรูปสิ่งของที่หาย">
-                <div class="upload-icon"><i class="fa-solid fa-circle-check"></i></div>
-                <h3>${selectedFile.name}</h3>
-                <p>เลือกรูปภาพเรียบร้อยแล้ว</p>
-            `;
+        selectedFiles = Array.from(this.files || []);
+        if (!selectedFiles.length) return;
+        const oversizedFile = selectedFiles.find((file) => file.size > 5 * 1024 * 1024);
+        if (oversizedFile) {
+            selectedFiles = [];
+            imageInput.value = '';
+            alert(`รูป ${oversizedFile.name} มีขนาดเกิน 5MB`);
+            return;
         }
+        uploadBox.innerHTML = `
+            <div class="selected-images-preview">
+                ${selectedFiles.map((file) => `<img class="selected-image-preview" src="${URL.createObjectURL(file)}" alt="ตัวอย่างรูปสิ่งของที่หาย">`).join('')}
+            </div>
+            <div class="upload-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <h3>เลือกรูปภาพแล้ว ${selectedFiles.length} รูป</h3>
+            <p>เลือกรูปใหม่เพื่อเปลี่ยนรูปภาพทั้งหมด</p>
+        `;
+        uploadBox.classList.add('has-photo');
     });
 }
 
@@ -592,31 +600,25 @@ if (submitLostBtn) {
         submitLostBtn.textContent = "กำลังบันทึก...";
 
         // อัปโหลดรูป (ถ้ามี) ไปที่ Storage bucket "item-photos"
-        let imageUrl = null;
-        if (selectedFile) {
-            const originalExtension = selectedFile.name.includes('.')
-                ? selectedFile.name.slice(selectedFile.name.lastIndexOf('.') + 1).toLowerCase()
+        const imageUrls = [];
+        for (const file of selectedFiles) {
+            const originalExtension = file.name.includes('.')
+                ? file.name.slice(file.name.lastIndexOf('.') + 1).toLowerCase()
                 : '';
             const safeExtension = originalExtension.replace(/[^a-z0-9]/g, '') || 'bin';
             const filePath = `lost/${currentUser.id}/${Date.now()}_${crypto.randomUUID()}.${safeExtension}`;
-            const { error: uploadError } = await supabase
-                .storage
-                .from("item-photos")
-                .upload(filePath, selectedFile);
+            const { error: uploadError } = await supabase.storage.from("item-photos").upload(filePath, file);
 
             if (uploadError) {
                 submitLostBtn.disabled = false;
                 submitLostBtn.textContent = "ยืนยันการแจ้งของหาย";
                 alert("อัปโหลดรูปภาพไม่สำเร็จ: " + uploadError.message);
                 return;
-            } else {
-                const { data: publicUrlData } = supabase
-                    .storage
-                    .from("item-photos")
-                    .getPublicUrl(filePath);
-                imageUrl = publicUrlData.publicUrl;
             }
+            const { data: publicUrlData } = supabase.storage.from("item-photos").getPublicUrl(filePath);
+            imageUrls.push(publicUrlData.publicUrl);
         }
+        const imageUrl = imageUrls[0] || null;
 
         if (editId) {
             const { error: updateError } = await supabase.from('lost_items').update({
@@ -632,7 +634,7 @@ if (submitLostBtn) {
                 location,
                 lost_date: date,
                 lost_time: time || null,
-                ...(imageUrl ? { image_url: imageUrl } : {})
+                ...(imageUrls.length ? { image_url: imageUrl, image_urls: imageUrls } : {})
             }).eq('id', editId).eq('user_id', currentUser.id);
             submitLostBtn.disabled = false;
             if (updateError) return alert(`แก้ไขโพสต์ไม่สำเร็จ: ${updateError.message}`);
@@ -657,6 +659,7 @@ if (submitLostBtn) {
                 lost_date: date,
                 lost_time: time || null,
                 image_url: imageUrl,
+                image_urls: imageUrls,
             })
             .select()
             .single();
@@ -724,12 +727,3 @@ if (submitLostBtn) {
     });
 
 }
-
-// Final photo-only preview: keep the selected image full-frame.
-imageInput?.addEventListener('change', function () {
-    const file = this.files?.[0];
-    if (!file || !uploadBox) return;
-    const url = URL.createObjectURL(file);
-    uploadBox.innerHTML = `<img class="selected-image-preview" src="${url}" alt="รูปสิ่งของที่หาย">`;
-    uploadBox.classList.add('has-photo');
-}, { once: true });

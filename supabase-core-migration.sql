@@ -5,7 +5,8 @@ create extension if not exists pgcrypto;
 create extension if not exists pg_trgm;
 
 alter table public.lost_items
-    add column if not exists details text;
+    add column if not exists details text,
+    add column if not exists image_urls text[] not null default '{}';
 
 create table if not exists public.profiles (
     id uuid primary key references auth.users(id) on delete cascade,
