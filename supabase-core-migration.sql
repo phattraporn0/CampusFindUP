@@ -66,6 +66,7 @@ on conflict (id) do nothing;
 
 alter table public.found_items
     add column if not exists item_name text,
+    add column if not exists image_urls text[] not null default '{}',
     add column if not exists claimant_id uuid references auth.users(id),
     add column if not exists claim_attempts integer not null default 0,
     add column if not exists claim_locked_at timestamptz,
@@ -75,6 +76,9 @@ alter table public.found_items
     add column if not exists claimed_at timestamptz,
     add column if not exists returned_at timestamptz,
     add column if not exists received_by uuid references auth.users(id);
+
+-- Refresh PostgREST's schema cache after adding the multi-image columns.
+notify pgrst, 'reload schema';
 
 -- Extend the legacy status constraint for the ownership-verification workflow.
 -- The old constraint usually allowed only waiting/claimed/returned.
