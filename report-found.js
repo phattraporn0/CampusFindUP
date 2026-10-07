@@ -448,6 +448,19 @@ let selectedFiles = [];
 const imageInput = document.getElementById("itemImage");
 const uploadBox = document.querySelector(".upload-box");
 
+function renderSelectedImages() {
+    if (!uploadBox) return;
+    if (!selectedFiles.length) {
+        uploadBox.classList.remove('has-photo');
+        uploadBox.innerHTML = '<div class="upload-icon"><i class="fa-solid fa-plus"></i></div><h3>คลิกเพื่ออัปโหลดรูปภาพ</h3><p>รองรับ JPG, PNG, WEBP ขนาดไม่เกิน 5MB ต่อรูป (เลือกได้หลายรูป)</p>';
+        return;
+    }
+    uploadBox.classList.add('has-photo');
+    uploadBox.innerHTML = `<div class="selected-images-preview">${selectedFiles.map((file, index) => `
+        <span class="selected-image-wrap"><img class="selected-image-preview" src="${URL.createObjectURL(file)}" alt="รูปสิ่งของที่พบ"><button type="button" data-remove-photo="${index}" aria-label="ลบรูปที่ ${index + 1}">&times;</button></span>
+    `).join('')}</div><strong class="add-more-photos">+ เพิ่มรูป</strong><small>เลือกรูปเพิ่มได้เรื่อย ๆ หรือกด × เพื่อลบรูป</small>`;
+}
+
 const foundLocationInput = document.getElementById('foundLocation');
 const foundDateInput = document.getElementById('foundDate');
 const foundTimeInput = document.getElementById('foundTime');
@@ -463,24 +476,24 @@ if (locationGroup && dateTimeGroup && photoGroup) {
 
 if (imageInput && uploadBox) {
     imageInput.addEventListener("change", function () {
-        selectedFiles = Array.from(this.files || []);
-        if (!selectedFiles.length) return;
-        const oversizedFile = selectedFiles.find((file) => file.size > 5 * 1024 * 1024);
+        const newFiles = Array.from(this.files || []);
+        const oversizedFile = newFiles.find((file) => file.size > 5 * 1024 * 1024);
         if (oversizedFile) {
-            selectedFiles = [];
             imageInput.value = '';
             alert(`รูป ${oversizedFile.name} มีขนาดเกิน 5MB`);
             return;
         }
-        uploadBox.innerHTML = `
-            <div class="selected-images-preview">
-                ${selectedFiles.map((file) => `<img class="selected-image-preview" src="${URL.createObjectURL(file)}" alt="รูปสิ่งของที่พบ">`).join('')}
-            </div>
-            <div class="upload-icon"><i class="fa-solid fa-circle-check"></i></div>
-            <h3>เลือกรูปภาพแล้ว ${selectedFiles.length} รูป</h3>
-            <p>เลือกรูปใหม่เพื่อเปลี่ยนรูปภาพทั้งหมด</p>
-        `;
-        uploadBox.classList.add('has-photo');
+        selectedFiles = [...selectedFiles, ...newFiles];
+        imageInput.value = '';
+        renderSelectedImages();
+    });
+    uploadBox.addEventListener('click', (event) => {
+        const removeButton = event.target.closest('[data-remove-photo]');
+        if (!removeButton) return;
+        event.preventDefault();
+        event.stopPropagation();
+        selectedFiles.splice(Number(removeButton.dataset.removePhoto), 1);
+        renderSelectedImages();
     });
 }
 
@@ -614,7 +627,7 @@ if (saveBtn) {
                 alert(`บันทึกไม่สำเร็จ: สร้างข้อมูลตรวจสอบเจ้าของไม่สำเร็จ: ${embeddingError.message}`);
                 return;
             }
-            const { error: updateError } = await supabase.from('found_items').update({
+            const updatePayload = {
                 category: finalCategory,
                 subcategory: finalSubcategory || null,
                 item_name: itemName,
@@ -634,16 +647,19 @@ if (saveBtn) {
                 description_embedding: claimAnswerEmbeddings.description,
                 distinctive_feature_embedding: claimAnswerEmbeddings.distinctive_feature,
                 ...(imageUrls.length ? { image_url: imageUrl, image_urls: imageUrls } : {})
-            }).eq('id', editId).eq('reporter_id', currentUser.id);
+            };
+            let { error: updateError } = await supabase.from('found_items').update(updatePayload).eq('id', editId).eq('reporter_id', currentUser.id);
+            if (updateError && /image_urls|schema cache/i.test(updateError.message || '')) {
+                delete updatePayload.image_urls;
+                updateError = (await supabase.from('found_items').update(updatePayload).eq('id', editId).eq('reporter_id', currentUser.id)).error;
+            }
             saveBtn.disabled = false;
             if (updateError) return alert(`แก้ไขโพสต์ไม่สำเร็จ: ${updateError.message}`);
             window.location.href = 'dashboard.html';
             return;
         }
 
-        const { data, error } = await supabase
-            .from("found_items")
-            .insert({
+        const foundPayload = {
                 reporter_id: currentUser.id,
                 category: finalCategory,
                 subcategory: finalSubcategory || null,
@@ -661,9 +677,12 @@ if (saveBtn) {
                 defect,
                 image_url: imageUrl,
                 image_urls: imageUrls,
-            })
-            .select()
-            .single();
+        };
+        let { data, error } = await supabase.from("found_items").insert(foundPayload).select().single();
+        if (error && /image_urls|schema cache/i.test(error.message || '')) {
+            delete foundPayload.image_urls;
+            ({ data, error } = await supabase.from("found_items").insert(foundPayload).select().single());
+        }
 
         if (error) {
             saveBtn.disabled = false;
