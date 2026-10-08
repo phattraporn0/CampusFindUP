@@ -27,3 +27,6 @@ create policy "Users can update their match notifications"
 on public.match_notifications for update to authenticated
 using (user_id = auth.uid())
 with check (user_id = auth.uid());
+
+-- ให้ Supabase REST API เห็นตารางใหม่ทันที
+notify pgrst, 'reload schema';

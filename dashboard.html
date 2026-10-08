@@ -11,7 +11,7 @@
     <title>CampusFind UP</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="dashboard.css?v=20260918-2">
+    <link rel="stylesheet" href="dashboard.css?v=20261008-1">
 
     <!-- Google Font -->
     <link rel="preconnect"
@@ -120,9 +120,9 @@
 
 </header>
 
-<div id="notificationPanel" hidden style="position:fixed; right:24px; top:84px; z-index:1000; width:min(380px,calc(100% - 32px)); max-height:calc(100dvh - 104px); overflow-y:auto; overscroll-behavior:contain; touch-action:pan-y; -webkit-overflow-scrolling:touch; background:#fff; border-radius:16px; padding:16px; box-shadow:0 12px 30px rgba(15,23,42,.18);">
+<div id="notificationPanel" class="notification-panel" hidden>
     <strong>แจ้งเตือน Automatch</strong>
-    <div id="notificationList" style="margin-top:10px;"></div>
+    <div id="notificationList" class="notification-list"></div>
 </div>
 
 <div class="hero-content">
@@ -290,7 +290,7 @@ placeholder="ค้นหาสิ่งของ เช่น กระเป�
 
 </div>
 
-<script type="module" src="dashboard.js?v=20260924-3"></script>
+<script type="module" src="dashboard.js?v=20261008-1"></script>
 <script>
 (() => {
     const limit = (id) => {

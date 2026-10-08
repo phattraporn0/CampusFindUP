@@ -719,6 +719,24 @@ async function loadMatchNotifications() {
         if (best && best.score >= 35) matches.push({ lost, ...best });
     });
 
+    // เก็บคู่ที่มีอยู่ก่อน เพื่อแยก "รายการใหม่" ออกจากประวัติเดิม
+    const { data: previousHistory, error: previousHistoryError } = await supabase
+        .from('match_notifications')
+        .select('lost_item_id, found_item_id')
+        .eq('user_id', user.id);
+
+    // ถ้ายังไม่ได้สร้างตารางประวัติ ให้ใช้โหมดสำรองและไม่ยิง upsert/query ซ้ำจนเกิด 404
+    if (previousHistoryError) {
+        count.hidden = !matches.length;
+        count.textContent = String(matches.length);
+        list.innerHTML = matches.length
+            ? matches.map(({ lost, found }) => notificationMarkup(lost, found, 'new', true)).join('')
+            : '<p style="color:#64748b;margin-bottom:0;">ยังไม่มีรายการที่ตรงกัน</p>';
+        bindNotificationButtons(list);
+        return;
+    }
+    const previousKeys = new Set((previousHistory || []).map((item) => `${item.lost_item_id}:${item.found_item_id}`));
+
     // บันทึกเฉพาะคู่รายการใหม่ โดยไม่เขียนทับสถานะเดิมของประวัติ
     await supabase.from('match_notifications').upsert(
         matches.map(({ lost, found }) => ({
@@ -740,7 +758,7 @@ async function loadMatchNotifications() {
         // จนกว่าจะรัน notification-history-migration.sql ให้แสดงรายการใหม่ได้ตามปกติ
         count.hidden = !matches.length;
         count.textContent = String(matches.length);
-        list.innerHTML = matches.length ? matches.map(({ lost, found }) => notificationMarkup(lost, found, 'new')).join('') : '<p style="color:#64748b;margin-bottom:0;">ยังไม่มีรายการที่ตรงกัน</p>';
+        list.innerHTML = matches.length ? matches.map(({ lost, found }) => notificationMarkup(lost, found, 'new', true)).join('') : '<p style="color:#64748b;margin-bottom:0;">ยังไม่มีรายการที่ตรงกัน</p>';
         bindNotificationButtons(list);
         return;
     }
@@ -764,23 +782,32 @@ async function loadMatchNotifications() {
 
     const lostById = new Map((lostItems || []).map((item) => [item.id, item]));
     const foundById = new Map((foundItems || []).map((item) => [item.id, item]));
-    const newCount = (history || []).filter((item) => item.status === 'new').length;
+    const newCount = (history || []).filter((item) =>
+        item.status === 'new' && !previousKeys.has(`${item.lost_item_id}:${item.found_item_id}`)
+    ).length;
     count.hidden = !newCount;
     count.textContent = String(newCount);
     list.innerHTML = (history || []).length
         ? history.map((notification) => notificationMarkup(
             lostById.get(notification.lost_item_id) || { item_name: 'รายการตามหาของฉัน' },
             foundById.get(notification.found_item_id) || { id: notification.found_item_id, item_name: 'รายการพบของ' },
-            notification.status
+            notification.status,
+            !previousKeys.has(`${notification.lost_item_id}:${notification.found_item_id}`)
         )).join('')
         : '<p style="color:#64748b;margin-bottom:0;">ยังไม่มีประวัติแจ้งเตือน</p>';
     bindNotificationButtons(list);
 }
 
-function notificationMarkup(lost, found, status) {
-    const statusText = { new: 'รายการใหม่', claimed: 'เคลมแล้ว', returned: 'รับของคืนแล้ว' }[status] || 'รายการใหม่';
+function notificationMarkup(lost, found, status, isNew = false) {
+    const statusText = status === 'claimed'
+        ? 'เคลมแล้ว'
+        : status === 'returned'
+            ? 'รับของคืนแล้ว'
+            : isNew
+                ? 'รายการใหม่'
+                : 'รายการที่ตรงกัน';
     return `<button type="button" data-match-id="${escapeClaimHtml(found.id || '')}" style="display:block;width:100%;border:0;background:#f8fafc;border-radius:10px;padding:10px;margin-top:8px;text-align:left;cursor:pointer;">
-        <strong>${status === 'new' ? 'นี่อาจจะเป็นของของคุณหรือเปล่า?' : 'ประวัติการแจ้งเตือน'}</strong><br>
+        <strong>${isNew ? 'นี่อาจจะเป็นของของคุณหรือเปล่า?' : 'ประวัติการแจ้งเตือน'}</strong><br>
         <small>${escapeClaimHtml(found.item_name || found.category || 'รายการที่อาจตรงกัน')} · ${escapeClaimHtml(lost.item_name || 'ของที่คุณแจ้งหาย')}</small><br>
         <small style="color:${status === 'returned' ? '#15803d' : status === 'claimed' ? '#a16207' : '#4338ca'};">สถานะ: ${statusText}</small>
     </button>`;
