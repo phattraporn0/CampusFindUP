@@ -7,6 +7,28 @@ const total = document.getElementById('total');
 const categoryFilter = document.getElementById('categoryFilter');
 let allPosts = [];
 
+const standardCategories = new Set([
+    'กระเป๋าและสัมภาระ',
+    'บัตรและเอกสาร',
+    'อุปกรณ์อิเล็กทรอนิกส์',
+    'กุญแจและอุปกรณ์ล็อก',
+    'เครื่องแต่งกายและของใช้ส่วนตัว',
+    'เครื่องเขียนและอุปกรณ์การเรียน',
+    'อุปกรณ์กีฬา'
+]);
+const legacyCategoryAliases = {
+    'กระเป๋า': 'กระเป๋าและสัมภาระ',
+    'บัตร': 'บัตรและเอกสาร',
+    'กุญแจ': 'กุญแจและอุปกรณ์ล็อก'
+};
+
+function categoryMatches(itemCategory) {
+    const value = String(itemCategory || '').trim();
+    if (!categoryFilter.value || categoryFilter.value === 'ทั้งหมด') return true;
+    if (categoryFilter.value === 'อื่น ๆ') return !standardCategories.has(value) && !legacyCategoryAliases[value];
+    return value === categoryFilter.value || legacyCategoryAliases[value] === categoryFilter.value;
+}
+
 function escapeHtml(value) {
     return String(value ?? '-').replace(/[&<>"']/g, (char) => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
@@ -17,11 +39,20 @@ async function loadLostPosts() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data: posts, error } = await supabase
+    let { data: posts, error } = await supabase
         .from('lost_items')
-        .select('id, category, item_name, description, details, location, lost_date, lost_time, image_url, created_at')
+        .select('id, category, item_name, description, details, location, lost_date, lost_time, image_url, image_urls, created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
+
+    // รองรับฐานข้อมูลเดิมที่ยังไม่มี image_urls
+    if (error && /image_urls|schema cache/i.test(error.message || '')) {
+        ({ data: posts, error } = await supabase
+            .from('lost_items')
+            .select('id, category, item_name, description, details, location, lost_date, lost_time, image_url, created_at')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false }));
+    }
 
     if (error) {
         list.innerHTML = `<div class="empty">โหลดรายการไม่สำเร็จ: ${escapeHtml(error.message)}</div>`;
@@ -33,16 +64,23 @@ async function loadLostPosts() {
 }
 
 function renderPosts() {
-    const posts = allPosts.filter((item) => !categoryFilter.value || categoryFilter.value === 'ทั้งหมด' || item.category === categoryFilter.value);
+    const posts = allPosts.filter((item) => categoryMatches(item.category));
     total.textContent = `${posts.length} รายการ`;
     if (!posts.length) {
         list.innerHTML = '<div class="empty"><h2>ยังไม่มีรายการประกาศตามหา</h2><p>โพสต์ที่คุณแจ้งหายจะแสดงตรงนี้</p></div>';
         return;
     }
 
-    list.innerHTML = posts.map((item) => `
+    list.innerHTML = posts.map((item) => {
+        const imageUrls = Array.isArray(item.image_urls) && item.image_urls.length
+            ? item.image_urls
+            : (item.image_url ? [item.image_url] : []);
+        const photoMarkup = imageUrls.length
+            ? `<div class="photo-gallery">${imageUrls.map((url) => `<img src="${escapeHtml(url)}" alt="รูปสิ่งของที่หาย">`).join('')}</div>`
+            : '<div class="photo">ไม่แสดงรูปภาพ</div>';
+        return `
         <article class="card" data-id="${item.id}" tabindex="0" role="button">
-            <div class="photo">ไม่แสดงรูปภาพ</div>
+            ${photoMarkup}
             <div class="info">
                 <span class="status">กำลังตามหา</span>
                 <small>${escapeHtml(item.category || 'สิ่งของ')}</small>
@@ -52,7 +90,8 @@ function renderPosts() {
                 <p>วันที่หาย: ${escapeHtml(item.lost_date || '-')} ${escapeHtml(item.lost_time || '')}</p>
             </div>
         </article>
-    `).join('');
+        `;
+    }).join('');
 
     list.querySelectorAll('[data-id]').forEach((card) => {
         const deleteButton = document.createElement('button');

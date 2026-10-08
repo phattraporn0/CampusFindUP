@@ -712,48 +712,94 @@ async function loadMatchNotifications() {
 
     const matches = [];
     (lostItems || []).forEach((lost) => {
-        // ถ้าผู้ใช้ยืนยันรับของที่ตรงกับโพสต์นี้แล้ว ให้ถือว่าโพสต์นี้จบงานแล้ว
-        // และไม่แจ้งเตือนรายการใกล้เคียงซ้ำอีก
-        const hasReceivedMatch = (claimedFoundItems || []).some((found) =>
-            automatchScore(lost, found) >= 50
-        );
-        if (hasReceivedMatch) return;
-
         const best = (foundItems || [])
+            .filter((found) => !['returned', 'claim_verified'].includes(String(found.status || '').toLowerCase()))
             .map((found) => ({ found, score: automatchScore(lost, found) }))
             .sort((a, b) => b.score - a.score)[0];
         if (best && best.score >= 35) matches.push({ lost, ...best });
     });
 
-    count.hidden = !matches.length;
-    count.textContent = String(matches.length);
-    list.innerHTML = matches.length ? matches.map(({ lost, found }) => `
-        <button type="button" data-match-id="${found.id}" style="display:block;width:100%;border:0;background:#f8fafc;border-radius:10px;padding:10px;margin-top:8px;text-align:left;cursor:pointer;">
-            <strong>นี่อาจจะเป็นสิ่งของที่คุณกำลังตามหาอยู่หรือเปล่า?</strong><br>
-            <small>${escapeClaimHtml(found.item_name || found.category || 'รายการที่อาจตรงกัน')} · ${escapeClaimHtml(lost.item_name || 'ของที่คุณแจ้งหาย')}</small>
-        </button>
-    `).join('') : '<p style="color:#64748b;margin-bottom:0;">ยังไม่มีรายการที่ตรงกัน</p>';
+    // บันทึกเฉพาะคู่รายการใหม่ โดยไม่เขียนทับสถานะเดิมของประวัติ
+    await supabase.from('match_notifications').upsert(
+        matches.map(({ lost, found }) => ({
+            user_id: user.id,
+            lost_item_id: lost.id,
+            found_item_id: found.id,
+            status: 'new'
+        })),
+        { onConflict: 'user_id,lost_item_id,found_item_id', ignoreDuplicates: true }
+    );
 
-    list.querySelectorAll('[data-match-id]').forEach((button) => {
-        const note = document.createElement('small');
-        note.textContent = 'หากรายการนี้ยังไม่ได้รับฝาก กรุณารอเจ้าหน้าที่รักษาความปลอดภัยอนุมัติก่อนจึงจะเคลมได้';
-        note.style.cssText = 'display:block;margin-top:6px;color:#b45309;line-height:1.45;';
-        button.appendChild(note);
-    });
+    const { data: history, error: historyError } = await supabase
+        .from('match_notifications')
+        .select('id, lost_item_id, found_item_id, status, created_at, updated_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+    if (historyError) {
+        // จนกว่าจะรัน notification-history-migration.sql ให้แสดงรายการใหม่ได้ตามปกติ
+        count.hidden = !matches.length;
+        count.textContent = String(matches.length);
+        list.innerHTML = matches.length ? matches.map(({ lost, found }) => notificationMarkup(lost, found, 'new')).join('') : '<p style="color:#64748b;margin-bottom:0;">ยังไม่มีรายการที่ตรงกัน</p>';
+        bindNotificationButtons(list);
+        return;
+    }
+
+    const claimedById = new Map((claimedFoundItems || []).map((found) => [found.id, found]));
+    for (const notification of history || []) {
+        const claimed = claimedById.get(notification.found_item_id);
+        const nextStatus = claimed?.status === 'returned'
+            ? 'returned'
+            : claimed?.status === 'claim_verified'
+                ? 'claimed'
+                : notification.status;
+        if (nextStatus !== notification.status) {
+            await supabase.from('match_notifications')
+                .update({ status: nextStatus, updated_at: new Date().toISOString() })
+                .eq('id', notification.id)
+                .eq('user_id', user.id);
+            notification.status = nextStatus;
+        }
+    }
+
+    const lostById = new Map((lostItems || []).map((item) => [item.id, item]));
+    const foundById = new Map((foundItems || []).map((item) => [item.id, item]));
+    const newCount = (history || []).filter((item) => item.status === 'new').length;
+    count.hidden = !newCount;
+    count.textContent = String(newCount);
+    list.innerHTML = (history || []).length
+        ? history.map((notification) => notificationMarkup(
+            lostById.get(notification.lost_item_id) || { item_name: 'รายการตามหาของฉัน' },
+            foundById.get(notification.found_item_id) || { id: notification.found_item_id, item_name: 'รายการพบของ' },
+            notification.status
+        )).join('')
+        : '<p style="color:#64748b;margin-bottom:0;">ยังไม่มีประวัติแจ้งเตือน</p>';
+    bindNotificationButtons(list);
+}
+
+function notificationMarkup(lost, found, status) {
+    const statusText = { new: 'รายการใหม่', claimed: 'เคลมแล้ว', returned: 'รับของคืนแล้ว' }[status] || 'รายการใหม่';
+    return `<button type="button" data-match-id="${escapeClaimHtml(found.id || '')}" style="display:block;width:100%;border:0;background:#f8fafc;border-radius:10px;padding:10px;margin-top:8px;text-align:left;cursor:pointer;">
+        <strong>${status === 'new' ? 'นี่อาจจะเป็นของของคุณหรือเปล่า?' : 'ประวัติการแจ้งเตือน'}</strong><br>
+        <small>${escapeClaimHtml(found.item_name || found.category || 'รายการที่อาจตรงกัน')} · ${escapeClaimHtml(lost.item_name || 'ของที่คุณแจ้งหาย')}</small><br>
+        <small style="color:${status === 'returned' ? '#15803d' : status === 'claimed' ? '#a16207' : '#4338ca'};">สถานะ: ${statusText}</small>
+    </button>`;
+}
+
+function bindNotificationButtons(list) {
     list.querySelectorAll('[data-match-id]').forEach((button) => button.addEventListener('click', () => {
         localStorage.setItem('selectedFoundItemId', button.dataset.matchId);
         window.location.href = 'lost-item-detail.html';
     }));
+
 }
 
 async function loadPublicFoundMatches() {
     let result = await supabase.from('found_items_public')
-        .select('id,item_name,subcategory,category,location,found_date,found_time,image_url,status')
-        .in('status', ['waiting', 'claimed']);
+        .select('*');
     if (result.error && /item_name/i.test(result.error.message || '')) {
         result = await supabase.from('found_items_public')
-            .select('id,item_name,subcategory,category,location,found_date,found_time,image_url,status')
-            .in('status', ['waiting', 'claimed']);
+            .select('id,item_name,subcategory,category,location,found_date,found_time,image_url,status');
     }
     return result;
 }
@@ -770,4 +816,7 @@ document.addEventListener('click', (event) => {
 loadMatchNotifications();
 supabase.channel('user-automatch-notifications')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'found_items' }, loadMatchNotifications)
+    .subscribe();
+supabase.channel('user-lost-notification-history')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'lost_items' }, loadMatchNotifications)
     .subscribe();

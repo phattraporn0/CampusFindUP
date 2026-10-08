@@ -3,7 +3,15 @@ import { supabase, requireRole } from './supabaseClient.js';
 await requireRole(['user']);
 
 const detail = document.getElementById('detail');
+const backLink = document.getElementById('backLink');
 const itemId = new URLSearchParams(window.location.search).get('id') || localStorage.getItem('selectedLostItemId');
+
+backLink?.addEventListener('click', (event) => {
+    if (window.history.length > 1) {
+        event.preventDefault();
+        window.history.back();
+    }
+});
 
 function escapeHtml(value) {
     return String(value ?? '-').replace(/[&<>"']/g, (char) => ({
@@ -15,19 +23,34 @@ if (!itemId) {
     detail.innerHTML = '<p>ไม่พบรายการแจ้งของหาย</p>';
 } else {
     const { data: { user } } = await supabase.auth.getUser();
-    const { data: item, error } = await supabase
+    let { data: item, error } = await supabase
         .from('lost_items')
-        .select('id, category, item_name, description, details, location, lost_date, lost_time, image_url, created_at')
+        .select('id, category, item_name, description, details, location, lost_date, lost_time, image_url, image_urls, created_at')
         .eq('id', itemId)
         .eq('user_id', user.id)
         .single();
 
+    if (error && /image_urls|schema cache/i.test(error.message || '')) {
+        ({ data: item, error } = await supabase
+            .from('lost_items')
+            .select('id, category, item_name, description, details, location, lost_date, lost_time, image_url, created_at')
+            .eq('id', itemId)
+            .eq('user_id', user.id)
+            .single());
+    }
+
     if (error || !item) {
         detail.innerHTML = `<p>ไม่สามารถโหลดข้อมูลได้: ${escapeHtml(error?.message || 'ไม่พบรายการ')}</p>`;
     } else {
+        const imageUrls = Array.isArray(item.image_urls) && item.image_urls.length
+            ? item.image_urls
+            : (item.image_url ? [item.image_url] : []);
+        const photoMarkup = imageUrls.length
+            ? `<div class="photo-gallery">${imageUrls.map((url) => `<img class="photo" src="${escapeHtml(url)}" alt="รูปสิ่งของที่หาย">`).join('')}</div>`
+            : '<div class="placeholder">ไม่แสดงรูปภาพ</div>';
         detail.innerHTML = `
             <div class="row"><div class="label">Item details</div><div class="value">${escapeHtml(item.details)}</div></div>
-            <div class="placeholder">ไม่แสดงรูปภาพ</div>
+            ${photoMarkup}
             <h1>${escapeHtml(item.item_name || 'ไม่ระบุชื่อสิ่งของ')}</h1>
             <div class="row"><div class="label">หมวดหมู่</div><div class="value">${escapeHtml(item.category)}</div></div>
             <div class="row"><div class="label">รายละเอียด</div><div class="value">${escapeHtml(item.description)}</div></div>

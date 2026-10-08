@@ -14,12 +14,15 @@
         .list { display: grid; gap: 18px; margin-top: 18px; }
         .card { display: flex; gap: 20px; background: #fff; border-radius: 22px; padding: 18px; box-shadow: 0 8px 24px rgba(15,23,42,.08); cursor: pointer; }
         .photo { width: 150px; height: 150px; flex: 0 0 150px; object-fit: cover; border-radius: 14px; background: #eef1f8; display: grid; place-items: center; color: #64748b; }
+        .photo-gallery { width: 260px; min-width: 260px; height: 220px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; align-content: start; overflow-y: auto; }
+        .photo-gallery img { width: 100%; height: 106px; object-fit: cover; border-radius: 10px; background: #eef1f8; }
+        .photo-gallery img:only-child { grid-column: 1 / -1; height: 220px; }
         .info { flex: 1; }
         .info h2 { margin: 8px 0; }
         .info p { margin: 6px 0; color: #64748b; }
         .status { float: right; color: #64748b; font-size: 14px; }
         .empty { background: #fff; border-radius: 22px; padding: 50px 20px; text-align: center; color: #64748b; }
-        @media (max-width: 650px) { .head { align-items: flex-start; flex-direction: column; } .card { flex-direction: column; } .photo { width: 100%; height: 190px; flex-basis: 190px; } .status { float: none; } }
+        @media (max-width: 650px) { .head { align-items: flex-start; flex-direction: column; } .card { flex-direction: column; } .photo, .photo-gallery { width: 100%; min-width: 0; height: 240px; flex-basis: 240px; } .photo-gallery { grid-template-columns: repeat(2, 1fr); overflow-y: auto; } .photo-gallery img { width: 100%; height: 116px; } .photo-gallery img:only-child { height: 240px; } .status { float: none; } }
     </style>
     <style>
         .delete-post-btn { margin-top:12px; border:0; border-radius:10px; padding:10px 14px; background:#fee2e2; color:#b91c1c; font:inherit; cursor:pointer; }
@@ -40,10 +43,13 @@
         <label for="categoryFilter">หมวดหมู่</label>
         <select id="categoryFilter" style="margin-top:8px;padding:10px 14px;border:1px solid #dbe1ee;border-radius:10px;font:inherit;">
             <option value="ทั้งหมด">ทั้งหมด</option>
-            <option value="กระเป๋า">กระเป๋า</option>
-            <option value="บัตร">บัตร</option>
+            <option value="กระเป๋าและสัมภาระ">กระเป๋าและสัมภาระ</option>
+            <option value="บัตรและเอกสาร">บัตรและเอกสาร</option>
             <option value="อุปกรณ์อิเล็กทรอนิกส์">อุปกรณ์อิเล็กทรอนิกส์</option>
-            <option value="กุญแจ">กุญแจ</option>
+            <option value="กุญแจและอุปกรณ์ล็อก">กุญแจและอุปกรณ์ล็อก</option>
+            <option value="เครื่องแต่งกายและของใช้ส่วนตัว">เครื่องแต่งกายและของใช้ส่วนตัว</option>
+            <option value="เครื่องเขียนและอุปกรณ์การเรียน">เครื่องเขียนและอุปกรณ์การเรียน</option>
+            <option value="อุปกรณ์กีฬา">อุปกรณ์กีฬา</option>
             <option value="อื่น ๆ">อื่น ๆ</option>
         </select>
         <section id="list" class="list"><div class="empty">กำลังโหลดรายการ...</div></section>
