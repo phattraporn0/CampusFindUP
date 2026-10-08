@@ -152,6 +152,18 @@ requireRole(["user"]);
 
 const itemId = new URLSearchParams(window.location.search).get('id') || localStorage.getItem("selectedFoundItemId");
 
+const backBtn = document.getElementById('backBtn');
+backBtn?.addEventListener('click', (event) => {
+    event.preventDefault();
+    const cameFromThisSite = document.referrer
+        && new URL(document.referrer, window.location.href).origin === window.location.origin;
+    if (cameFromThisSite && window.history.length > 1) {
+        window.history.back();
+    } else {
+        window.location.href = 'dashboard.html';
+    }
+});
+
 if (!itemId) {
     alert("ไม่พบรายการสิ่งของ");
     window.location.href = "dashboard.html";

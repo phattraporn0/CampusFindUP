@@ -541,6 +541,28 @@ if (mobileMenuBtn && mobileNav) {
     });
 }
 
+// ยุบเมนูเฉพาะเมื่อปุ่มฟังก์ชันล้นความกว้างจริง ไม่ใช้ breakpoint ตายตัว
+const navbar = document.querySelector('.navbar');
+const updateNavigationLayout = () => {
+    if (!navbar || !mobileNav || !mobileMenuBtn) return;
+    const wasCollapsed = navbar.classList.contains('nav-collapsed');
+    navbar.classList.remove('nav-collapsed');
+    const buttons = [...mobileNav.querySelectorAll(':scope > .report-btn')];
+    const hasWrappedButton = buttons.some((button) => button.getBoundingClientRect().height > 72);
+    const isOverflowing = navbar.scrollWidth > navbar.clientWidth + 1 || hasWrappedButton;
+    if (isOverflowing) {
+        navbar.classList.add('nav-collapsed');
+    } else if (wasCollapsed) {
+        mobileNav.classList.remove('mobile-open');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    }
+};
+
+window.addEventListener('resize', updateNavigationLayout);
+window.addEventListener('load', updateNavigationLayout);
+requestAnimationFrame(updateNavigationLayout);
+
 document.getElementById('myClaimsNavBtn')?.addEventListener('click', () => {
     window.location.href = 'my-claims.html';
 });

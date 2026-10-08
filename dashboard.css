@@ -1392,6 +1392,11 @@ button, input, select, textarea { font-size:16px; max-width:100%; }
     box-shadow: 0 12px 30px rgba(15, 23, 42, .18);
 }
 
+/* ต้องซ่อนจริงเมื่อ JavaScript ใส่ attribute hidden */
+.notification-panel[hidden] {
+    display: none !important;
+}
+
 .notification-list {
     flex: 1 1 auto;
     min-height: 0;
@@ -1405,6 +1410,62 @@ button, input, select, textarea { font-size:16px; max-width:100%; }
     touch-action: pan-y;
     -webkit-overflow-scrolling: touch;
     padding-right: 8px;
+}
+
+/* แสดงเมนูสามขีดเฉพาะตอนที่แถบฟังก์ชันล้นความกว้างจริงของหน้าจอ */
+.navbar:not(.nav-collapsed) {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.navbar:not(.nav-collapsed) > .mobile-menu-btn {
+    display: none !important;
+}
+
+.navbar:not(.nav-collapsed) > .nav-right {
+    display: flex !important;
+    width: auto;
+    flex: 0 0 auto;
+}
+
+.navbar:not(.nav-collapsed) > .nav-right > .report-btn {
+    flex: 0 0 auto;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+}
+
+.navbar.nav-collapsed {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.navbar.nav-collapsed > .logo {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.navbar.nav-collapsed > .mobile-menu-btn {
+    display: flex !important;
+    grid-column: 2;
+    grid-row: 1;
+    margin-left: 0;
+}
+
+.navbar.nav-collapsed > .nav-right {
+    display: none !important;
+    width: 100%;
+}
+
+.navbar.nav-collapsed > .nav-right.mobile-open {
+    display: flex !important;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-top: 12px;
 }
 
 @media (max-width: 600px) {
