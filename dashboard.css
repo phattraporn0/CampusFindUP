@@ -1398,11 +1398,11 @@ button, input, select, textarea { font-size:16px; max-width:100%; }
 }
 
 .notification-list {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     min-height: 0;
     width: 100%;
-    height: min(620px, calc(100vh - 180px));
-    max-height: calc(100vh - 180px);
+    height: min(460px, calc(100vh - 190px));
+    max-height: calc(100vh - 190px);
     margin-top: 10px;
     overflow-y: scroll !important;
     overflow-x: hidden;
@@ -1468,6 +1468,23 @@ button, input, select, textarea { font-size:16px; max-width:100%; }
     padding-top: 12px;
 }
 
+.navbar.nav-collapsed > .nav-right.mobile-open > .report-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center !important;
+    width: 100%;
+    text-align: center;
+}
+
+.navbar.nav-collapsed > .nav-right.mobile-open > .profile {
+    justify-content: center;
+    text-align: center;
+}
+
+.navbar.nav-collapsed > .nav-right.mobile-open > .profile .profile-info {
+    align-items: center;
+}
+
 @media (max-width: 600px) {
     .notification-panel {
         right: 16px;
@@ -1477,7 +1494,7 @@ button, input, select, textarea { font-size:16px; max-width:100%; }
     }
 
     .notification-list {
-        height: calc(100vh - 164px);
-        max-height: calc(100vh - 164px);
+        height: min(55vh, calc(100vh - 150px));
+        max-height: calc(100vh - 150px);
     }
 }

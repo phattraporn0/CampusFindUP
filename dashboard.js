@@ -547,9 +547,20 @@ const updateNavigationLayout = () => {
     if (!navbar || !mobileNav || !mobileMenuBtn) return;
     const wasCollapsed = navbar.classList.contains('nav-collapsed');
     navbar.classList.remove('nav-collapsed');
+    const logo = navbar.querySelector(':scope > .logo');
     const buttons = [...mobileNav.querySelectorAll(':scope > .report-btn')];
-    const hasWrappedButton = buttons.some((button) => button.getBoundingClientRect().height > 72);
-    const isOverflowing = navbar.scrollWidth > navbar.clientWidth + 1 || hasWrappedButton;
+    const navStyle = getComputedStyle(mobileNav);
+    const gap = parseFloat(navStyle.columnGap || navStyle.gap) || 0;
+    const buttonsWidth = buttons.reduce((total, button) => total + button.getBoundingClientRect().width, 0);
+    const profile = mobileNav.querySelector(':scope > .profile');
+    const profileWidth = profile?.getBoundingClientRect().width || 0;
+    const naturalNavWidth = buttonsWidth + profileWidth + gap * Math.max(buttons.length, 0);
+    const logoWidth = logo?.getBoundingClientRect().width || 0;
+    const requiredWidth = logoWidth + naturalNavWidth + 24;
+    const hasWrappedButton = buttons.some((button) => button.getBoundingClientRect().height > 60);
+    const isOverflowing = requiredWidth > navbar.clientWidth + 1
+        || navbar.scrollWidth > navbar.clientWidth + 1
+        || hasWrappedButton;
     if (isOverflowing) {
         navbar.classList.add('nav-collapsed');
     } else if (wasCollapsed) {
@@ -561,6 +572,9 @@ const updateNavigationLayout = () => {
 
 window.addEventListener('resize', updateNavigationLayout);
 window.addEventListener('load', updateNavigationLayout);
+if (window.ResizeObserver) {
+    new ResizeObserver(updateNavigationLayout).observe(navbar);
+}
 requestAnimationFrame(updateNavigationLayout);
 
 document.getElementById('myClaimsNavBtn')?.addEventListener('click', () => {
